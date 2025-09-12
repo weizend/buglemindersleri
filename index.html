@@ -6606,7 +6606,7 @@ function renderActivityFeed(activities) {
                     const costText = isKP ? details.itemCost : `${formatNumber(details.itemCost)} Puan`;
                     const balance = isKP ? details.newKasaBalance : details.newBalance;
                     const balanceUnit = isKP ? 'KP' : 'Puanı';
-                    message = `${userHtml}, mağazadan <b class="text-red-500">-${costText}</b> harcayarak <b class="text-green-400">${details.itemName}</b> aldı. (Mevcut ${balanceUnit}: ${formatNumber(balance)})`;
+                    message = `${userHtml}, özel ürün mağazasından <b class="text-red-500">-${costText}</b> harcayarak <b class="text-green-400">${details.itemName}</b> aldı. (Mevcut ${balanceUnit}: ${formatNumber(balance)})`;
                     break;
                 case 'lobbyJoined':
                     message = `${userHtml}, Tıkla-Yakala lobisine <span class="text-red-400 font-bold">-${details.cost} Puan</span> karşılığında katıldı. <span class="text-gray-400">(Kalan Puan: ${details.newBalance})</span>`;
@@ -7477,12 +7477,12 @@ function loadStoreItems() {
       }
   }
 
-  async function renderStoreItems(items, userData = {}) { 
+  async function renderStoreItems(items, userData = {}) {
     const gameContainer = document.getElementById('gameStoreItemsContainer');
     const specialContainer = document.getElementById('specialStoreItemsContainer');
     const gameTabBtn = document.getElementById('gameStoreTabBtn');
     const specialTabBtn = document.getElementById('specialStoreTabBtn');
-    
+
     gameContainer.innerHTML = '';
     specialContainer.innerHTML = '';
 
@@ -7495,75 +7495,19 @@ function loadStoreItems() {
         specialContainer.innerHTML = placeholder;
         return;
     }
-    
-    let allItemsArray = Object.entries(items);
-    
-    // Canavar Mağazası'na ait olacak tüm ürün tiplerini bir listede toplayalım.
-    const monsterStoreItemTypes = [
-        'revival_stone', 'health_potion', 'damage_potion', 'defense_potion', 
-        'crit_potion', 'crit_damage_potion', 'dodge_potion', 'pierce_potion', 
-        'health_regen_potion'
-    ];
 
-    if (storeFilter === 'monster_battle') {
-        // Sadece Canavar Mağazası ürünlerini filtrele
-        const monsterItems = allItemsArray
-            .filter(([, item]) => monsterStoreItemTypes.includes(item.type))
-            .sort(([, a], [, b]) => (a.order || 0) - (b.order || 0));
-
-        if (monsterItems.length > 0) {
-            monsterItems.forEach(itemData => renderItem(itemData, gameContainer));
-        } else {
-            gameContainer.innerHTML = '<p class="text-center col-span-full text-gray-400">Canavar Mağazası\'nda ürün bulunmamaktadır.</p>';
-        }
-
-        // Filtre aktifken sadece Oyun Mağazası sekmesini göster, Özel'i gizle
-        if(specialTabBtn) specialTabBtn.style.display = 'none';
-        if(specialContainer) specialContainer.style.display = 'none';
-        
-        if(gameTabBtn) {
-            gameTabBtn.classList.add('border-red-500', 'text-white');
-            gameTabBtn.classList.remove('border-transparent', 'text-gray-400');
-        }
-        document.getElementById('gameStoreItemsContainer').classList.remove('hidden');
-
-    } else {
-        // Normal mağaza görünümü (filtresiz)
-        // Oyun Mağazası: Özel VEYA Canavar Mağazası'na ait olmayan her şey
-        const gameItems = allItemsArray
-            .filter(([, item]) => item.type !== 'special' && !monsterStoreItemTypes.includes(item.type))
-            .sort(([, a], [, b]) => (a.order || 0) - (b.order || 0));
-
-        // Özel Ürün Mağazası: Sadece tipi 'special' olanlar
-        const specialItems = allItemsArray
-            .filter(([, item]) => item.type === 'special')
-            .sort(([, a], [, b]) => (a.order || 0) - (b.order || 0));
-
-        // Gizlenmiş olabilecek Özel Mağaza sekmesini tekrar görünür yap
-        if(specialTabBtn) specialTabBtn.style.display = 'flex';
-
-        // Oyun Mağazası ürünlerini render et
-        if (gameItems.length > 0) {
-          gameItems.forEach(itemData => renderItem(itemData, gameContainer));
-        } else {
-          gameContainer.innerHTML = '<p class="text-center col-span-full text-gray-400">Oyun Mağazası\'nda ürün bulunmamaktadır.</p>';
-        }
-        
-        // Özel Ürün Mağazası ürünlerini render et
-        if (specialItems.length > 0) {
-          specialItems.forEach(itemData => renderItem(itemData, specialContainer));
-        } else {
-          specialContainer.innerHTML = '<p class="text-center col-span-full text-gray-400">Özel Ürün Mağazası\'nda ürün bulunmamaktadır.</p>';
-        }
-    }
-
-    const potionPurchaseCounts = userData.potionPurchaseCounts || {};
-
+    // *** DEĞİŞİKLİK BURADA BAŞLIYOR: renderItem fonksiyonunu en başa taşıdık ***
     // Bu iç fonksiyon, tek bir mağaza ürününü HTML'e çevirir.
     const renderItem = (itemData, container) => {
         const [itemId, item] = itemData;
         const isSpecial = item.type === 'special';
+        const potionPurchaseCounts = (userData && userData.potionPurchaseCounts) ? userData.potionPurchaseCounts : {};
 
+        const monsterStoreItemTypes = [
+            'revival_stone', 'health_potion', 'damage_potion', 'defense_potion',
+            'crit_potion', 'crit_damage_potion', 'dodge_potion', 'pierce_potion',
+            'health_regen_potion'
+        ];
         const isPotion = monsterStoreItemTypes.includes(item.type);
         let currentCost = item.cost;
         if (isPotion && !isSpecial) {
@@ -7574,14 +7518,15 @@ function loadStoreItems() {
         const outOfStock = item.stock !== undefined && item.stock <= 0;
         let isExpired = false;
         let countdownHtml = '';
-        
+
         let adminControlsHtml = '';
-        if(isAdmin){
-          const listForReorder = isSpecial ? allItemsArray.filter(i => i[1].type === 'special') : allItemsArray.filter(i => i[1].type !== 'special');
-          const index = listForReorder.findIndex(([id]) => id === itemId);
-          const leftArrowDisabled = index === 0 ? 'disabled' : '';
-          const rightArrowDisabled = index === listForReorder.length - 1 ? 'disabled' : '';
-          adminControlsHtml = `
+        if (isAdmin) {
+            const allItemsArray = Object.entries(items);
+            const listForReorder = isSpecial ? allItemsArray.filter(i => i[1].type === 'special') : allItemsArray.filter(i => i[1].type !== 'special' && !monsterStoreItemTypes.includes(i[1].type));
+            const index = listForReorder.findIndex(([id]) => id === itemId);
+            const leftArrowDisabled = index === 0 ? 'disabled' : '';
+            const rightArrowDisabled = index === listForReorder.length - 1 ? 'disabled' : '';
+            adminControlsHtml = `
             <div class="admin-controls absolute top-0 right-0 p-1 bg-gray-900 bg-opacity-70 rounded-bl-lg flex gap-1 z-10">
                 <button onclick="reorderStoreItem('${itemId}', ${index - 1})" ${leftArrowDisabled} title="Sola Taşı" class="p-1 rounded-full hover:bg-gray-700 disabled:cursor-not-allowed">
                     <svg class="w-5 h-5 fill-current text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/></svg>
@@ -7612,7 +7557,7 @@ function loadStoreItems() {
 
         const disabled = outOfStock || isExpired;
         
-        const priceText = isSpecial ? `${currentCost} Kasa Puanı` : `${currentCost} Puan`;
+        const priceText = isSpecial ? `${formatNumber(currentCost)} KP` : `${formatNumber(currentCost)} Puan`;
 
         const cardDiv = document.createElement('div');
         cardDiv.className = `relative bg-gray-800 p-6 rounded-xl shadow-lg border-2 border-red-700 text-center flex flex-col justify-between`;
@@ -7634,7 +7579,63 @@ function loadStoreItems() {
           `;
         container.appendChild(cardDiv);
     };
+    // *** DEĞİŞİKLİK BURADA BİTİYOR ***
 
+    let allItemsArray = Object.entries(items);
+
+    const monsterStoreItemTypes = [
+        'revival_stone', 'health_potion', 'damage_potion', 'defense_potion',
+        'crit_potion', 'crit_damage_potion', 'dodge_potion', 'pierce_potion',
+        'health_regen_potion'
+    ];
+
+    if (storeFilter === 'monster_battle') {
+        const monsterItems = allItemsArray
+            .filter(([, item]) => monsterStoreItemTypes.includes(item.type))
+            .sort(([, a], [, b]) => (a.order || 0) - (b.order || 0));
+
+        if (monsterItems.length > 0) {
+            // *** EKSİK KISIM BURAYA EKLENDİ ***
+            monsterItems.forEach(itemData => renderItem(itemData, gameContainer));
+        } else {
+            gameContainer.innerHTML = '<p class="text-center col-span-full text-gray-400">Canavar Mağazası\'nda ürün bulunmamaktadır.</p>';
+        }
+
+        if (specialTabBtn) specialTabBtn.style.display = 'none';
+        if (specialContainer) specialContainer.style.display = 'none';
+
+        if (gameTabBtn) {
+            gameTabBtn.classList.add('border-red-500', 'text-white');
+            gameTabBtn.classList.remove('border-transparent', 'text-gray-400');
+        }
+        document.getElementById('gameStoreItemsContainer').classList.remove('hidden');
+
+    } else {
+        const gameItems = allItemsArray
+            .filter(([, item]) => item.type !== 'special' && !monsterStoreItemTypes.includes(item.type))
+            .sort(([, a], [, b]) => (a.order || 0) - (b.order || 0));
+
+        const specialItems = allItemsArray
+            .filter(([, item]) => item.type === 'special')
+            .sort(([, a], [, b]) => (a.order || 0) - (b.order || 0));
+
+        if (specialTabBtn) specialTabBtn.style.display = 'flex';
+
+        // *** EKSİK KISIM BURAYA EKLENDİ ***
+        if (gameItems.length > 0) {
+            gameItems.forEach(itemData => renderItem(itemData, gameContainer));
+        } else {
+            gameContainer.innerHTML = '<p class="text-center col-span-full text-gray-400">Oyun Mağazası\'nda ürün bulunmamaktadır.</p>';
+        }
+
+        // *** EKSİK KISIM BURAYA EKLENDİ ***
+        if (specialItems.length > 0) {
+            specialItems.forEach(itemData => renderItem(itemData, specialContainer));
+        } else {
+            specialContainer.innerHTML = '<p class="text-center col-span-full text-gray-400">Özel Ürün Mağazası\'nda ürün bulunmamaktadır.</p>';
+        }
+    }
+    
     if (Object.keys(activeStoreCountdowns).length > 0) {
         updateStoreCountdowns();
         storeCountdownInterval = setInterval(updateStoreCountdowns, 1000);
@@ -12355,7 +12356,6 @@ async function selectAvatar(itemId, imageUrl) {
     closeAvatarSelectionModal();
 }
 
-// MEVCUT buyItem FONKSİYONUNU SİL VE BUNU YAPIŞTIR
 async function buyItem(itemId) {
     if (isAdmin) {
         displayMessage("Adminler alışveriş yapamaz.");
@@ -12428,14 +12428,12 @@ async function buyItem(itemId) {
             } return currentItem; 
         });
 
-        // ★★★ YENİ EKLENEN KISIM BAŞLANGICI ★★★
         const isPercent = ['defense_potion', 'crit_potion', 'crit_damage_potion', 'dodge_potion', 'pierce_potion', 'health_regen_potion'].includes(item.type);
         const valuePrefix = isPercent ? '%' : '+';
-        const detailedItemName = `${valuePrefix}${valueToAdd} ${item.name}`; // Örn: +100 Can İksiri
-        // ★★★ YENİ EKLENEN KISIM SONU ★★★
+        const detailedItemName = `${valuePrefix}${valueToAdd} ${item.name}`;
 
         logActivity('buyItem', currentUser, { 
-            itemName: detailedItemName, // <-- DEĞİŞEN SATIR
+            itemName: detailedItemName,
             itemCost: currentCost, 
             itemType: item.type, 
             itemValue: valueToAdd, 
@@ -12453,10 +12451,13 @@ async function buyItem(itemId) {
         return;
     }
 
-    if ((user.balance || 0) < item.cost) { displayMessage("Yetersiz Puan!"); return; }
     if (item.type === 'special') {
         const kasaPuani = user.kasaPuani || 0;
-        if (kasaPuani < item.cost) { displayMessage(`Bu özel ürünü almak için yeterli Kasa Puanınız yok! (Gereken: ${item.cost} KP, Mevcut: ${kasaPuani} KP)`); return; }
+        if (kasaPuani < item.cost) {
+            // *** DEĞİŞİKLİK BURADA ***
+            displayMessage("Yetersiz Kasa Puanı!");
+            return;
+        }
         if (item.stock !== undefined && item.stock <= 0) { displayMessage("Bu ürünün stoğu tükenmiştir."); return; }
         const confirmed = await customConfirm(`'${item.name}' ürününü ${item.cost} Kasa Puanı'na almak istiyor musunuz? Bu puanlar Kasa'nızdan düşülecektir.`);
         if (!confirmed) return;
@@ -12472,6 +12473,8 @@ async function buyItem(itemId) {
         displayMessage(`'${item.name}' talebiniz admine iletildi. Onaylandığında hesabınıza eklenecek. Kasa'nızdan ${item.cost} KP düşüldü.`);
         return;
     }
+    
+    if ((user.balance || 0) < item.cost) { displayMessage("Yetersiz Puan!"); return; }
 
     if (item.type === 'tempMultiplier') {
         if (typeof item.value !== 'number' || typeof item.duration !== 'number') {
