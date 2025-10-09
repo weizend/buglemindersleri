@@ -8021,7 +8021,6 @@ function resetSurpriseCardsToDefault() {
     displayMessage("Ayarlar varsayılana döndürüldü. Kalıcı olması için 'Kaydet' butonuna basın.");
 }
 
-// MEVCUT openBox FONKSİYONUNU SİLİP BUNU YAPIŞTIRIN
 async function openBox(index) {
     if (isAdmin) {
         displayMessage("Adminler oyun oynayamaz.");
@@ -8070,27 +8069,26 @@ async function openBox(index) {
         return;
     }
     
-    // ★★★ YENİ ÇARPAN SİSTEMİ İÇİN GÜNCELLENMİŞ ONAY MANTIĞI ★★★
     let useMultiplier = false;
     let useCombinedMultiplier = false;
 
-    // Önce "Birleşmiş Çarpan" var mı diye kontrol et
+    // ★★★ İSTEĞİN DOĞRULTUSUNDA DEĞİŞEN KISIM BAŞLANGICI ★★★
+    // Artık Birleşmiş Çarpan varsa sormadan direkt kullanıyor.
     if (user.tempCombinedMultiplier && user.tempCombinedMultiplier > 0) {
-        const confirmed = await customConfirm(`Tek kullanımlık <b class="text-purple-400">${user.tempCombinedMultiplier}x Birleşmiş Çarpanı</b> kullanmak istiyor musun?`);
-        if (confirmed) {
-            useCombinedMultiplier = true;
-            useMultiplier = false; // Diğer çarpanı kullanma
-        }
+        useCombinedMultiplier = true;
+        useMultiplier = false;
+        // Kullanıcıya bilgi vermek için geçici bir bildirim gösteriyoruz.
+        displayTemporaryNotification(`${user.tempCombinedMultiplier}x Birleşmiş Çarpan kullanılıyor!`, 'bg-purple-600');
     }
+    // ★★★ DEĞİŞEN KISIM SONU ★★★
     
-    // Eğer birleşmiş çarpan kullanılmıyorsa ve normal çarpan varsa onu sor
+    // Eğer birleşmiş çarpan kullanılmadıysa, normal çarpanı sor.
     if (!useCombinedMultiplier && user.multiplierSource === 'store' && (user.multiplierRemainingUses || 0) > 0) {
         const confirmed = await customConfirm(`Mevcut <b>${user.activeMultiplier}x</b> çarpanınızı kullanmak ister misiniz? (Kalan Hak: ${user.multiplierRemainingUses})`);
         if (confirmed) {
             useMultiplier = true;
         }
     }
-    // ★★★ GÜNCELLEME SONU ★★★
 
     const boxRef = db.ref('boxes/' + index);
     const transactionResult = await boxRef.transaction(currentBoxData => {
@@ -8150,19 +8148,16 @@ async function openBox(index) {
         content: box.content, value: box.value
     };
 
-    // ★★★ YENİ ÇARPAN KOMBO VE KULLANIM MANTIĞI ★★★
     if (box.content === 'multiplier') {
-        const foundMultiplier = { value: box.value, uses: 1 }; // Kutudan çıkan her zaman 1 kullanımlıktır
+        const foundMultiplier = { type: 'tempMultiplier', value: box.value, uses: 1 };
         
         if (useCombinedMultiplier) {
-            // Birleşmiş çarpan kullanırken yeni çarpan bulma
             const newCombinedValue = tempUserState.tempCombinedMultiplier + foundMultiplier.value;
             tempUserState.tempCombinedMultiplier = newCombinedValue;
             message = `İNANILMAZ! Birleşmiş çarpanın, bulduğun yeni ${foundMultiplier.value}x ile birleşerek <b class="text-purple-400">${newCombinedValue}x</b> gücüne ulaştı!`;
             logActivity('multiplierCombined', currentUser, { boxId: box.id, foundValue: foundMultiplier.value, combinedValue: newCombinedValue });
         
         } else if (useMultiplier) {
-            // Normal çarpan kullanırken yeni çarpan bulma
             const usedMultiplierValue = tempUserState.activeMultiplier;
             const newCombinedValue = usedMultiplierValue + foundMultiplier.value;
             tempUserState.tempCombinedMultiplier = newCombinedValue;
@@ -8176,14 +8171,12 @@ async function openBox(index) {
             logActivity('multiplierCombined', currentUser, { boxId: box.id, foundValue: foundMultiplier.value, combinedValue: newCombinedValue });
 
         } else {
-            // Hiç çarpan kullanmıyorken yeni çarpan bulma (applyRewardToUser halledecek)
-            const result = await applyRewardToUser(tempUserState, { ...foundMultiplier, source: 'Kutu' });
-            tempUserState = result.updatedUserData; // applyRewardToUser'ın userData'yı döndürmesi gerekiyor (Bu kısmı basitleştiriyoruz)
-            message = result.message; // applyRewardToUser'dan gelen mesaj
+            const result = applyRewardToUser(tempUserState, { ...foundMultiplier, source: `${box.id} Nolu Kutu'dan` });
+            message = result.message;
+            logActivity('multiplierFound', currentUser, { boxId: box.id, value: foundMultiplier.value });
         }
 
     } else {
-        // Çarpan KULLANILDIĞINDA çalışacak mantık
         if (useCombinedMultiplier) {
             tempUserState.tempCombinedMultiplier = null;
         } else if (useMultiplier) {
@@ -8200,7 +8193,6 @@ async function openBox(index) {
         }
         
         if (box.content === 'surpriz') {
-            // Sürpriz kutu mantığı aynı kalıyor
             tempUserState.surpriseBoxesOpened = (tempUserState.surpriseBoxesOpened || 0) + 1;
             const openedInTurnSnap = await db.ref(`gameStats/boxesOpenedByUsers/${currentUser}`).once('value');
             const openedBoxesThisRound = openedInTurnSnap.val() || 1;
@@ -8259,7 +8251,6 @@ async function openBox(index) {
             logActivity('newItemFound', currentUser, { itemName: `+${itemsGained} ${itemName}`, itemType: box.content, boxId: box.id, multiplier: finalMultiplier });
         }
     }
-    // ★★★ YENİ MANTIK SONU ★★★
 
     for (const key in tempUserState) {
         if (JSON.stringify(tempUserState[key]) !== JSON.stringify(user[key])) {
@@ -19359,11 +19350,12 @@ function closeCraftingDetailModal() {
     document.getElementById('craftingDetailModal').style.display = 'none';
 }
 
-// MEVCUT applyRewardToUser FONKSİYONUNU SİLİP BUNU YAPIŞTIRIN
 function applyRewardToUser(userData, reward) {
     const cardPacksToOpen = [];
+    let message = ''; // Mesajı döndürmek için değişken
     const value = reward.value || reward.amount || 0;
     const uses = reward.uses || 0;
+    const source = reward.source || "Bir yerden"; // Kaynak bilgisini al
 
     const statKeyMap = { 
         'health_potion': 'hp', 'damage_potion': 'damage', 'defense_potion': 'defense', 
@@ -19381,10 +19373,9 @@ function applyRewardToUser(userData, reward) {
             userData.globalPotionBuffs[statKey] = (userData.globalPotionBuffs[statKey] || 0) + capCheck.amount;
         } else {
             userData.kutuHakki = (userData.kutuHakki || 0) + 1;
-            return { cardPacksToOpen, convertedToBoxRight: true, originalReward: reward };
+            return { cardPacksToOpen, convertedToBoxRight: true, originalReward: reward, message: '' };
         }
     } 
-    // ★★★ DEĞİŞİKLİK BURADA: Yeni çarpan ve iksir mantığı eklendi ★★★
     else if (reward.type === 'tempMultiplier') {
         const hasActiveMultiplier = (userData.multiplierSource === 'store' && (userData.multiplierRemainingUses || 0) > 0);
         
@@ -19392,24 +19383,29 @@ function applyRewardToUser(userData, reward) {
             const existingValue = userData.activeMultiplier;
             const existingUses = userData.multiplierRemainingUses;
             
-            if (reward.value > existingValue) { // Yeni > Eski
+            if (reward.value > existingValue) {
                 const boxRightsToRefund = existingUses;
                 userData.kutuHakki = (userData.kutuHakki || 0) + boxRightsToRefund;
                 userData.activeMultiplier = reward.value;
                 userData.multiplierRemainingUses = reward.uses;
-                logActivity('multiplierUpgraded', currentUser, { source: reward.source || "Bir yerden", oldValue: existingValue, oldUses: existingUses, newValue: reward.value, newUses: reward.uses, boxRights: boxRightsToRefund });
-            } else if (reward.value < existingValue) { // Yeni < Eski
+                userData.multiplierSource = 'store';
+                logActivity('multiplierUpgraded', currentUser, { source: source, oldValue: existingValue, oldUses: existingUses, newValue: reward.value, newUses: reward.uses, boxRights: boxRightsToRefund });
+                message = `Mevcut çarpanın, ${source} gelen daha güçlü ${reward.value}x ile değiştirildi. Eski hakların için +${boxRightsToRefund} Kutu Hakkı iade edildi.`;
+            } else if (reward.value < existingValue) {
                 const boxRightsFromNew = reward.uses * reward.value;
                 userData.kutuHakki = (userData.kutuHakki || 0) + boxRightsFromNew;
-                logActivity('dailyRewardMultiplierConverted', currentUser, { keptMultiplierValue: existingValue, boxRights: boxRightsFromNew, rewardValue: reward.value, source: reward.source || "Bir yerden" });
-            } else { // Yeni == Eski
+                logActivity('dailyRewardMultiplierConverted', currentUser, { keptMultiplierValue: existingValue, boxRights: boxRightsFromNew, rewardValue: reward.value, source: source });
+                message = `Mevcut çarpanın daha güçlü olduğu için korundu. ${source} gelen ödül +${boxRightsFromNew} Kutu Hakkı'na dönüştürüldü.`;
+            } else {
                 userData.multiplierRemainingUses += reward.uses;
-                 logActivity('dailyRewardMultiplierStacked', currentUser, { source: reward.source || "Bir yerden", usesAdded: reward.uses, newTotalUses: userData.multiplierRemainingUses, multiplierValue: reward.value });
+                logActivity('dailyRewardMultiplierStacked', currentUser, { source: source, usesAdded: reward.uses, newTotalUses: userData.multiplierRemainingUses, multiplierValue: reward.value });
+                message = `Mevcut ${reward.value}x çarpanına +${reward.uses} kullanım hakkı eklendi.`;
             }
-        } else { // Hiç çarpan yoksa
+        } else {
             userData.activeMultiplier = reward.value;
             userData.multiplierRemainingUses = reward.uses;
             userData.multiplierSource = 'store';
+            message = `${reward.value}x (${reward.uses} kullanım) Çarpan envanterine eklendi!`;
         }
     }
     else if (reward.type === 'health_regen_potion') {
@@ -19420,7 +19416,6 @@ function applyRewardToUser(userData, reward) {
         const currentCount = userData.inventory.health_regen_potion[percentage] || 0;
         userData.inventory.health_regen_potion[percentage] = currentCount + amount;
     }
-    // ★★★ DEĞİŞİKLİK SONU ★★★
     else {
         switch (reward.type) {
             case 'points':
@@ -19457,7 +19452,7 @@ function applyRewardToUser(userData, reward) {
                 break;
         }
     }
-    return { cardPacksToOpen, convertedToBoxRight: false };
+    return { cardPacksToOpen, convertedToBoxRight: false, message: message };
 }
 
 // MEVCUT loadCraftingRecipes FONKSİYONUNU SİLİP, BUNU YAPIŞTIRIN
@@ -23008,6 +23003,8 @@ function buildWordGameEventCard(wordGameData) {
     `;
 }
 
+// MEVCUT buildCardCollectionEventCard FONKSİYONUNU SİLİP, BUNUNLA DEĞİŞTİRİN
+
 /**
  * Kart Koleksiyonu etkinlik kartını oluşturur. (GÜNCELLENDİ)
  */
@@ -23034,21 +23031,30 @@ function buildCardCollectionEventCard(status, prizeData, finishersData) {
     let firstPrizeHtml = '';
     
     if (prizeData) {
+        // --- 1. DEĞİŞİKLİK: HERKESİN KAZANACAĞI ÖDÜLLER BURADA TOPLANIYOR ---
         let prizeParts = [];
         if (prizeData.points > 0) prizeParts.push(`${formatNumber(prizeData.points)} Puan`);
         if (prizeData.boxRights > 0) prizeParts.push(`${prizeData.boxRights} Kutu Hakkı`);
         if (prizeData.wheelTickets > 0) prizeParts.push(`${prizeData.wheelTickets} Çark Bileti`);
         if (prizeData.iflasShields > 0) prizeParts.push(`${prizeData.iflasShields} İflas Kalkanı`);
+        // Avatar ödülü artık genel ödüle eklendi
+        if (prizeData.avatarName) prizeParts.push(`'${prizeData.avatarName}' Avatarı`);
+        
         if (prizeParts.length > 0) {
             prizeHtml = `<p class="text-sm"><b class="text-green-400">${prizeParts.join(' | ')}</b></p>`;
         }
 
+        // --- 2. DEĞİŞİKLİK: SADECE İLK TAMAMLAYANIN KAZANACAĞI ÖDÜLLER BURADA ---
         let firstPrizeParts = [];
-        firstPrizeParts.push('🏆 Profilinde kalıcı şampiyonluk başarımı');
-        if (prizeData.description) firstPrizeParts.push(prizeData.description);
-        if (prizeData.avatarName) firstPrizeParts.push(`'${prizeData.avatarName}' avatarı`);
+        // Tekrarlanan metin kaldırıldı ve sadece admin panelindeki açıklama alanı kullanılıyor
+        if (prizeData.description) {
+            // Senin istediğin metni göstermek için bu alanın Admin Panelinden doldurulması gerekiyor.
+            firstPrizeParts.push(prizeData.description);
+        }
         
-        firstPrizeHtml = `<ul class="list-disc list-inside text-sm text-amber-300 pl-1">${firstPrizeParts.map(p => `<li>${p}</li>`).join('')}</ul>`;
+        if(firstPrizeParts.length > 0) {
+            firstPrizeHtml = `<ul class="list-disc list-inside text-sm text-amber-300 pl-1">${firstPrizeParts.map(p => `<li>${p}</li>`).join('')}</ul>`;
+        }
     }
 
     let leaderText = 'İlk tamamlayan bekleniyor.';
