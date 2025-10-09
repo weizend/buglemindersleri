@@ -5784,8 +5784,6 @@ function loadAllCraftingRecipes() {
     // Dinleyiciyi kaydetmeye gerek yok çünkü bu sadece bir kere çağrılacak.
 }
 
-// MEVCUT craftItem FONKSİYONUNU SİLİP BUNU YAPIŞTIRIN
-
 async function craftItem(recipeId) {
     if (isAdmin || isCraftingInProgress) return;
 
@@ -5799,8 +5797,23 @@ async function craftItem(recipeId) {
     try {
         const recipe = craftingRecipesCache.find(r => r.id === recipeId);
         if (!recipe) throw new Error("Üretim tarifi bulunamadı.");
+        
+        // ★★★ YENİ EKLENEN ÇARPAN KONTROLÜ BAŞLANGICI ★★★
+        const userRef = db.ref(`users/${currentUser}`);
+        const userSnap = await userRef.once('value');
+        const userData = userSnap.val();
 
-        // ... (Malzeme seçimi ve kontrolleri - bu kısım değişmiyor) ...
+        // Eğer üretilecek ürün bir çarpansa VE kullanıcının zaten bir çarpanı varsa
+        if (recipe.output.type === 'tempMultiplier' && userData && (userData.multiplierSource !== 'none' && userData.multiplierRemainingUses > 0)) {
+            const confirmed = await customConfirm(
+                `Mevcut <b>${userData.activeMultiplier}x (${userData.multiplierRemainingUses} kullanım)</b> çarpanın var. Bu üretimi yaparsan, mevcut çarpanının kalan hakları <b>+${userData.multiplierRemainingUses} Kutu Hakkı</b>'na dönüştürülecek ve yeni <b>${recipe.output.value}x (${recipe.output.uses} kullanım)</b> çarpanın envanterine eklenecek. Onaylıyor musun?`
+            );
+            if (!confirmed) {
+                throw new Error("Kullanıcı işlemi iptal etti.");
+            }
+        }
+        // ★★★ YENİ EKLENEN ÇARPAN KONTROLÜ SONU ★★★
+
         const selectedCardIdsByMaterial = {};
         let selectionError = null;
         recipe.materials.forEach((material, index) => {
@@ -5822,19 +5835,14 @@ async function craftItem(recipeId) {
             }
         });
         if (selectionError) throw new Error(selectionError);
-        // ... (Kontrollerin sonu) ...
 
-        const userRef = db.ref(`users/${currentUser}`);
         let cardPacksToOpen = [];
-        
-        // ★★★ DEĞİŞİKLİK BURADA BAŞLIYOR ★★★
         const isSpecialItem = recipe.output.type === 'special';
         let specialPurchaseId = null;
 
         const { committed, snapshot } = await userRef.transaction(currentData => {
             if (!currentData) return;
             
-            // Malzemeleri düşme kısmı (değişmedi)
             for (const [index, material] of recipe.materials.entries()) {
                  const dbKeyMap = { points: 'balance', kasaPuani: 'kasaPuani', boxRights: 'kutuHakki', wheelTicket: 'carkBileti', clickCatchTicket: 'clickCatchTickets', iflasShield: 'iflasShieldUses', wildcard: 'wildcards', revival_stone: 'inventory/revival_stone' };
                  const path = dbKeyMap[material.type];
@@ -5875,33 +5883,20 @@ async function craftItem(recipeId) {
                  } else { return; }
             }
 
-            // Eğer üretilen ürün 'special' ise, onu envantere eklemek yerine onay listesine ekle
             if (isSpecialItem) {
-                specialPurchaseId = db.ref().push().key; // Benzersiz bir ID oluştur
-
-                // Admin Onay Paneli'ne gönderilecek veri
+                specialPurchaseId = db.ref().push().key;
                 if (!currentData.pendingSpecialPurchases) currentData.pendingSpecialPurchases = {};
                 currentData.pendingSpecialPurchases[specialPurchaseId] = {
-                    username: currentUser,
-                    itemName: recipe.output.specialName,
-                    itemCost: "Üretildi", // Maliyet olarak "Üretildi" yaz
-                    source: "crafting",
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                    username: currentUser, itemName: recipe.output.specialName, itemCost: "Üretildi",
+                    source: "crafting", timestamp: firebase.database.ServerValue.TIMESTAMP
                 };
-                
-                // Kullanıcının Satın Alma Geçmişi'ne gönderilecek veri
                 if (!currentData.purchaseHistory) currentData.purchaseHistory = {};
                 currentData.purchaseHistory[specialPurchaseId] = {
-                    username: currentUser,
-                    itemName: recipe.output.specialName,
-                    itemCost: "Üretildi",
+                    username: currentUser, itemName: recipe.output.specialName, itemCost: "Üretildi",
                     imageUrl: recipe.output.imageUrl || 'https://i.hizliresim.com/sv85j2u.png',
-                    status: 'pending', // Durumu 'beklemede' olarak ayarla
-                    purchaseType: 'special',
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                    status: 'pending', purchaseType: 'special', timestamp: firebase.database.ServerValue.TIMESTAMP
                 };
             } else {
-                // Eğer normal bir ürünse, eski envantere ekleme fonksiyonunu çağır
                 const result = applyRewardToUser(currentData, recipe.output);
                 cardPacksToOpen = result.cardPacksToOpen;
             }
@@ -5913,24 +5908,18 @@ async function craftItem(recipeId) {
             const finalUserData = snapshot.val();
             
             if (isSpecialItem) {
-                // Özel ürün üretildiyse kullanıcıyı bilgilendir
                 displayMessage(`Tebrikler! <b>${recipe.output.specialName}</b> adlı özel ürünü ürettin. Ödülün, admin onayından sonra sana teslim edilecek.`);
-                // Bildirim gönder
                 notifyUser(currentUser, `'${recipe.output.specialName}' adlı özel ürün üretimin admin onayı için sıraya alındı.`);
-                
             } else {
-                // Normal ürün üretildiyse eski başarı mesajını göster
                 const outputName = recipe.output.name;
                 displayMessage(`Tebrikler! Başarıyla <b>${outputName}</b> ürettin.`);
             }
             
-            // Her durumda aktiviteyi logla
             logActivity('craftItem', currentUser, { 
                 itemName: isSpecialItem ? recipe.output.specialName : recipe.output.name,
                 newBalance: finalUserData.balance
             });
             
-            // Kart paketi varsa açma işlemini başlat
             for (const pack of cardPacksToOpen) {
                 await startCardPackOpening(pack.value || 1, 'Üretim Atölyesi', 1, pack.type);
             }
@@ -5940,7 +5929,6 @@ async function craftItem(recipeId) {
         } else {
             throw new Error("Üretim başarısız! Malzemelerin yetersiz veya başka bir işlem yapılıyor olabilir.");
         }
-        // ★★★ DEĞİŞİKLİK BURADA BİTİYOR ★★★
 
     } catch (error) {
         if (error.message !== "Kullanıcı işlemi iptal etti.") {
@@ -5950,7 +5938,7 @@ async function craftItem(recipeId) {
         isCraftingInProgress = false;
         if (craftButton) {
             craftButton.disabled = false;
-            openCraftingDetailModal(recipeId); // Detay penceresini yenilemek için tekrar aç
+            openCraftingDetailModal(recipeId);
         }
     }
 }
@@ -13502,7 +13490,6 @@ async function loadSoloGameSettings() {
     handleSoloSpecialTypeChange();
 }
 
-// MEVCUT startSoloClickCatchGame FONKSİYONUNU SİL VE BUNU YAPIŞTIR
 async function startSoloClickCatchGame() {
     const settingsSnap = await db.ref('gameConfig/weeklyClickCatchReset').once('value');
     if (!settingsSnap.exists() && !isAdmin) {
@@ -13534,6 +13521,27 @@ async function startSoloClickCatchGame() {
     }
 
     ticketsUsedThisRound = ticketCount;
+
+    // ★★★ YENİ ÇARPAN UYARI MANTIĞI BAŞLANGICI ★★★
+    const hasActiveMultiplier = userData.multiplierSource !== 'none' && (userData.multiplierRemainingUses || 0) > 0;
+    if (soloGameSettings.specialItemType === 'tempMultiplier' && hasActiveMultiplier) {
+        const foundMultiplierValue = soloGameSettings.specialValue;
+        const foundMultiplierUses = soloGameSettings.specialMultiplierUses;
+        const existingMultiplierValue = userData.activeMultiplier;
+
+        let warningMessage = '';
+        if (foundMultiplierValue === existingMultiplierValue) {
+            warningMessage = `Bu oyunda yakalanacak özel ödül <b>${foundMultiplierValue}x Çarpan</b>. Mevcut çarpanınla aynı olduğu için yakalarsan <b>+${foundMultiplierUses} kullanım hakkı</b> kazanırsın.`;
+        } else {
+            warningMessage = `Bu oyunda yakalanacak özel ödül <b>${foundMultiplierValue}x Çarpan</b>. Mevcut <b>${existingMultiplierValue}x</b> çarpanından farklı olduğu için yakalarsan, mevcut çarpanın kullanım hakları kutu hakkına dönüşecektir.`;
+        }
+        
+        const continueWithWarning = await customConfirm(warningMessage + "<br><br>Oyuna devam etmek istiyor musun?");
+        if (!continueWithWarning) {
+            return; // Kullanıcı iptal ederse oyunu başlatma
+        }
+    }
+    // ★★★ YENİ ÇARPAN UYARI MANTIĞI SONU ★★★
 
     const confirmed = await customConfirm(
         `Mevcut <b>${ticketsUsedThisRound}</b> biletinin tamamı bu oyun için kullanılacak. Onaylıyor musun?<br><br>
@@ -13576,7 +13584,6 @@ async function startSoloClickCatchGame() {
     clickCatchScore = 0;
     clickCatchTimer = soloGameSettings.duration;
     
-    // ★★★ DEĞİŞİKLİK BURADA: Tüm sayaçları sıfırla ★★★
     soloGameItemCounts = {};
     collectedBoxRights = 0;
     collectedIflasShields = 0;
@@ -22137,10 +22144,8 @@ async function submitLetter() {
 
     const cellRef = db.ref(`wordGame/questions/${qIndex}/letters/${lIndex}`);
     const userRef = db.ref(`users/${currentUser}`);
-    
-    // Bekleme süresi panelini ve içeriğini en baştan alalım
     const cooldownInfoEl = document.getElementById('wordGameCooldownInfo');
-    const cooldownTextEl = cooldownInfoEl.childNodes[0]; // "Yanlış harf girdin..." metni
+    const cooldownTextEl = cooldownInfoEl.childNodes[0];
 
     try {
         const { committed, snapshot } = await cellRef.transaction(letterData => {
@@ -22158,42 +22163,83 @@ async function submitLetter() {
         if (committed) {
             const finalLetterData = snapshot.val();
             if (finalLetterData.solved && finalLetterData.solver === currentUser) {
-                // --- DOĞRU CEVAP VERİLDİ ---
-                
-                // 1. Panelin rengini ve yazısını DEĞİŞTİR
+                // DOĞRU CEVAP
                 cooldownTextEl.textContent = 'Tekrar harf yazmak için beklemen gereken süre: ';
                 cooldownInfoEl.className = 'text-center bg-blue-900/50 border border-blue-500 text-blue-300 p-3 rounded-lg mb-4';
 
                 const reward = finalLetterData.reward;
-                const rewardText = formatRewardText(reward.type, reward.amount || reward.value, reward.uses);
-                
                 const correctCooldownSeconds = (await db.ref('wordGame/settings/correctGuessCooldown').once('value')).val() || 60;
                 await userRef.update({
                     wordGameCooldown: getSyncedTime() + (correctCooldownSeconds * 1000)
                 });
                 const durationText = formatDurationFromSeconds(correctCooldownSeconds);
-                displayMessage(`Harf doğru! Kazandığın ödül: <b class="text-green-400">${rewardText}</b><br><small class="text-yellow-300">${durationText} bekleme süren başladı.</small>`);
                 
                 let cardPacksToOpen = [];
-                let newBalance; 
+                let newBalance;
 
-                await userRef.transaction(userData => {
-                    if (userData) {
-                        const result = applyRewardToUser(userData, reward);
-                        cardPacksToOpen.push(...result.cardPacksToOpen);
-                        newBalance = userData.balance; 
+                // ★★★ YENİ EKLENEN ÇARPAN MANTIĞI BAŞLANGICI ★★★
+                if (reward.type === 'tempMultiplier') {
+                    const userSnap = await userRef.once('value');
+                    const user = userSnap.val();
+                    const hasActiveMultiplier = (user.multiplierSource === 'store' && (user.multiplierRemainingUses || 0) > 0);
+
+                    if (hasActiveMultiplier) {
+                        if (reward.value === user.activeMultiplier) {
+                            // DEĞERLER AYNI: KULLANIM HAKKI EKLE
+                            await userRef.child('multiplierRemainingUses').transaction(uses => (uses || 0) + reward.uses);
+                            displayMessage(`Harf doğru! Mevcut ${reward.value}x çarpanına +${reward.uses} kullanım hakkı eklendi!`);
+                        } else {
+                            // DEĞERLER FARKLI: SEÇİM EKRANI GÖSTER
+                            const confirmedUpgrade = await customConfirm(
+                                `Harf doğru! <b>${reward.value}x (${reward.uses} kullanım)</b> çarpan kazandın. Mevcut <b>${user.activeMultiplier}x (${user.multiplierRemainingUses} kullanım)</b> çarpanını bununla değiştirmek istiyor musun? <br><br>
+                                 <small>Evet dersen, eski çarpanının hakları <b>+${user.multiplierRemainingUses} Kutu Hakkı</b>'na dönüşür.<br>
+                                 Hayır dersen, bu yeni ödül <b>+${reward.value} Kutu Hakkı</b>'na dönüşür.</small>`
+                            );
+
+                            if (confirmedUpgrade) {
+                                // Evet, değiştir
+                                await userRef.update({
+                                    kutuHakki: (user.kutuHakki || 0) + user.multiplierRemainingUses,
+                                    activeMultiplier: reward.value,
+                                    multiplierRemainingUses: reward.uses,
+                                    multiplierSource: 'store'
+                                });
+                                displayMessage("Çarpanın güncellendi ve eski hakların Kutu Hakkı'na dönüştürüldü!");
+                            } else {
+                                // Hayır, dönüştür
+                                await userRef.child('kutuHakki').transaction(hak => (hak || 0) + reward.value);
+                                displayMessage(`Mevcut çarpanını korudun. Yeni ödülün +${reward.value} Kutu Hakkı'na dönüştürüldü.`);
+                            }
+                        }
+                    } else {
+                        // HİÇ ÇARPAN YOK: DOĞRUDAN EKLE
+                        await userRef.update({
+                            activeMultiplier: reward.value,
+                            multiplierRemainingUses: reward.uses,
+                            multiplierSource: 'store'
+                        });
+                        displayMessage(`Harf doğru! <b>${reward.value}x (${reward.uses} kullanım)</b> çarpan kazandın!`);
                     }
-                    return userData;
-                });
-                
+                } else {
+                    // Diğer ödüller için normal akış
+                    await userRef.transaction(userData => {
+                        if (userData) {
+                            const result = applyRewardToUser(userData, reward);
+                            cardPacksToOpen.push(...result.cardPacksToOpen);
+                            newBalance = userData.balance; 
+                        }
+                        return userData;
+                    });
+                    const rewardText = formatRewardText(reward.type, reward.amount || reward.value, reward.uses);
+                    displayMessage(`Harf doğru! Kazandığın ödül: <b class="text-green-400">${rewardText}</b><br><small class="text-yellow-300">${durationText} bekleme süren başladı.</small>`);
+                }
+                // ★★★ YENİ EKLENEN ÇARPAN MANTIĞI SONU ★★★
+
                 const leaderboardRef = db.ref(`wordGame/leaderboard/${currentUser}`);
                 const userAvatar = (await userRef.child('selectedAvatar/url').once('value')).val() || defaultAvatarUrl;
-                await leaderboardRef.transaction(currentData => ({
-                    score: (currentData?.score || 0) + 1,
-                    avatarUrl: userAvatar
-                }));
+                await leaderboardRef.transaction(currentData => ({ score: (currentData?.score || 0) + 1, avatarUrl: userAvatar }));
 
-                const logDetails = { letter: letter, rewardText: rewardText };
+                const logDetails = { letter: letter, rewardText: formatRewardText(reward.type, reward.amount || reward.value, reward.uses) };
                 if (reward.type === 'points') logDetails.newBalance = newBalance; 
                 logActivity('wordGameGuess', currentUser, logDetails);
                 
@@ -22206,23 +22252,16 @@ async function submitLetter() {
                 }
 
             } else {
-                // --- YANLIŞ CEVAP VERİLDİ ---
-                
-                // 1. Panelin rengini ve yazısını ORİJİNAL HALİNE GETİR
+                // YANLIŞ CEVAP
                 cooldownTextEl.textContent = 'Yanlış harf girdin! Tekrar denemek için beklemen gereken süre: ';
                 cooldownInfoEl.className = 'text-center bg-red-900/50 border border-red-500 text-red-300 p-3 rounded-lg mb-4';
                 
                 const cooldownSeconds = (await db.ref('wordGame/settings/cooldown').once('value')).val() || 60;
-                await userRef.update({
-                    wordGameCooldown: getSyncedTime() + (cooldownSeconds * 1000)
-                });
+                await userRef.update({ wordGameCooldown: getSyncedTime() + (cooldownSeconds * 1000) });
                 const durationText = formatDurationFromSeconds(cooldownSeconds);
                 displayMessage(`Harf yanlış! ${durationText} sonra tekrar deneyebilirsin.`);
 
-                logActivity('wordGameWrongGuess', currentUser, {
-                    letter: letter,
-                    cooldown: cooldownSeconds
-                });
+                logActivity('wordGameWrongGuess', currentUser, { letter: letter, cooldown: cooldownSeconds });
             }
         } else {
             const competitorData = (await cellRef.once('value')).val();
