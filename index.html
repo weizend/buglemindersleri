@@ -23256,6 +23256,16 @@ function goToSectionAndScroll(sectionId, elementId) {
         }
     }, 200); // 200 milisaniye gecikme
 }
+
+    async function deleteStoreItem(itemId) {
+    if (!isAdmin) return;
+    const confirmed = await customConfirm("Bu ürünü mağazadan kalıcı olarak silmek istediğinizden emin misiniz?");
+    if (confirmed) {
+        await storeItemsRef.child(itemId).remove();
+        displayMessage("Ürün başarıyla silindi.");
+        loadStoreItems(); // Listeyi anında yenile
+    }
+}
    
 // YENİ EKLENECEK FONKSİYONLAR SONU
 </script>
