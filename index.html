@@ -23207,7 +23207,8 @@ function buildWordGameEventCard(wordGameData, championData) {
         return `
             <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-cyan-500">
                 <p class="font-bold text-cyan-400">Kelime Oyunu Etkinliği Bitti!</p>
-                <p class="text-sm">Kelime Avcısı Şampiyonu: <b class="text-white">${championData.username}</b> (${championData.score} Harf)  Ödül: <b class="text-green-400">${championData.prizeAwarded}</b></p>
+                <p class="text-sm">Son Kazanan: <b class="text-white">${championData.username}</b> (${championData.score} Harf)</p>
+                <p class="text-sm">Ödül: <b class="text-green-400">${championData.prizeAwarded}</b></p>
                 <p class="text-sm text-gray-400">Yeni bulmacanın başlamasını bekleyin.</p>
             </div>
         `;
