@@ -2101,29 +2101,67 @@ body.modal-open .modal-content {
     <label class="block text-sm font-medium text-gray-300 mb-1">Canavar Ölünce Lidere Verilecek Ödül:</label>
     <div class="grid grid-cols-2 gap-2">
         <select id="adminMonsterKillRewardType" class="box-setting-input">
-            <option value="points">💰 Puan</option>
-            <option value="boxRights">📦 Kutu Hakkı</option>
-            <option value="wheelTicket">🎫 Çark Bileti</option>
-            <option value="clickCatchTicket">🎟️ Tıkla-Yakala Bileti</option>
-            <option value="iflasShield">🛡️ İflas Kalkanı</option>
-            <option value="wildcard">🃏 Joker Kart</option>
-            <option value="card_pack">🎴 Standart Kart Paketi</option>
-            <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
-            <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
-            <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
-            <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
-            <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
-            <option value="revival_stone">💎 Dirilme Taşı</option>
-            <option value="health_potion">🧪 Can İksiri</option>
-            <option value="damage_potion">⚔️ Hasar İksiri</option>
-            <option value="defense_potion">🛡️ Savunma İksiri</option>
-            <option value="crit_potion">💥 Kritik Vuruş İksiri</option>
-            <option value="crit_damage_potion">🎯 Kritik Hasar İksiri</option>
-            <option value="dodge_potion">💨 Sıyrılma Şansı İksiri</option>
-            <option value="pierce_potion">📌 Delici Şansı İksiri</option>
-        </select>
+    <option value="points">💰 Puan</option>
+    <option value="kasaPuani">🏦 Kasa Puanı</option>
+    <option value="boxRights">📦 Kutu Hakkı</option>
+    <option value="wheelTicket">🎫 Çark Bileti</option>
+    <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
+    <option value="iflasShield">🛡️ İflas Kalkanı</option>
+    <option value="wildcard">🃏 Joker Kart</option>
+    <option value="revival_stone">💎 Dirilme Taşı</option>
+    <option value="avatar">👤 Avatar</option>
+    <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+    <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+    <option value="health_potion">🧪 Can Bonusu</option>
+    <option value="damage_potion">⚔️ Hasar Bonusu</option>
+    <option value="defense_potion">🛡️ Savunma Bonusu</option>
+    <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+    <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+    <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+    <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+    <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
+    <option value="card_pack">🎴 Standart Kart Paketi</option>
+    <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
+    <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
+    <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
+    <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
+</select>
         <input type="number" id="adminMonsterKillReward" class="box-setting-input" placeholder="Miktar">
     </div>
+    <hr class="border-gray-600">
+<h5 class="text-yellow-300 font-bold">Son Vuruş Ödülü</h5>
+<label class="block text-sm font-medium text-gray-300 mb-1">Canavara son vuruşu yapana verilecek ödül:</label>
+<div class="grid grid-cols-2 gap-2">
+    <select id="adminMonsterLastHitRewardType" class="box-setting-input">
+    <option value="points">💰 Puan</option>
+    <option value="kasaPuani">🏦 Kasa Puanı</option>
+    <option value="boxRights">📦 Kutu Hakkı</option>
+    <option value="wheelTicket">🎫 Çark Bileti</option>
+    <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
+    <option value="iflasShield">🛡️ İflas Kalkanı</option>
+    <option value="wildcard">🃏 Joker Kart</option>
+    <option value="revival_stone">💎 Dirilme Taşı</option>
+    <option value="avatar">👤 Avatar</option>
+    <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+    <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+    <option value="health_potion">🧪 Can Bonusu</option>
+    <option value="damage_potion">⚔️ Hasar Bonusu</option>
+    <option value="defense_potion">🛡️ Savunma Bonusu</option>
+    <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+    <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+    <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+    <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+    <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
+    <option value="card_pack">🎴 Standart Kart Paketi</option>
+    <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
+    <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
+    <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
+    <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
+</select>
+    <input type="number" id="adminMonsterLastHitReward" class="box-setting-input" placeholder="Miktar">
+</div>
     <button onclick="saveAndSpawnMonster()" class="w-full py-2 bg-green-700 hover:bg-green-600 rounded-lg font-bold">Kaydet ve Canavarı Çağır</button>
     <hr class="border-gray-600 mt-4">
     <h5 class="text-yellow-300 font-bold mt-2">Hasar Başına Rastgele Ödüller</h5>
@@ -2628,28 +2666,30 @@ body.modal-open .modal-content {
             <select id="newItemType" class="w-full p-2 mb-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-yellow-500" onchange="handleStoreItemTypeChange()">
     <option value="">Ürün Tipi Seçin</option>
     <option value="points">💰 Puan</option>
+    <option value="kasaPuani">🏦 Kasa Puanı</option>
     <option value="boxRights">📦 Kutu Hakkı</option>
     <option value="wheelTicket">🎫 Çark Bileti</option>
-    <option value="clickCatchTicket">🎟️ Tıkla-Yakala Bileti</option>
-    <option value="tempMultiplier">✖️ Çarpan (Adetli)</option>
+    <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
     <option value="iflasShield">🛡️ İflas Kalkanı</option>
     <option value="wildcard">🃏 Joker Kart</option>
+    <option value="revival_stone">💎 Dirilme Taşı</option>
+    <option value="avatar">👤 Avatar</option>
+    <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+    <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+    <option value="health_potion">🧪 Can Bonusu</option>
+    <option value="damage_potion">⚔️ Hasar Bonusu</option>
+    <option value="defense_potion">🛡️ Savunma Bonusu</option>
+    <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+    <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+    <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+    <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+    <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
     <option value="card_pack">🎴 Standart Kart Paketi</option>
     <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
     <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
     <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
     <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
-    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
-    <option value="revival_stone">💎 Dirilme Taşı</option>
-    <option value="health_potion">🧪 Can İksiri</option>
-    <option value="damage_potion">⚔️ Hasar İksiri</option>
-    <option value="defense_potion">🛡️ Savunma İksiri</option>
-    <option value="crit_potion">💥 Kritik Vuruş İksiri</option>
-    <option value="crit_damage_potion">🎯 Kritik Hasar İksiri</option>
-    <option value="dodge_potion">💨 Sıyrılma Şansı İksiri</option>
-    <option value="pierce_potion">📌 Delici Şansı İksiri</option>
-    <option value="avatar">👤 Avatar</option>
-    <option value="special">🚀 Özel Ürün (Onay Gerektirir)</option>
 </select>
             <input type="text" id="newItemValue" placeholder="Değer (Kutu Hakkı Adedi / Çarpan Değeri / Kalkan Sayısı)" class="w-full p-2 mb-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500 transition duration-300">
             <div id="storeItemAvatarFields" class="hidden space-y-2 mb-2">
@@ -2779,24 +2819,27 @@ body.modal-open .modal-content {
     <option value="kasaPuani">🏦 Kasa Puanı</option>
     <option value="boxRights">📦 Kutu Hakkı</option>
     <option value="wheelTicket">🎫 Çark Bileti</option>
-    <option value="clickCatchTicket">🎟️ Tıkla-Yakala Bileti</option>
+    <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
     <option value="iflasShield">🛡️ İflas Kalkanı</option>
-    <option value="tempMultiplier">✖️ Çarpan (Adetli)</option>
     <option value="wildcard">🃏 Joker Kart</option>
+    <option value="revival_stone">💎 Dirilme Taşı</option>
+    <option value="avatar">👤 Avatar</option>
+    <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+    <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+    <option value="health_potion">🧪 Can Bonusu</option>
+    <option value="damage_potion">⚔️ Hasar Bonusu</option>
+    <option value="defense_potion">🛡️ Savunma Bonusu</option>
+    <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+    <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+    <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+    <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+    <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
     <option value="card_pack">🎴 Standart Kart Paketi</option>
     <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
     <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
     <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
     <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
-    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
-    <option value="revival_stone">💎 Dirilme Taşı</option>
-    <option value="health_potion">🧪 Can İksiri</option>
-    <option value="damage_potion">⚔️ Hasar İksiri</option>
-    <option value="defense_potion">🛡️ Savunma İksiri</option>
-    <option value="crit_potion">💥 Kritik Vuruş İksiri</option>
-    <option value="crit_damage_potion">🎯 Kritik Hasar İksiri</option>
-    <option value="dodge_potion">💨 Sıyrılma Şansı İksiri</option>
-    <option value="pierce_potion">📌 Delici Şansı İksiri</option>
 </select>
         </div>
         <div id="bulkSendItemFieldsContainer" class="space-y-3">
@@ -3070,25 +3113,27 @@ body.modal-open .modal-content {
     <option value="kasaPuani">🏦 Kasa Puanı</option>
     <option value="boxRights">📦 Kutu Hakkı</option>
     <option value="wheelTicket">🎫 Çark Bileti</option>
-    <option value="clickCatchTicket">🎟️ Tıkla-Yakala Bileti</option>
+    <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
     <option value="iflasShield">🛡️ İflas Kalkanı</option>
-    <option value="tempMultiplier">✖️ Çarpan (Adetli)</option>
     <option value="wildcard">🃏 Joker Kart</option>
+    <option value="revival_stone">💎 Dirilme Taşı</option>
+    <option value="avatar">👤 Avatar</option>
+    <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+    <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+    <option value="health_potion">🧪 Can Bonusu</option>
+    <option value="damage_potion">⚔️ Hasar Bonusu</option>
+    <option value="defense_potion">🛡️ Savunma Bonusu</option>
+    <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+    <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+    <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+    <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+    <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
     <option value="card_pack">🎴 Standart Kart Paketi</option>
     <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
     <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
     <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
     <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
-    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
-    <option value="revival_stone">💎 Dirilme Taşı</option>
-    <option value="health_potion">🧪 Can İksiri</option>
-    <option value="damage_potion">⚔️ Hasar İksiri</option>
-    <option value="defense_potion">🛡️ Savunma İksiri</option>
-    <option value="crit_potion">💥 Kritik Vuruş İksiri</option>
-    <option value="crit_damage_potion">🎯 Kritik Hasar İksiri</option>
-    <option value="dodge_potion">💨 Sıyrılma Şansı İksiri</option>
-    <option value="pierce_potion">📌 Delici Şansı İksiri</option>
-    <option value="avatar">👤 Avatar</option>
 </select>
       </div>
       
@@ -3536,25 +3581,32 @@ body.modal-open .modal-content {
                 <h5 class="font-semibold text-gray-300 mb-2">Çıkacak Özel Hedef</h5>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <select id="soloSpecialItemType" class="box-setting-input md:col-span-1" onchange="handleSoloSpecialTypeChange()">
-                        <option value="boxRight">📦 Kutu Hakkı</option>
-                        <option value="iflasShield">🛡️ İflas Kalkanı)</option>
-                        <option value="wheelTicket">🎫 Çark Bileti</option>
-                        <option value="tempMultiplier">✖️ Çarpan (Adetli)</option>
-                        <option value="wildcard">🃏 Joker Kart</option>
-                        <option value="card_pack">🎴 Standart Kart Paketi</option>
-                        <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
-                        <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
-                        <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
-                        <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
-                        <option value="revival_stone">💎 Dirilme Taşı</option>
-                        <option value="health_potion">🧪 Can İksiri</option>
-                        <option value="defense_potion">🛡️ Savunma İksiri</option>
-                        <option value="damage_potion">⚔️ Hasar İksiri</option>
-                        <option value="crit_potion">💥 Kritik Vuruş İksiri</option>
-                        <option value="crit_damage_potion">🎯 Kritik Hasar İksiri</option>
-                        <option value="dodge_potion">💨 Sıyrılma Şansı İksiri</option>
-                        <option value="pierce_potion">📌 Delici Şansı İksiri</option>
-                    </select>
+    <option value="points">💰 Puan</option>
+    <option value="kasaPuani">🏦 Kasa Puanı</option>
+    <option value="boxRights">📦 Kutu Hakkı</option>
+    <option value="wheelTicket">🎫 Çark Bileti</option>
+    <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
+    <option value="iflasShield">🛡️ İflas Kalkanı</option>
+    <option value="wildcard">🃏 Joker Kart</option>
+    <option value="revival_stone">💎 Dirilme Taşı</option>
+    <option value="avatar">👤 Avatar</option>
+    <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+    <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+    <option value="health_potion">🧪 Can Bonusu</option>
+    <option value="damage_potion">⚔️ Hasar Bonusu</option>
+    <option value="defense_potion">🛡️ Savunma Bonusu</option>
+    <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+    <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+    <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+    <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+    <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
+    <option value="card_pack">🎴 Standart Kart Paketi</option>
+    <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
+    <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
+    <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
+    <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
+</select>
                     <div id="soloSpecialValueContainer" class="md:col-span-2 grid grid-cols-2 gap-4">
                         <input type="number" id="soloSpecialValue" class="box-setting-input" placeholder="Adet (örn: 1, 5)">
                         <input type="number" id="soloSpecialMultiplierUses" class="box-setting-input hidden" placeholder="Kullanım Hakkı">
@@ -3577,29 +3629,32 @@ body.modal-open .modal-content {
                         <label class="block text-sm font-medium text-gray-300 mb-1">Şampiyon Ödülü:</label>
                         <div class="grid grid-cols-2 gap-4">
                             <select id="weeklyPrizeType" class="box-setting-input col-span-2 sm:col-span-1" onchange="handleWeeklyPrizeTypeChange()">
-                                <option value="points">💰 Puan</option>
-                                <option value="boxRights">📦 Kutu Hakkı</option>
-                                <option value="wheelTicket">🎫 Çark Bileti</option>
-                                <option value="clickCatchTicket">🎟️ Tıkla-Yakala Bileti</option>
-                                <option value="iflasShield">🛡️ İflas Kalkanı</option>
-                                <option value="tempMultiplier">✖️ Çarpan (Adetli)</option> value="avatar">👤 Avatar</option>
-                                <option value="wildcard">🃏 Joker Kart</option>
-                                <option value="card_pack">🎴 Standart Kart Paketi</option>
-                                <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
-                                <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
-                                <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
-                                <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
-                                <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
-                                <option value="revival_stone">💎 Dirilme Taşı</option>
-                                <option value="health_potion">🧪 Can İksiri</option>
-                                <option value="defense_potion">🛡️ Savunma İksiri</option>
-                                <option value="damage_potion">⚔️ Hasar İksiri</option>
-                                <option value="crit_potion">💥 Kritik Vuruş İksiri</option>
-                                <option value="crit_damage_potion">🎯 Kritik Hasar İksiri</option>
-                                <option value="dodge_potion">💨 Sıyrılma Şansı İksiri</option>
-                                <option value="pierce_potion">📌 Delici Şansı İksiri</option>
-                                <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
-                            </select>
+    <option value="points">💰 Puan</option>
+    <option value="kasaPuani">🏦 Kasa Puanı</option>
+    <option value="boxRights">📦 Kutu Hakkı</option>
+    <option value="wheelTicket">🎫 Çark Bileti</option>
+    <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
+    <option value="iflasShield">🛡️ İflas Kalkanı</option>
+    <option value="wildcard">🃏 Joker Kart</option>
+    <option value="revival_stone">💎 Dirilme Taşı</option>
+    <option value="avatar">👤 Avatar</option>
+    <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+    <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+    <option value="health_potion">🧪 Can Bonusu</option>
+    <option value="damage_potion">⚔️ Hasar Bonusu</option>
+    <option value="defense_potion">🛡️ Savunma Bonusu</option>
+    <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+    <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+    <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+    <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+    <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
+    <option value="card_pack">🎴 Standart Kart Paketi</option>
+    <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
+    <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
+    <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
+    <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
+</select>
                             <div id="weeklyPrizeValueContainer" class="grid grid-cols-2 gap-4 col-span-2 sm:col-span-1">
                                 <input type="number" id="weeklyPrizeAmount" class="box-setting-input" placeholder="Miktar">
                                 <input type="text" id="weeklyPrizeSpecialName" class="box-setting-input col-span-2 hidden" placeholder="Özel Ürün Adı (örn: Oyun Kodu)">
@@ -3756,27 +3811,30 @@ body.modal-open .modal-content {
               <select id="dailyRewardType" class="w-full p-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
     <option value="">Ödül Tipi Seçin</option>
     <option value="points">💰 Puan</option>
+    <option value="kasaPuani">🏦 Kasa Puanı</option>
     <option value="boxRights">📦 Kutu Hakkı</option>
     <option value="wheelTicket">🎫 Çark Bileti</option>
-    <option value="clickCatchTicket">🎟️ Tıkla-Yakala Bileti</option>
+    <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
     <option value="iflasShield">🛡️ İflas Kalkanı</option>
-    <option value="tempMultiplier">✖️ Çarpan (Adetli)</option>
-    <option value="avatar">👤 Avatar</option>
     <option value="wildcard">🃏 Joker Kart</option>
+    <option value="revival_stone">💎 Dirilme Taşı</option>
+    <option value="avatar">👤 Avatar</option>
+    <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+    <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+    <option value="health_potion">🧪 Can Bonusu</option>
+    <option value="damage_potion">⚔️ Hasar Bonusu</option>
+    <option value="defense_potion">🛡️ Savunma Bonusu</option>
+    <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+    <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+    <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+    <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+    <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
     <option value="card_pack">🎴 Standart Kart Paketi</option>
     <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
     <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
     <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
     <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
-    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
-    <option value="revival_stone">💎 Dirilme Taşı</option>
-    <option value="health_potion">🧪 Can İksiri</option>
-    <option value="damage_potion">⚔️ Hasar İksiri</option>
-    <option value="crit_damage_potion">🎯 Kritik Hasar İksiri</option>
-    <option value="defense_potion">🛡️ Savunma İksiri</option>
-    <option value="dodge_potion">💨 Sıyrılma Şansı İksiri</option>
-    <option value="pierce_potion">📌 Delici Şansı İksiri</option>
-    <option value="crit_potion">💥 Kritik Şansı İksiri</option>
 </select>
               
               <div id="dailyRewardAvatarFields" class="hidden space-y-2">
@@ -7896,6 +7954,8 @@ function showOpenedBoxInfo(box) {
     openedBoxInfoModal.style.display = 'flex';
 }
 
+// MEVCUT addBoxSettingRow FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+
 function addBoxSettingRow(item = {}) {
     const container = document.getElementById('boxSettingsRowsContainer');
     const row = document.createElement('div');
@@ -7905,30 +7965,35 @@ function addBoxSettingRow(item = {}) {
     const value = item.value === 0 ? 0 : (item.value || '');
     const count = item.count || '';
 
-    // DEĞİŞİKLİK: Select menüsüne "Dirilme Taşı" eklendi.
     row.innerHTML = `
         <select class="setting-type flex-grow bg-gray-700 p-2 rounded-md text-white border border-gray-600" onchange="handleRowTypeChange(this)">
-            <option value="points" ${type === 'points' ? 'selected' : ''}>💰 Puan</option>
-            <option value="iflas" ${type === 'iflas' ? 'selected' : ''}>💣 İflas (Bomba)</option>
-            <option value="surpriz" ${type === 'surpriz' ? 'selected' : ''}>🎉 Sürpriz Kutu</option>
-            <option value="multiplier" ${type === 'multiplier' ? 'selected' : ''}>✖️ Çarpan</option>
-            <option value="wheelTicket" ${type === 'wheelTicket' ? 'selected' : ''}>🎫 Çark Bileti</option>
-            <option value="clickCatchTicket" ${type === 'clickCatchTicket' ? 'selected' : ''}>🎟️ T-Y Bileti</option>
-            <option value="iflasShield" ${type === 'iflasShield' ? 'selected' : ''}>🛡️ İflas Kalkanı</option>
-            <option value="wildcard" ${type === 'wildcard' ? 'selected' : ''}>🃏 Joker Kart</option>
-            <option value="card_pack" ${type === 'card_pack' ? 'selected' : ''}>🎴 Standart Kart Paketi</option>
-            <option value="card_pack_normal" ${type === 'card_pack_normal' ? 'selected' : ''}>🥉 Bronz Kart Paketi</option>
-            <option value="card_pack_gumus" ${type === 'card_pack_gumus' ? 'selected' : ''}>🥈 Gümüş Kart Paketi</option>
-            <option value="card_pack_altin" ${type === 'card_pack_altin' ? 'selected' : ''}>🥇 Altın Kart Paketi</option>
-            <option value="card_pack_efsanevi" ${type === 'card_pack_efsanevi' ? 'selected' : ''}>🏆 Efsanevi Kart Paketi</option>
-            <option value="revival_stone" ${type === 'revival_stone' ? 'selected' : ''}>💎 Dirilme Taşı</option>
-            <option value="health_potion" ${type === 'health_potion' ? 'selected' : ''}>🧪 Can İksiri</option>
-            <option value="defense_potion" ${type === 'defense_potion' ? 'selected' : ''}>🛡️ Savunma İksiri</option>
-            <option value="damage_potion" ${type === 'damage_potion' ? 'selected' : ''}>⚔️ Hasar İksiri</option>
-            <option value="crit_potion" ${type === 'crit_potion' ? 'selected' : ''}>💥 Kritik Vuruş İksiri</option>
-            <option value="crit_damage_potion" ${type === 'crit_damage_potion' ? 'selected' : ''}>🎯 Kritik Hasar İksiri</option>
-            <option value="dodge_potion" ${type === 'dodge_potion' ? 'selected' : ''}>💨 Sıyrılma Şansı İksiri</option>
-            <option value="pierce_potion" ${type === 'pierce_potion' ? 'selected' : ''}>📌 Delici Şansı İksiri</option>
+            <option value="points">💰 Puan</option>
+            <option value="kasaPuani">🏦 Kasa Puanı</option>
+            <option value="boxRights">📦 Kutu Hakkı</option>
+            <option value="wheelTicket">🎫 Çark Bileti</option>
+            <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
+            <option value="iflasShield">🛡️ İflas Kalkanı</option>
+            <option value="wildcard">🃏 Joker Kart</option>
+            <option value="revival_stone">💎 Dirilme Taşı</option>
+            <option value="avatar">👤 Avatar</option>
+            <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+            <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+            <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+            <option value="health_potion">🧪 Can Bonusu</option>
+            <option value="damage_potion">⚔️ Hasar Bonusu</option>
+            <option value="defense_potion">🛡️ Savunma Bonusu</option>
+            <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+            <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+            <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+            <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+            <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
+            <option value="card_pack">🎴 Standart Kart Paketi</option>
+            <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
+            <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
+            <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
+            <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
+            <option value="iflas">💣 İflas (Bomba)</option>
+            <option value="surpriz">🎉 Sürpriz Kutu</option>
         </select>
         <input type="number" value="${value}" class="setting-value w-28 bg-gray-700 p-2 rounded-md text-white border border-gray-600" placeholder="Değer">
         <input type="number" value="${count}" class="setting-count w-28 bg-gray-700 p-2 rounded-md text-white border border-gray-600" placeholder="Adet" oninput="updateTotalBoxCount()">
@@ -14225,15 +14290,16 @@ function closeWheelSettingsModal() {
     wheelSettingsModal.style.display = 'none';
 }
 
-// MEVCUT addWheelSettingRow FONKSİYONUNU SİLİP BUNU YAPIŞTIRIN
+// MEVCUT addWheelSettingRow FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+
 function addWheelSettingRow(item = {}) {
     const container = document.getElementById('wheelSettingsRowsContainer');
     const row = document.createElement('div');
     row.className = 'wheel-setting-row grid grid-cols-1 sm:grid-cols-7 items-center gap-3 p-3 bg-gray-900 rounded-lg';
 
     const type = item.type || 'points';
-    const value = item.value !== undefined ? item.value : ''; // 0 değerini korumak için kontrol
-    const duration = item.duration || ''; // Kullanım hakkı için 'duration'
+    const value = item.value !== undefined ? item.value : '';
+    const duration = item.duration || '';
     const label = item.label || '';
     const imageUrl = item.imageUrl || '';
     const color = item.color || '#f44336';
@@ -14242,27 +14308,30 @@ function addWheelSettingRow(item = {}) {
     row.innerHTML = `
         <select class="setting-type col-span-1 bg-gray-700 p-2 rounded-md text-white border border-gray-600" onchange="handleWheelRowTypeChange(this)">
             <option value="points">💰 Puan</option>
+            <option value="kasaPuani">🏦 Kasa Puanı</option>
             <option value="boxRights">📦 Kutu Hakkı</option>
             <option value="wheelTicket">🎫 Çark Bileti</option>
             <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
             <option value="iflasShield">🛡️ İflas Kalkanı</option>
-            <option value="tempMultiplier">✖️ Çarpan (Adetli)</option>
-            <option value="avatar">👤 Avatar</option>
             <option value="wildcard">🃏 Joker Kart</option>
+            <option value="revival_stone">💎 Dirilme Taşı</option>
+            <option value="avatar">👤 Avatar</option>
+            <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+            <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+            <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+            <option value="health_potion">🧪 Can Bonusu</option>
+            <option value="damage_potion">⚔️ Hasar Bonusu</option>
+            <option value="defense_potion">🛡️ Savunma Bonusu</option>
+            <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+            <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+            <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+            <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+            <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
             <option value="card_pack">🎴 Standart Kart Paketi</option>
             <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
             <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
             <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
             <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
-            <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
-            <option value="revival_stone">💎 Dirilme Taşı</option>
-            <option value="health_potion">🧪 Can İksiri</option>
-            <option value="damage_potion">⚔️ Hasar İksiri</option>
-            <option value="defense_potion">🛡️ Savunma İksiri</option>
-            <option value="crit_potion">💥 Kritik Vuruş İksiri</option>
-            <option value="crit_damage_potion">🎯 Kritik Hasar İksiri</option>
-            <option value="dodge_potion">💨 Sıyrılma Şansı İksiri</option>
-            <option value="pierce_potion">📌 Delici Şansı İksiri</option>
             <option value="pas">☠️ Pas</option>
             <option value="surpriseBox">🎉 Sürpriz Kutu</option>
         </select>
@@ -14276,9 +14345,7 @@ function addWheelSettingRow(item = {}) {
             <button class="bg-red-700 hover:bg-red-600 text-white p-2 rounded-md" onclick="this.parentElement.parentElement.remove();">Sil</button>
         </div>
     `;
-    // Select menüsünün değerini mevcut veriye göre ayarla
     row.querySelector('.setting-type').value = type;
-    
     container.appendChild(row);
     handleWheelRowTypeChange(row.querySelector('.setting-type'));
 }
@@ -14826,6 +14893,8 @@ function handleReviveClick(stoneCount) {
     }
 }
 
+// MEVCUT renderMonsterBattleUI FONKSİYONUNU SİL VE BU GÜNCEL HALİNİ YAPIŞTIR
+
 async function renderMonsterBattleUI() {
     const battleArenaContainer = document.getElementById('battleArenaContainer');
     if (!battleArenaContainer) return;
@@ -14850,43 +14919,63 @@ async function renderMonsterBattleUI() {
         document.getElementById('monsterBattleAdminToggles')?.classList.toggle('hidden', !isAdmin);
     }
     
-    if (lastChampionData && monster && monster.currentHP > 0) {
+    // ★★★ DEĞİŞİKLİK BURADA: Önceki şampiyon panelini doğru verilerle doldur ★★★
+    if (lastChampionData && lastChampionData.winner && monster && monster.currentHP > 0) {
         lastChampionPanel.innerHTML = `
-            <h4 class="text-amber-300 text-lg font-bold mb-3">Önceki Canavarın Şampiyonu</h4>
+            <h4 class="text-amber-300 text-lg font-bold mb-3">Önceki Canavarın Şampiyonları</h4>
             <div class="flex items-center justify-center gap-4">
-                <img src="${lastChampionData.lockedAvatarUrl}" class="champion-avatar" onclick="openAvatarStatsModal('${lastChampionData.username}')">
+                <img src="${lastChampionData.winnerAvatarUrl}" class="champion-avatar" onclick="openAvatarStatsModal('${lastChampionData.winner}')">
                 <div>
-                    <p class="text-xl font-bold text-white cursor-pointer hover:underline" onclick="openPublicUserDetailModal('${lastChampionData.username}')">${lastChampionData.username}</p>
-                    <p class="text-gray-300">Toplam Hasar: <b class="text-yellow-400">${formatNumber(lastChampionData.totalDamage)}</b></p>
+                    <p class="text-xl font-bold text-white cursor-pointer hover:underline" onclick="openPublicUserDetailModal('${lastChampionData.winner}')">${lastChampionData.winner}</p>
+                    <p class="text-gray-300">Hasar Şampiyonu: <b class="text-yellow-400">${formatNumber(lastChampionData.winnerTotalDamage)}</b></p>
                 </div>
             </div>
+            ${lastChampionData.lastHitter ? `
+            <div class="flex items-center justify-center gap-4 mt-2">
+                <img src="${lastChampionData.lastHitterAvatarUrl}" class="champion-avatar" onclick="openAvatarStatsModal('${lastChampionData.lastHitter}')">
+                <div>
+                    <p class="text-xl font-bold text-white cursor-pointer hover:underline" onclick="openPublicUserDetailModal('${lastChampionData.lastHitter}')">${lastChampionData.lastHitter}</p>
+                    <p class="text-gray-300">Son Vuruş Uzmanı</p>
+                </div>
+            </div>
+            ` : ''}
         `;
         lastChampionPanel.classList.remove('hidden');
     } else {
         lastChampionPanel.classList.add('hidden');
     }
+    // ★★★ DEĞİŞİKLİK SONU ★★★
 
     if (!monster || monster.currentHP <= 0) {
         battleArena.style.display = 'none';
         defeatedScreen.classList.remove('hidden');
-        const sortedLeaderboard = Object.entries(leaderboard).sort((a, b) => b[1].totalDamage - a[1].totalDamage);
-        const winner = sortedLeaderboard.length > 0 ? sortedLeaderboard[0][0] : null;
-        const winnerData = winner ? leaderboard[winner] : null;
-        const prize = monsterBattleData.rewards?.onKillLeader;
+
+        const championData = (await db.ref('gameStats/lastMonsterChampion').once('value')).val();
         
         document.getElementById('monsterDefeatedTitle').textContent = `${monster?.name || 'Canavar'} Mağlup Edildi!`;
         
-        if (winner && prize && winnerData) {
-            const prizeName = typeToName[prize.type] || prize.type;
-            const winnerAvatarUrl = winnerData.lockedAvatarUrl || defaultAvatarUrl;
-            document.getElementById('monsterDefeatedMessage').innerHTML = `
-                <div class="flex flex-col items-center justify-center gap-4">
-                    <img src="${winnerAvatarUrl}" class="w-24 h-24 rounded-full border-4 border-yellow-400 object-cover cursor-pointer" onclick="openAvatarStatsModal('${winner}')">
-                    <p>En çok hasarı veren <b class="text-yellow-300 text-xl cursor-pointer hover:underline" onclick="openPublicUserDetailModal('${winner}')">${winner}</b> oldu ve <b class="text-green-400">${formatNumber(prize.value)} ${prizeName}</b> ödülünü kazandı!</p>
+        let messageHtml = '';
+
+        if (championData?.winner) {
+            messageHtml += `
+                <div class="flex flex-col items-center justify-center gap-4 mb-4">
+                    <img src="${championData.winnerAvatarUrl}" class="w-24 h-24 rounded-full border-4 border-yellow-400 object-cover cursor-pointer" onclick="openAvatarStatsModal('${championData.winner}')">
+                    <p>En çok hasarı veren <b class="text-yellow-300 text-xl cursor-pointer hover:underline" onclick="openPublicUserDetailModal('${championData.winner}')">${championData.winner}</b> oldu ve <b class="text-green-400">${championData.winnerPrizeText}</b> ödülünü kazandı!</p>
                 </div>
-                <br>
-                <span class="text-gray-400">Adminin yeni bir canavar çağırması bekleniyor...</span>
             `;
+        }
+        if (championData?.lastHitter) {
+            messageHtml += `
+                 <div class="flex flex-col items-center justify-center gap-4">
+                    <img src="${championData.lastHitterAvatarUrl}" class="w-24 h-24 rounded-full border-4 border-yellow-400 object-cover cursor-pointer" onclick="openAvatarStatsModal('${championData.lastHitter}')">
+                    <p>Son vuruşu yapan <b class="text-yellow-300 text-xl cursor-pointer hover:underline" onclick="openPublicUserDetailModal('${championData.lastHitter}')">${championData.lastHitter}</b> oldu ve <b class="text-green-400">${championData.lastHitterPrizeText}</b> ödülünü kazandı!</p>
+                </div>
+            `;
+        }
+
+        if (messageHtml) {
+            messageHtml += '<br><span class="text-gray-400">Adminin yeni bir canavar çağırması bekleniyor...</span>';
+            document.getElementById('monsterDefeatedMessage').innerHTML = messageHtml;
         } else {
             document.getElementById('monsterDefeatedMessage').textContent = 'Adminin yeni bir canavar çağırması bekleniyor.';
         }
@@ -18326,11 +18415,12 @@ function handleSoloSpecialTypeChange() {
 
 let loginStreakRewardsCache = []; // Admin ayarlarını önbellekte tutmak için
 
-// MEVCUT typeToName OBJESİNİ BUNUNLA DEĞİŞTİRİN
+// MEVCUT typeToName OBJESİNİ SİL VE BUNUNLA DEĞİŞTİR
+
 const typeToName = {
     points: 'Puan',
     kasaPuani: 'Kasa Puanı',
-    boxRights: 'Kutu Hakkı', // ★★★ SORUNU ÇÖZEN DEĞİŞİKLİK BURADA ★★★
+    boxRights: 'Kutu Hakkı',
     iflasShield: 'İflas Kalkanı',
     wheelTicket: 'Çark Bileti',
     clickCatchTicket: 'Tıkla-Yakala Bileti',
@@ -18354,7 +18444,9 @@ const typeToName = {
     card_gumus: 'Gümüş Kart',
     card_altin: 'Altın Kart',
     card_efsanevi: 'Efsanevi Kart',
-    health_regen_potion: 'Can Yenileme İksiri'
+    health_regen_potion: 'Can Yenileme İksiri',
+    avatar: 'Avatar',
+    special: 'Özel Ürün'
 };
       
 // Giriş Serisi penceresini kapatır (Zamanlayıcıları temizler)
@@ -18444,43 +18536,48 @@ function addLoginStreakDay(dayData = { rewards: [] }, dayNumber = null) {
     }
 }
 
-// Admin paneline belirli bir gün için yeni bir ödül satırı ekler (GÜNCELLENMİŞ)
+// MEVCUT addRewardToDay FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+
 function addRewardToDay(element, rewardData = {}) {
-    // element bir buton veya direkt container olabilir, o yüzden en yakın container'ı bulalım
     const rewardsListContainer = element.matches('.rewards-list') ? element : element.closest('.p-4').querySelector('.rewards-list');
     
     const rewardRow = document.createElement('div');
     rewardRow.className = 'reward-entry grid grid-cols-1 sm:grid-cols-3 gap-2 p-2 bg-gray-900/50 rounded-md';
     rewardRow.innerHTML = `
         <select class="box-setting-input reward-type" onchange="handleAdminRewardTypeChange(this)">
-            <option value="points" ${rewardData.type === 'points' ? 'selected' : ''}>💰 Puan</option>
-            <option value="boxRights" ${rewardData.type === 'boxRights' ? 'selected' : ''}>📦 Kutu Hakkı</option>
-            <option value="wheelTicket" ${rewardData.type === 'wheelTicket' ? 'selected' : ''}>🎫 Çark Bileti</option>
-            <option value="clickCatchTicket" ${rewardData.type === 'clickCatchTicket' ? 'selected' : ''}>🎟️ T-Y Bileti</option>
-            <option value="iflasShield" ${rewardData.type === 'iflasShield' ? 'selected' : ''}>🛡️ İflas Kalkanı</option>
-            <option value="tempMultiplier" ${rewardData.type === 'tempMultiplier' ? 'selected' : ''}>✖️ Çarpan</option>
-            <option value="avatar" ${rewardData.type === 'avatar' ? 'selected' : ''}>👤 Avatar</option>
-            <option value="wildcard" ${rewardData.type === 'wildcard' ? 'selected' : ''}>🃏 Joker Kart</option>
-            <option value="card_pack" ${rewardData.type === 'card_pack' ? 'selected' : ''}>🎴 Standart Kart Paketi</option>
-            <option value="card_pack_normal" ${rewardData.type === 'card_pack_normal' ? 'selected' : ''}>🥉 Bronz Kart Paketi</option>
-            <option value="card_pack_gumus" ${rewardData.type === 'card_pack_gumus' ? 'selected' : ''}>🥈 Gümüş Kart Paketi</option>
-            <option value="card_pack_altin" ${rewardData.type === 'card_pack_altin' ? 'selected' : ''}>🥇 Altın Kart Paketi</option>
-            <option value="card_pack_efsanevi" ${rewardData.type === 'card_pack_efsanevi' ? 'selected' : ''}>🏆 Efsanevi Kart Paketi</option>
-            <option value="revival_stone" ${rewardData.type === 'revival_stone' ? 'selected' : ''}>💎 Dirilme Taşı</option>
-            <option value="health_potion" ${rewardData.type === 'health_potion' ? 'selected' : ''}>🧪 Can İksiri</option>
-            <option value="damage_potion" ${rewardData.type === 'damage_potion' ? 'selected' : ''}>⚔️ Hasar İksiri</option>
-            <option value="defense_potion" ${rewardData.type === 'defense_potion' ? 'selected' : ''}>🛡️ Savunma İksiri</option>
-            <option value="crit_potion" ${rewardData.type === 'crit_potion' ? 'selected' : ''}>💥 Kritik Vuruş İksiri</option>
-            <option value="crit_damage_potion" ${rewardData.type === 'crit_damage_potion' ? 'selected' : ''}>🎯 Kritik Hasar İksiri</option>
-            <option value="dodge_potion" ${rewardData.type === 'dodge_potion' ? 'selected' : ''}>💨 Sıyrılma Şansı İksiri</option>
-            <option value="pierce_potion" ${rewardData.type === 'pierce_potion' ? 'selected' : ''}>📌 Delici Şansı İksiri</option>
+            <option value="points">💰 Puan</option>
+            <option value="kasaPuani">🏦 Kasa Puanı</option>
+            <option value="boxRights">📦 Kutu Hakkı</option>
+            <option value="wheelTicket">🎫 Çark Bileti</option>
+            <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
+            <option value="iflasShield">🛡️ İflas Kalkanı</option>
+            <option value="wildcard">🃏 Joker Kart</option>
+            <option value="revival_stone">💎 Dirilme Taşı</option>
+            <option value="avatar">👤 Avatar</option>
+            <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+            <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+            <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+            <option value="health_potion">🧪 Can Bonusu</option>
+            <option value="damage_potion">⚔️ Hasar Bonusu</option>
+            <option value="defense_potion">🛡️ Savunma Bonusu</option>
+            <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+            <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+            <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+            <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+            <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
+            <option value="card_pack">🎴 Standart Kart Paketi</option>
+            <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
+            <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
+            <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
+            <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
         </select>
         <div class="reward-fields-container grid grid-cols-2 gap-2 sm:col-span-2">
             </div>
     `;
     rewardsListContainer.appendChild(rewardRow);
     const selectElement = rewardRow.querySelector('.reward-type');
-    handleAdminRewardTypeChange(selectElement, rewardData); // Mevcut veriyi de gönder
+    selectElement.value = rewardData.type || 'points'; // Değeri ayarla
+    handleAdminRewardTypeChange(selectElement, rewardData);
 }
       
       
@@ -18956,50 +19053,51 @@ function addMaterialRowToRecipeCreatorFromButton(button) {
  * @param {object} data - Varsa, satırı doldurmak için kullanılacak veri.
  * @returns {string} Oluşturulan HTML satırı.
  */
+// MEVCUT getRewardItemHTML FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+
 function getRewardItemHTML(prefix, data = {}) {
-    // Tüm kartların listesini <option> olarak hazırla
     let cardOptions = allCardsCache.map(card => 
         `<option value="${card.id}" ${data.cardId === card.id ? 'selected' : ''}>${card.cardName}</option>`
     ).join('');
 
     const baseOptions = `
-        <option value="points" ${data.type === 'points' ? 'selected' : ''}>💰 Puan</option>
-        <option value="kasaPuani" ${data.type === 'kasaPuani' ? 'selected' : ''}>🏦 Kasa Puanı</option>
-        <option value="boxRights" ${data.type === 'boxRights' ? 'selected' : ''}>📦 Kutu Hakkı</option>
-        <option value="wheelTicket" ${data.type === 'wheelTicket' ? 'selected' : ''}>🎫 Çark Bileti</option>
-        <option value="clickCatchTicket" ${data.type === 'clickCatchTicket' ? 'selected' : ''}>🎟️ T-Y Bileti</option>
-        <option value="iflasShield" ${data.type === 'iflasShield' ? 'selected' : ''}>🛡️ İflas Kalkanı</option>
-        <option value="wildcard" ${data.type === 'wildcard' ? 'selected' : ''}>🃏 Joker Kart</option>
-        <option value="revival_stone" ${data.type === 'revival_stone' ? 'selected' : ''}>💎 Dirilme Taşı</option>
-        <option value="avatar" ${data.type === 'avatar' ? 'selected' : ''}>👤 Avatar</option>
-        <option value="card" ${data.type === 'card' ? 'selected' : ''}>🎴 Belirli Koleksiyon Kartı</option>
-        <option value="tempMultiplier" ${data.type === 'tempMultiplier' ? 'selected' : ''}>✖️ Belirli Bir Çarpan</option>
-        <option value="health_regen_potion" ${data.type === 'health_regen_potion' ? 'selected' : ''}>🧪 Can Yenileme İksiri</option>
-        <option value="health_potion" ${data.type === 'health_potion' ? 'selected' : ''}>🧪 Can Bonusu</option>
-        <option value="damage_potion" ${data.type === 'damage_potion' ? 'selected' : ''}>⚔️ Hasar Bonusu</option>
-        <option value="defense_potion" ${data.type === 'defense_potion' ? 'selected' : ''}>🛡️ Savunma Bonusu</option>
-        <option value="crit_potion" ${data.type === 'crit_potion' ? 'selected' : ''}>💥 Kritik Vuruş Bonusu</option>
-        <option value="crit_damage_potion" ${data.type === 'crit_damage_potion' ? 'selected' : ''}>🎯 Kritik Hasar Bonusu</option>
-        <option value="dodge_potion" ${data.type === 'dodge_potion' ? 'selected' : ''}>💨 Sıyrılma Bonusu</option>
-        <option value="pierce_potion" ${data.type === 'pierce_potion' ? 'selected' : ''}>📌 Delici Vuruş Bonusu</option>
+        <option value="points">💰 Puan</option>
+        <option value="kasaPuani">🏦 Kasa Puanı</option>
+        <option value="boxRights">📦 Kutu Hakkı</option>
+        <option value="wheelTicket">🎫 Çark Bileti</option>
+        <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
+        <option value="iflasShield">🛡️ İflas Kalkanı</option>
+        <option value="wildcard">🃏 Joker Kart</option>
+        <option value="revival_stone">💎 Dirilme Taşı</option>
+        <option value="avatar">👤 Avatar</option>
+        <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+        <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+        <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+        <option value="health_potion">🧪 Can Bonusu</option>
+        <option value="damage_potion">⚔️ Hasar Bonusu</option>
+        <option value="defense_potion">🛡️ Savunma Bonusu</option>
+        <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+        <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+        <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+        <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
     `;
 
     const outputOptions = `
         ${baseOptions}
-        <option value="special" ${data.type === 'special' ? 'selected' : ''}>🚀 Özel Ürün (Onay Gerekir)</option> {/* ★★★ YENİ EKLENEN SATIR ★★★ */}
-        <option value="card_pack" ${data.type === 'card_pack' ? 'selected' : ''}>🎴 Standart Kart Paketi</option>
-        <option value="card_pack_normal" ${data.type === 'card_pack_normal' ? 'selected' : ''}>🥉 Bronz Kart Paketi</option>
-        <option value="card_pack_gumus" ${data.type === 'card_pack_gumus' ? 'selected' : ''}>🥈 Gümüş Kart Paketi</option>
-        <option value="card_pack_altin" ${data.type === 'card_pack_altin' ? 'selected' : ''}>🥇 Altın Kart Paketi</option>
-        <option value="card_pack_efsanevi" ${data.type === 'card_pack_efsanevi' ? 'selected' : ''}>🏆 Efsanevi Kart Paketi</option>
+        <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
+        <option value="card_pack">🎴 Standart Kart Paketi</option>
+        <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
+        <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
+        <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
+        <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
     `;
     
     const materialOptions = `
         ${baseOptions}
-        <option value="card_normal" ${data.type === 'card_normal' ? 'selected' : ''}>🥉 Herhangi bir Bronz Kart</option>
-        <option value="card_gumus" ${data.type === 'card_gumus' ? 'selected' : ''}>🥈 Herhangi bir Gümüş Kart</option>
-        <option value="card_altin" ${data.type === 'card_altin' ? 'selected' : ''}>🥇 Herhangi bir Altın Kart</option>
-        <option value="card_efsanevi" ${data.type === 'card_efsanevi' ? 'selected' : ''}>🏆 Herhangi bir Efsanevi Kart</option>
+        <option value="card_normal">🥉 Herhangi bir Bronz Kart</option>
+        <option value="card_gumus">🥈 Herhangi bir Gümüş Kart</option>
+        <option value="card_altin">🥇 Herhangi bir Altın Kart</option>
+        <option value="card_efsanevi">🏆 Herhangi bir Efsanevi Kart</option>
     `;
     
     const deleteButton = prefix === 'material' ? 
@@ -20177,176 +20275,189 @@ const avatarHtml = `
     }
 }
       
-/**
-     * YENİ: Adminin mevcut canavarı düzenlemek için yönetim panelini açmasını sağlar ve GÜNCELLEME moduna geçirir.
-     */
-    async function editCurrentMonster() {
-        if (!isAdmin || !monsterBattleData.monsterDetails) return;
-        
-        const monster = monsterBattleData.monsterDetails;
-        const rewards = monsterBattleData.rewards || {};
-        const tiers = monsterBattleData.damageTiers || [];
+// MEVCUT editCurrentMonster FONKSİYONUNU SİL VE BUNU YAPIŞTIR
 
-        // Formu mevcut canavarın bilgileriyle doldur
-        document.getElementById('adminMonsterName').value = monster.name || '';
-        document.getElementById('adminMonsterImageUrl').value = monster.imageUrl || '';
-        document.getElementById('adminMonsterMaxHP').value = monster.maxHP || '';
-        document.getElementById('adminMonsterMinDamage').value = monster.minDamage || '';
-        document.getElementById('adminMonsterMaxDamage').value = monster.maxDamage || '';
-        document.getElementById('adminMonsterDefense').value = monster.defense || '';
-        document.getElementById('adminMonsterCritChance').value = monster.critChance || '';
-        document.getElementById('adminMonsterCritDamage').value = monster.critDamage || '';
-        document.getElementById('adminMonsterDodgeChance').value = monster.dodgeChance || '';
-        document.getElementById('adminMonsterPierceChance').value = monster.pierceChance || '';
+async function editCurrentMonster() {
+    if (!isAdmin || !monsterBattleData.monsterDetails) return;
+    
+    const monster = monsterBattleData.monsterDetails;
+    const rewards = monsterBattleData.rewards || {};
+    const tiers = monsterBattleData.damageTiers || [];
 
-        if (rewards.onKillLeader) {
-            document.getElementById('adminMonsterKillRewardType').value = rewards.onKillLeader.type || 'points';
-            document.getElementById('adminMonsterKillReward').value = rewards.onKillLeader.value || '';
-        }
+    // Formu mevcut canavarın bilgileriyle doldur
+    document.getElementById('adminMonsterName').value = monster.name || '';
+    document.getElementById('adminMonsterImageUrl').value = monster.imageUrl || '';
+    document.getElementById('adminMonsterMaxHP').value = monster.maxHP || '';
+    document.getElementById('adminMonsterMinDamage').value = monster.minDamage || '';
+    document.getElementById('adminMonsterMaxDamage').value = monster.maxDamage || '';
+    document.getElementById('adminMonsterDefense').value = monster.defense || '';
+    document.getElementById('adminMonsterCritChance').value = monster.critChance || '';
+    document.getElementById('adminMonsterCritDamage').value = monster.critDamage || '';
+    document.getElementById('adminMonsterDodgeChance').value = monster.dodgeChance || '';
+    document.getElementById('adminMonsterPierceChance').value = monster.pierceChance || '';
 
-        const tiersContainer = document.getElementById('damageTiersContainer');
-        tiersContainer.innerHTML = '';
-        tiers.forEach(tier => addDamageTierRow(tier));
-
-        // ANA DEĞİŞİKLİK: Kaydet butonunun işlevini ve metnini GÜNCELLEMEK için değiştiriyoruz.
-        const saveBtn = document.querySelector('#monsterAdminControls > button.w-full');
-        if (saveBtn) {
-            saveBtn.textContent = 'Mevcut Canavarı Güncelle';
-            saveBtn.onclick = updateMonsterStats; // Yeni güncelleme fonksiyonunu ata
-        }
-        
-        // Paneli aç
-        document.getElementById('monsterAdminControls').classList.remove('hidden');
+    if (rewards.onKillLeader) {
+        document.getElementById('adminMonsterKillRewardType').value = rewards.onKillLeader.type || 'points';
+        document.getElementById('adminMonsterKillReward').value = rewards.onKillLeader.value || '';
     }
 
-    /**
-     * YENİ: Mevcut canavarın özelliklerini, savaşı sıfırlamadan günceller.
-     */
-    async function updateMonsterStats() {
-        if (!isAdmin) return;
+    // ★★★ DEĞİŞİKLİK BURADA: Son vuruş ödülünü forma yükle ★★★
+    if (rewards.onLastHit) {
+        document.getElementById('adminMonsterLastHitRewardType').value = rewards.onLastHit.type || 'points';
+        document.getElementById('adminMonsterLastHitReward').value = rewards.onLastHit.value || '';
+    }
+    // ★★★ DEĞİŞİKLİK SONU ★★★
 
-        // Mevcut savaş verilerini al
-        const currentBattleData = (await db.ref('gameConfig/monsterBattle').once('value')).val();
-        if (!currentBattleData || !currentBattleData.monsterDetails) {
-            displayMessage("Güncellenecek aktif bir canavar bulunamadı.");
-            return;
-        }
+    const tiersContainer = document.getElementById('damageTiersContainer');
+    tiersContainer.innerHTML = '';
+    tiers.forEach(tier => addDamageTierRow(tier));
 
-        const minDamage = parseInt(document.getElementById('adminMonsterMinDamage').value) || 500;
-        const maxDamage = parseInt(document.getElementById('adminMonsterMaxDamage').value) || 1000;
-        if (minDamage > maxDamage) {
-            displayMessage("Canavarın minimum hasarı, maksimum hasarından büyük olamaz.");
-            return;
-        }
-        
-        const newMaxHP = parseInt(document.getElementById('adminMonsterMaxHP').value) || 1000000;
-        let newCurrentHP = currentBattleData.monsterDetails.currentHP;
-        // Eğer yeni max can, mevcut candan düşükse, mevcut canı yeni max cana eşitle
-        if (newMaxHP < newCurrentHP) {
-            newCurrentHP = newMaxHP;
-        }
-
-        // Güncellenecek verileri bir obje içinde topla
-        const updates = {};
-        updates['/monsterDetails/name'] = document.getElementById('adminMonsterName').value.trim() || 'İsimsiz Dehşet';
-        updates['/monsterDetails/imageUrl'] = document.getElementById('adminMonsterImageUrl').value.trim();
-        updates['/monsterDetails/maxHP'] = newMaxHP;
-        updates['/monsterDetails/currentHP'] = newCurrentHP; // Güncellenmiş mevcut can
-        updates['/monsterDetails/minDamage'] = minDamage;
-        updates['/monsterDetails/maxDamage'] = maxDamage;
-        updates['/monsterDetails/defense'] = parseInt(document.getElementById('adminMonsterDefense').value) || 100;
-        updates['/monsterDetails/critChance'] = parseFloat(String(document.getElementById('adminMonsterCritChance').value).replace(',', '.')) || 5;
-        updates['/monsterDetails/critDamage'] = parseFloat(String(document.getElementById('adminMonsterCritDamage').value).replace(',', '.')) || 10;
-        updates['/monsterDetails/dodgeChance'] = parseFloat(String(document.getElementById('adminMonsterDodgeChance').value).replace(',', '.')) || 5;
-        updates['/monsterDetails/pierceChance'] = parseFloat(String(document.getElementById('adminMonsterPierceChance').value).replace(',', '.')) || 5;
-        
-        // Ödülleri de güncelle
-        const onKillRewardType = document.getElementById('adminMonsterKillRewardType').value;
-        const onKillRewardValue = parseStatValue(onKillRewardType, document.getElementById('adminMonsterKillReward').value);
-        updates['/rewards/onKillLeader'] = { type: onKillRewardType, value: onKillRewardValue || 50000 };
-
-        const damageTiers = [];
-        document.querySelectorAll('.damage-tier-row').forEach(tierRow => {
-            const minDamage = parseInt(tierRow.querySelector('.min-damage').value);
-            if (isNaN(minDamage) || minDamage <= 0) return;
-            const tierRewards = [];
-            tierRow.querySelectorAll('.rewards-list > .grid').forEach(rewardRow => {
-                const type = rewardRow.querySelector('.reward-type').value;
-                const value = parseStatValue(type, rewardRow.querySelector('.reward-value').value);
-                const chance = parseInt(rewardRow.querySelector('.reward-chance').value);
-                if (type && !isNaN(value) && !isNaN(chance) && value > 0 && chance > 0) {
-                    tierRewards.push({ type, value, chance });
-                }
-            });
-            if(tierRewards.length > 0) damageTiers.push({ minDamage, rewards: tierRewards });
-        });
-        updates['/damageTiers'] = damageTiers;
-
-        // Onay al ve veritabanını güncelle
-        const confirmed = await customConfirm(`Canavarın özellikleri güncellenecek. Savaş kaldığı yerden devam edecek. Onaylıyor musun?`);
-        if (confirmed) {
-            await db.ref('gameConfig/monsterBattle').update(updates);
-            displayMessage("Canavarın özellikleri başarıyla güncellendi!");
-            toggleMonsterAdminPanel();
-        }
+    const saveBtn = document.querySelector('#monsterAdminControls > button.w-full');
+    if (saveBtn) {
+        saveBtn.textContent = 'Mevcut Canavarı Güncelle';
+        saveBtn.onclick = updateMonsterStats;
     }
     
-    /**
-     * YENİ CANAVARI ÇAĞIRIR VE MEVCUT SAVAŞI TAMAMEN SIFIRLAR (Bu fonksiyon orijinal haliyle aynı, sadece adı değişti)
-     */
-    async function saveAndSpawnMonster() {
-        if (!isAdmin) return;
-        await db.ref('gameStats/lastMonsterChampion').remove();
-        const minDamage = parseInt(document.getElementById('adminMonsterMinDamage').value) || 500;
-        const maxDamage = parseInt(document.getElementById('adminMonsterMaxDamage').value) || 1000;
-        if (minDamage > maxDamage) {
-            displayMessage("Canavarın minimum hasarı, maksimum hasarından büyük olamaz.");
-            return;
-        }
-        const monsterDetails = {
-            name: document.getElementById('adminMonsterName').value.trim() || 'İsimsiz Dehşet',
-            imageUrl: document.getElementById('adminMonsterImageUrl').value.trim(),
-            maxHP: parseInt(document.getElementById('adminMonsterMaxHP').value) || 1000000,
-            minDamage: minDamage, maxDamage: maxDamage,
-            defense: parseInt(document.getElementById('adminMonsterDefense').value) || 100,
-            critChance: parseFloat(String(document.getElementById('adminMonsterCritChance').value).replace(',', '.')) || 5,
-            critDamage: parseFloat(String(document.getElementById('adminMonsterCritDamage').value).replace(',', '.')) || 10,
-            dodgeChance: parseFloat(String(document.getElementById('adminMonsterDodgeChance').value).replace(',', '.')) || 5,
-            pierceChance: parseFloat(String(document.getElementById('adminMonsterPierceChance').value).replace(',', '.')) || 5,
-        };
-        monsterDetails.currentHP = monsterDetails.maxHP;
-        const onKillRewardType = document.getElementById('adminMonsterKillRewardType').value;
-        const onKillRewardValue = parseStatValue(onKillRewardType, document.getElementById('adminMonsterKillReward').value);
-        const rewards = { onKillLeader: { type: onKillRewardType, value: onKillRewardValue || 50000 } };
-        const damageTiers = [];
-        document.querySelectorAll('.damage-tier-row').forEach(tierRow => {
-            const minDamage = parseInt(tierRow.querySelector('.min-damage').value);
-            if (isNaN(minDamage) || minDamage <= 0) return;
-            const tierRewards = [];
-            tierRow.querySelectorAll('.rewards-list > .grid').forEach(rewardRow => {
-                const type = rewardRow.querySelector('.reward-type').value;
-                const value = parseStatValue(type, rewardRow.querySelector('.reward-value').value);
-                const chance = parseInt(rewardRow.querySelector('.reward-chance').value);
-                if (type && !isNaN(value) && !isNaN(chance) && value > 0 && chance > 0) {
-                    tierRewards.push({ type, value, chance });
-                }
-            });
-            if(tierRewards.length > 0) damageTiers.push({ minDamage, rewards: tierRewards });
-        });
-        const confirmed = await customConfirm(`<b>${monsterDetails.name}</b> canavarı ${formatNumber(monsterDetails.maxHP)} can ile çağrılacak. Mevcut savaş ilerlemesi (varsa) sıfırlanacak. Onaylıyor musun?`);
-        if (!confirmed) return;
-        await db.ref('gameConfig/monsterBattle').set({
-            monsterDetails: monsterDetails,
-            rewards: rewards,
-            damageTiers: damageTiers,
-            damageLeaderboard: null 
-        });
+    document.getElementById('monsterAdminControls').classList.remove('hidden');
+}
 
-        logActivity('newMonsterSpawned', 'WeizendTv', { monsterName: monsterDetails.name });
+    // MEVCUT updateMonsterStats FONKSİYONUNU SİL VE BUNU YAPIŞTIR
 
-        displayMessage("Canavar başarıyla çağrıldı ve savaş başladı!");
+async function updateMonsterStats() {
+    if (!isAdmin) return;
+
+    const currentBattleData = (await db.ref('gameConfig/monsterBattle').once('value')).val();
+    if (!currentBattleData || !currentBattleData.monsterDetails) {
+        displayMessage("Güncellenecek aktif bir canavar bulunamadı.");
+        return;
+    }
+
+    const minDamage = parseInt(document.getElementById('adminMonsterMinDamage').value) || 500;
+    const maxDamage = parseInt(document.getElementById('adminMonsterMaxDamage').value) || 1000;
+    if (minDamage > maxDamage) {
+        displayMessage("Canavarın minimum hasarı, maksimum hasarından büyük olamaz.");
+        return;
+    }
+    
+    const newMaxHP = parseInt(document.getElementById('adminMonsterMaxHP').value) || 1000000;
+    let newCurrentHP = currentBattleData.monsterDetails.currentHP;
+    if (newMaxHP < newCurrentHP) {
+        newCurrentHP = newMaxHP;
+    }
+
+    const updates = {};
+    updates['/monsterDetails/name'] = document.getElementById('adminMonsterName').value.trim() || 'İsimsiz Dehşet';
+    updates['/monsterDetails/imageUrl'] = document.getElementById('adminMonsterImageUrl').value.trim();
+    updates['/monsterDetails/maxHP'] = newMaxHP;
+    updates['/monsterDetails/currentHP'] = newCurrentHP;
+    updates['/monsterDetails/minDamage'] = minDamage;
+    updates['/monsterDetails/maxDamage'] = maxDamage;
+    updates['/monsterDetails/defense'] = parseInt(document.getElementById('adminMonsterDefense').value) || 100;
+    updates['/monsterDetails/critChance'] = parseFloat(String(document.getElementById('adminMonsterCritChance').value).replace(',', '.')) || 5;
+    updates['/monsterDetails/critDamage'] = parseFloat(String(document.getElementById('adminMonsterCritDamage').value).replace(',', '.')) || 10;
+    updates['/monsterDetails/dodgeChance'] = parseFloat(String(document.getElementById('adminMonsterDodgeChance').value).replace(',', '.')) || 5;
+    updates['/monsterDetails/pierceChance'] = parseFloat(String(document.getElementById('adminMonsterPierceChance').value).replace(',', '.')) || 5;
+    
+    const onKillRewardType = document.getElementById('adminMonsterKillRewardType').value;
+    const onKillRewardValue = parseStatValue(onKillRewardType, document.getElementById('adminMonsterKillReward').value);
+    updates['/rewards/onKillLeader'] = { type: onKillRewardType, value: onKillRewardValue || 50000 };
+    
+    // ★★★ DEĞİŞİKLİK BURADA: Son vuruş ödülünü oku ve güncelleme listesine ekle ★★★
+    const onLastHitRewardType = document.getElementById('adminMonsterLastHitRewardType').value;
+    const onLastHitRewardValue = parseStatValue(onLastHitRewardType, document.getElementById('adminMonsterLastHitReward').value);
+    updates['/rewards/onLastHit'] = { type: onLastHitRewardType, value: onLastHitRewardValue || 10000 };
+    // ★★★ DEĞİŞİKLİK SONU ★★★
+
+    const damageTiers = [];
+    document.querySelectorAll('.damage-tier-row').forEach(tierRow => {
+        const minDamage = parseInt(tierRow.querySelector('.min-damage').value);
+        if (isNaN(minDamage) || minDamage <= 0) return;
+        const tierRewards = [];
+        tierRow.querySelectorAll('.rewards-list > .grid').forEach(rewardRow => {
+            const type = rewardRow.querySelector('.reward-type').value;
+            const value = parseStatValue(type, rewardRow.querySelector('.reward-value').value);
+            const chance = parseInt(rewardRow.querySelector('.reward-chance').value);
+            if (type && !isNaN(value) && !isNaN(chance) && value > 0 && chance > 0) {
+                tierRewards.push({ type, value, chance });
+            }
+        });
+        if(tierRewards.length > 0) damageTiers.push({ minDamage, rewards: tierRewards });
+    });
+    updates['/damageTiers'] = damageTiers;
+
+    const confirmed = await customConfirm(`Canavarın özellikleri güncellenecek. Savaş kaldığı yerden devam edecek. Onaylıyor musun?`);
+    if (confirmed) {
+        await db.ref('gameConfig/monsterBattle').update(updates);
+        displayMessage("Canavarın özellikleri başarıyla güncellendi!");
         toggleMonsterAdminPanel();
     }
+}
+    
+   // MEVCUT saveAndSpawnMonster FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+
+async function saveAndSpawnMonster() {
+    if (!isAdmin) return;
+    await db.ref('gameStats/lastMonsterChampion').remove();
+    const minDamage = parseInt(document.getElementById('adminMonsterMinDamage').value) || 500;
+    const maxDamage = parseInt(document.getElementById('adminMonsterMaxDamage').value) || 1000;
+    if (minDamage > maxDamage) {
+        displayMessage("Canavarın minimum hasarı, maksimum hasarından büyük olamaz.");
+        return;
+    }
+    const monsterDetails = {
+        name: document.getElementById('adminMonsterName').value.trim() || 'İsimsiz Dehşet',
+        imageUrl: document.getElementById('adminMonsterImageUrl').value.trim(),
+        maxHP: parseInt(document.getElementById('adminMonsterMaxHP').value) || 1000000,
+        minDamage: minDamage, maxDamage: maxDamage,
+        defense: parseInt(document.getElementById('adminMonsterDefense').value) || 100,
+        critChance: parseFloat(String(document.getElementById('adminMonsterCritChance').value).replace(',', '.')) || 5,
+        critDamage: parseFloat(String(document.getElementById('adminMonsterCritDamage').value).replace(',', '.')) || 10,
+        dodgeChance: parseFloat(String(document.getElementById('adminMonsterDodgeChance').value).replace(',', '.')) || 5,
+        pierceChance: parseFloat(String(document.getElementById('adminMonsterPierceChance').value).replace(',', '.')) || 5,
+    };
+    monsterDetails.currentHP = monsterDetails.maxHP;
+
+    // ★★★ DEĞİŞİKLİK BURADA: Ödülleri tek bir obje içinde topluyoruz ★★★
+    const onKillRewardType = document.getElementById('adminMonsterKillRewardType').value;
+    const onKillRewardValue = parseStatValue(onKillRewardType, document.getElementById('adminMonsterKillReward').value);
+    const onLastHitRewardType = document.getElementById('adminMonsterLastHitRewardType').value;
+    const onLastHitRewardValue = parseStatValue(onLastHitRewardType, document.getElementById('adminMonsterLastHitReward').value);
+
+    const rewards = { 
+        onKillLeader: { type: onKillRewardType, value: onKillRewardValue || 50000 },
+        onLastHit: { type: onLastHitRewardType, value: onLastHitRewardValue || 10000 }
+    };
+    // ★★★ DEĞİŞİKLİK SONU ★★★
+    
+    const damageTiers = [];
+    document.querySelectorAll('.damage-tier-row').forEach(tierRow => {
+        const minDamage = parseInt(tierRow.querySelector('.min-damage').value);
+        if (isNaN(minDamage) || minDamage <= 0) return;
+        const tierRewards = [];
+        tierRow.querySelectorAll('.rewards-list > .grid').forEach(rewardRow => {
+            const type = rewardRow.querySelector('.reward-type').value;
+            const value = parseStatValue(type, rewardRow.querySelector('.reward-value').value);
+            const chance = parseInt(rewardRow.querySelector('.reward-chance').value);
+            if (type && !isNaN(value) && !isNaN(chance) && value > 0 && chance > 0) {
+                tierRewards.push({ type, value, chance });
+            }
+        });
+        if(tierRewards.length > 0) damageTiers.push({ minDamage, rewards: tierRewards });
+    });
+    const confirmed = await customConfirm(`<b>${monsterDetails.name}</b> canavarı ${formatNumber(monsterDetails.maxHP)} can ile çağrılacak. Mevcut savaş ilerlemesi (varsa) sıfırlanacak. Onaylıyor musun?`);
+    if (!confirmed) return;
+    await db.ref('gameConfig/monsterBattle').set({
+        monsterDetails: monsterDetails,
+        rewards: rewards,
+        damageTiers: damageTiers,
+        damageLeaderboard: null 
+    });
+
+    logActivity('newMonsterSpawned', 'WeizendTv', { monsterName: monsterDetails.name });
+
+    displayMessage("Canavar başarıyla çağrıldı ve savaş başladı!");
+    toggleMonsterAdminPanel();
+}
 
 function updateHealthBar(currentHP, maxHP) {
   const healthBarEl = document.getElementById('monsterHealthBar');
@@ -20385,6 +20496,8 @@ function addDamageTierRow(tierData = {}) {
     }
 }
 
+// MEVCUT addRewardToTier FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+
 function addRewardToTier(element, rewardData = {}) {
     const rewardsListContainer = element.matches('.rewards-list') ? element : element.closest('.damage-tier-row').querySelector('.rewards-list');
     const rewardRow = document.createElement('div');
@@ -20392,25 +20505,30 @@ function addRewardToTier(element, rewardData = {}) {
     rewardRow.innerHTML = `
         <select class="box-setting-input reward-type col-span-2">
             <option value="points">💰 Puan</option>
+            <option value="kasaPuani">🏦 Kasa Puanı</option>
             <option value="boxRights">📦 Kutu Hakkı</option>
             <option value="wheelTicket">🎫 Çark Bileti</option>
-            <option value="clickCatchTicket">🎟️ Tıkla-Yakala Bileti</option>
+            <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
             <option value="iflasShield">🛡️ İflas Kalkanı</option>
             <option value="wildcard">🃏 Joker Kart</option>
+            <option value="revival_stone">💎 Dirilme Taşı</option>
+            <option value="avatar">👤 Avatar</option>
+            <option value="card">🎴 Belirli Koleksiyon Kartı</option>
+            <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
+            <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+            <option value="health_potion">🧪 Can Bonusu</option>
+            <option value="damage_potion">⚔️ Hasar Bonusu</option>
+            <option value="defense_potion">🛡️ Savunma Bonusu</option>
+            <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
+            <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
+            <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
+            <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
+            <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
             <option value="card_pack">🎴 Standart Kart Paketi</option>
             <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
             <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
             <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
             <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
-            <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
-            <option value="revival_stone">💎 Dirilme Taşı</option>
-            <option value="health_potion">🧪 Can İksiri</option>
-            <option value="damage_potion">⚔️ Hasar İksiri</option>
-            <option value="defense_potion">🛡️ Savunma İksiri</option>
-            <option value="crit_potion">💥 Kritik Vuruş İksiri</option>
-            <option value="crit_damage_potion">🎯 Kritik Hasar İksiri</option>
-            <option value="dodge_potion">💨 Sıyrılma Şansı İksiri</option>
-            <option value="pierce_potion">📌 Delici Şansı İksiri</option>
         </select>
         <input type="number" class="box-setting-input reward-value" placeholder="Miktar" value="${rewardData.value || ''}">
         <div class="flex items-center gap-1">
@@ -20418,14 +20536,14 @@ function addRewardToTier(element, rewardData = {}) {
            <button onclick="this.parentElement.parentElement.remove()" class="text-red-500 text-xl font-bold">&times;</button>
         </div>
     `;
-    // Seçili değeri ayarla
     if(rewardData.type) {
         rewardRow.querySelector('.reward-type').value = rewardData.type;
     }
     rewardsListContainer.appendChild(rewardRow);
 }
 
-// MEVCUT attackMonster FONKSİYONUNU SİLİP BUNU YAPIŞTIR
+// MEVCUT attackMonster FONKSİYONUNU SİL VE BU GÜNCEL HALİNİ YAPIŞTIR
+
 async function attackMonster() {
     if (isAdmin) {
         displayMessage("Adminler saldıramaz.");
@@ -20577,8 +20695,15 @@ async function attackMonster() {
         await battleRef.transaction(currentBattleData => {
             if (!currentBattleData || !currentBattleData.monsterDetails || currentBattleData.monsterDetails.currentHP <= 0) return;
             
-            finalMonsterHP = Math.max(0, currentBattleData.monsterDetails.currentHP - finalDamageToMonster);
+            const monsterHPBeforeAttack = currentBattleData.monsterDetails.currentHP;
+            finalMonsterHP = Math.max(0, monsterHPBeforeAttack - finalDamageToMonster);
             currentBattleData.monsterDetails.currentHP = finalMonsterHP;
+            
+            // ★★★ YENİ KOD: Son vuruşu yapanı kaydet ★★★
+            if (monsterHPBeforeAttack > 0 && finalMonsterHP <= 0) {
+                currentBattleData.lastHitter = currentUser;
+            }
+            // ★★★ YENİ KOD SONU ★★★
 
             if (!currentBattleData.damageLeaderboard) currentBattleData.damageLeaderboard = {};
             if (!currentBattleData.damageLeaderboard[currentUser]) {
@@ -20603,7 +20728,6 @@ async function attackMonster() {
             const { type, value } = randomReward;
             const prizeName = typeToName[type] || 'Ödül';
             const isPercent = ['defense_potion', 'crit_potion', 'crit_damage_potion', 'dodge_potion', 'pierce_potion', 'health_regen_potion'].includes(type);
-            // ★★★ İSTEĞE GÖRE GÜNCELLENEN MESAJ ALANI ★★★
             const valuePrefix = isPercent ? `%` : `+`;
             
             rewardMessage = `<hr class="border-gray-600 my-2">🎉 <b>Ödül:</b> <b class="text-green-400">${valuePrefix}${value} ${prizeName}</b> kazandın!`;
@@ -20672,81 +20796,51 @@ async function attackMonster() {
         const finalBattleSnap = await battleRef.once('value');
         const finalBattleData = finalBattleSnap.val();
 
+        // ★★★ DEĞİŞİKLİK BURADA: Canavar öldüğünde hem lider hem son vuruş ödülünü dağıt ★★★
         if (finalBattleData && finalBattleData.monsterDetails.currentHP <= 0) {
             const sortedLeaderboard = Object.entries(finalBattleData.damageLeaderboard || {}).sort((a,b) => b[1].totalDamage - a[1].totalDamage);
+            
             const winner = sortedLeaderboard.length > 0 ? sortedLeaderboard[0][0] : null;
             const winnerData = winner ? finalBattleData.damageLeaderboard[winner] : null;
-            const prize = finalBattleData.rewards?.onKillLeader;
+            const leaderPrize = finalBattleData.rewards?.onKillLeader;
+            
+            const lastHitter = finalBattleData.lastHitter;
+            const lastHitterData = lastHitter ? finalBattleData.damageLeaderboard[lastHitter] : null;
+            const lastHitPrize = finalBattleData.rewards?.onLastHit;
 
-            if (winner && prize && winnerData) {
-                await db.ref('gameStats/lastMonsterChampion').set({
-                    username: winner,
-                    totalDamage: winnerData.totalDamage,
-                    lockedAvatarUrl: winnerData.lockedAvatarUrl
-                });
+            const championUpdates = { monsterName: finalBattleData.monsterDetails.name };
 
-                const prizeName = typeToName[prize.type] || prize.type;
-                const prizeText = `${prize.value} ${prizeName}`;
-                
-                logActivity('monsterDefeated', 'WeizendTv', { 
-                    monsterName: finalBattleData.monsterDetails.name, 
-                    winner: winner, 
-                    prize: prizeText,
-                    totalDamage: winnerData.totalDamage
-                });
-                
-                const winnerRef = db.ref(`users/${winner}`);
-                await winnerRef.transaction(winnerDataFromDB => {
-                    if (winnerDataFromDB) {
-                         const { type, value } = prize;
-                         if(type === 'health_regen_potion'){
-                            if(!winnerDataFromDB.inventory) winnerDataFromDB.inventory = {};
-                            if(!winnerDataFromDB.inventory.health_regen_potion) winnerDataFromDB.inventory.health_regen_potion = {};
-                            const currentPotions = winnerDataFromDB.inventory.health_regen_potion[value] || 0;
-                            winnerDataFromDB.inventory.health_regen_potion[value] = currentPotions + 1;
-                         } else {
-                             const dbKeyMap = { points: 'balance', boxRights: 'kutuHakki', wheelTicket: 'carkBileti', clickCatchTicket: 'clickCatchTickets', iflasShield: 'iflasShieldUses', wildcard: 'wildcards', revival_stone: 'inventory/revival_stone' };
-                             const statKeyMap = { health_potion: 'hp', damage_potion: 'damage', defense_potion: 'defense', crit_potion: 'critChance', crit_damage_potion: 'critDamage', dodge_potion: 'dodgeChance', pierce_potion: 'pierceChance' };
-                             
-                             if (type === 'points') {
-                                winnerDataFromDB.balance = (winnerDataFromDB.balance || 0) + value;
-                                winnerDataFromDB.kariyerPuani = (winnerDataFromDB.kariyerPuani || 0) + value;
-                             } else if (type.startsWith('card_pack')) {
-                                 const packKey = db.ref().push().key;
-                                 if (!winnerDataFromDB.pendingActions) winnerDataFromDB.pendingActions = {};
-                                 if (!winnerDataFromDB.pendingActions.cardPacks) winnerDataFromDB.pendingActions.cardPacks = {};
-                                 winnerDataFromDB.pendingActions.cardPacks[packKey] = { type: type, count: value };
-                             } else if (dbKeyMap[type]) {
-                                 const pathParts = dbKeyMap[type].split('/');
-                                 if (pathParts.length > 1) {
-                                     if (!winnerDataFromDB[pathParts[0]]) winnerDataFromDB[pathParts[0]] = {};
-                                     winnerDataFromDB[pathParts[0]][pathParts[1]] = (winnerDataFromDB[pathParts[0]][pathParts[1]] || 0) + value;
-                                 } else {
-                                     winnerDataFromDB[dbKeyMap[type]] = (winnerDataFromDB[dbKeyMap[type]] || 0) + value;
-                                 }
-                             } else if (statKeyMap[type]) {
-                                const statKey = statKeyMap[type];
-                                const capCheck = checkPotionCap(winnerDataFromDB, type, value);
-                                if (capCheck.canAdd && capCheck.amount > 0) {
-                                    if (!winnerDataFromDB.globalPotionBuffs) winnerDataFromDB.globalPotionBuffs = {};
-                                    winnerDataFromDB.globalPotionBuffs[statKey] = (winnerDataFromDB.globalPotionBuffs[statKey] || 0) + capCheck.amount;
-                                }
-                             }
-                         }
-
-                         if (!winnerDataFromDB.monsterChampionships) {
-                             winnerDataFromDB.monsterChampionships = [];
-                         }
-                         winnerDataFromDB.monsterChampionships.push({
-                             timestamp: firebase.database.ServerValue.TIMESTAMP,
-                             monsterName: finalBattleData.monsterDetails.name,
-                             damage: winnerData.totalDamage
-                         });
-                    }
-                    return winnerDataFromDB;
-                });
+            // Hasar lideri ödülünü ver
+            if (winner && leaderPrize && winnerData) {
+                championUpdates.winner = winner;
+                championUpdates.winnerTotalDamage = winnerData.totalDamage;
+                championUpdates.winnerAvatarUrl = winnerData.lockedAvatarUrl;
+                championUpdates.winnerPrizeText = formatRewardText(leaderPrize.type, leaderPrize.value);
+                applyRewardToUserDB(winner, leaderPrize, 'monsterChampionship');
             }
+
+            // Son vuruş ödülünü ver
+            if (lastHitter && lastHitPrize && lastHitterData) {
+                championUpdates.lastHitter = lastHitter;
+                championUpdates.lastHitterAvatarUrl = lastHitterData.lockedAvatarUrl;
+                championUpdates.lastHitterPrizeText = formatRewardText(lastHitPrize.type, lastHitPrize.value);
+                applyRewardToUserDB(lastHitter, lastHitPrize);
+            }
+
+            if (Object.keys(championUpdates).length > 1) { // Sadece isimden fazlası varsa kaydet
+                 await db.ref('gameStats/lastMonsterChampion').set(championUpdates);
+            }
+
+            logActivity('monsterDefeated', 'WeizendTv', { 
+                monsterName: championUpdates.monsterName, 
+                winner: championUpdates.winner, 
+                leaderPrize: championUpdates.winnerPrizeText,
+                totalDamage: championUpdates.winnerTotalDamage,
+                lastHitter: championUpdates.lastHitter,
+                lastHitPrize: championUpdates.lastHitterPrizeText
+            });
         }
+        // ★★★ DEĞİŞİKLİK SONU ★★★
 
     } catch (error) {
         displayMessage(error.message);
@@ -23063,26 +23157,30 @@ async function buyItemFromEventCard(itemId) {
     await buyItem(itemId);
 }
 
-// ESKİ buildMonsterEventCard FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+// MEVCUT buildMonsterEventCard FONKSİYONUNU SİL VE BUNU YAPIŞTIR
 
 function buildMonsterEventCard(battleData, lastChampion) {
-    // ÖNCELİK 1: Canavar zaten yenilmiş mi veya hiç var olmamış mı?
     if (!battleData || !battleData.monsterDetails || battleData.monsterDetails.currentHP <= 0) {
-        // Eğer bir önceki şampiyon bilgisi varsa, onu göster.
         if (lastChampion) {
+            // ★★★ DEĞİŞİKLİK BURADA: Son vuruş yapanı da ekliyoruz ★★★
+            const leaderText = `Hasar Şampiyonu: <b class="text-white">${lastChampion.winner}</b> (${formatNumber(lastChampion.winnerTotalDamage)} Hasar) | Ödül: <b class="text-green-400">${lastChampion.winnerPrizeText}</b>`;
+            const lastHitterText = lastChampion.lastHitter 
+                ? `<br>Son Vuruş Uzmanı: <b class="text-white">${lastChampion.lastHitter}</b> | Ödül: <b class="text-green-400">${lastChampion.lastHitterPrizeText}</b>`
+                : '';
+            
             return `
                 <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-red-500">
                     <p class="font-bold text-red-400">Canavar Savaşı Etkinliği Bitti!</p>
-                    <p class="text-sm">Son Kazanan: <b class="text-white">${lastChampion.username}</b> (${formatNumber(lastChampion.totalDamage)} Hasar)</p>
-                    <p class="text-sm text-gray-400">Yeni canavarın gelmesini bekleyin.</p>
+                    <p class="text-sm">${lastChampion.monsterName || 'Canavar'} yok edildi.</p>
+                    <p class="text-sm">${leaderText}${lastHitterText}</p>
+                    <p class="text-sm text-gray-400 mt-1">Yeni canavarın gelmesini bekleyin.</p>
                 </div>
             `;
+            // ★★★ DEĞİŞİKLİK SONU ★★★
         }
-        // Eğer önceki şampiyon da yoksa, bu kartı hiç gösterme.
         return '';
     }
     
-    // ÖNCELİK 2: Etkinlik aktif, devam ediyor.
     const monster = battleData.monsterDetails;
     const prize = battleData.rewards?.onKillLeader;
     const leaderboard = battleData.damageLeaderboard || {};
@@ -23143,21 +23241,21 @@ function buildClickCatchEventCard(weeklyData, scoresData, lastWinner) {
     `;
 }
 
-// ESKİ buildWordGameEventCard FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+// MEVCUT buildWordGameEventCard FONKSİYONUNU SİL VE BUNU YAPIŞTIR
 
 function buildWordGameEventCard(wordGameData, championData) {
-    // ÖNCELİK 1: Eğer bir şampiyon belirlenmişse, etkinlik bitmiştir.
     if (championData) {
+        // ★★★ DEĞİŞİKLİK BURADA ★★★
         return `
             <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-cyan-500">
                 <p class="font-bold text-cyan-400">Kelime Oyunu Etkinliği Bitti!</p>
-                <p class="text-sm">Son Şampiyon: <b class="text-white">${championData.username}</b> (${championData.score} Harf)</p>
+                <p class="text-sm">Doğru Harf Şampiyonu: <b class="text-white">${championData.username}</b> (${championData.score} Harf) | Ödül: <b class="text-green-400">${championData.prizeAwarded}</b></p>
                 <p class="text-sm text-gray-400">Yeni bulmacanın başlamasını bekleyin.</p>
             </div>
         `;
+        // ★★★ DEĞİŞİKLİK SONU ★★★
     }
 
-    // ÖNCELİK 2: Şampiyon yok ama oyun verisi var, demek ki devam ediyor.
     if (!wordGameData || !wordGameData.questions) {
         return '';
     }
@@ -23280,6 +23378,36 @@ function goToSectionAndScroll(sectionId, elementId) {
         displayMessage("Ürün başarıyla silindi.");
         loadStoreItems(); // Listeyi anında yenile
     }
+}
+
+// BU YEPYENİ FONKSİYONU SCRIPT'İN UYGUN BİR YERİNE EKLE
+
+/**
+ * Belirtilen kullanıcıya veritabanı üzerinden bir ödül uygular.
+ * @param {string} username - Ödülü alacak kullanıcının adı.
+ * @param {object} prizeData - Ödülün tipi ve değerini içeren obje.
+ * @param {string} source - Ödülün kaynağı (opsiyonel, başarımlar için kullanılır).
+ */
+async function applyRewardToUserDB(username, prizeData, source = null) {
+    if (!username || !prizeData) return;
+    const userRef = db.ref(`users/${username}`);
+    
+    await userRef.transaction(userData => {
+        if (userData) {
+            // Ödülü, mevcut applyRewardToUser fonksiyonunu kullanarak uygula
+            applyRewardToUser(userData, prizeData);
+            
+            // Eğer kaynak 'monsterChampionship' ise, başarımları güncelle
+            if (source === 'monsterChampionship') {
+                if (!userData.monsterChampionships) {
+                    userData.monsterChampionships = [];
+                }
+                // Bu kısım artık attackMonster içinde yapıldığı için burada tekrar eklemeye gerek yok.
+                // Sadece ödülün uygulanması yeterli.
+            }
+        }
+        return userData;
+    });
 }
    
 // YENİ EKLENECEK FONKSİYONLAR SONU
