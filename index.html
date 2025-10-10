@@ -7411,7 +7411,7 @@ function closeAdminSendItemModal() {
     if (selectedUserForManagement) openUserManagementModal(event, selectedUserForManagement);
 }
 
-// MEVCUT confirmSendItem FONKSİYONUNU SİL VE YERİNE BUNU YAPIŞTIR
+// ESKİ confirmSendItem FONKSİYONUNU SİL VE YERİNE BUNU YAPIŞTIR
 
 async function confirmSendItem(isAdding = true) {
     if (!isAdmin || !targetUserForSend) return;
@@ -7422,7 +7422,7 @@ async function confirmSendItem(isAdding = true) {
         return;
     }
 
-    let value, uses, avatarName, avatarImageUrl;
+    let value, uses, avatarName, avatarImageUrl, amount;
     const actionText = isAdding ? "gönderilecek" : "silinecek";
     const actionVerb = isAdding ? "ekledi" : "çıkardı";
 
@@ -7435,7 +7435,12 @@ async function confirmSendItem(isAdding = true) {
             avatarName = document.getElementById('sendItemAvatarName').value.trim();
             avatarImageUrl = document.getElementById('sendItemAvatarImageUrl').value.trim();
             if (!avatarName || !avatarImageUrl) throw new Error("Lütfen Avatar Adı ve Resim URL'si girin.");
-        } else if (type) {
+        } else if (type === 'health_regen_potion') {
+            value = parseInt(document.getElementById('sendItemValue').value);
+            amount = parseInt(document.getElementById('sendItemAmount').value);
+            if (isNaN(value) || isNaN(amount) || value <= 0 || amount <= 0) throw new Error("Lütfen geçerli bir Yüzde Değeri ve Adet girin.");
+        }
+        else if (type) {
             value = parseInt(document.getElementById('sendItemValue').value);
             if (isNaN(value) || value <= 0) throw new Error("Lütfen geçerli bir Miktar/Adet girin.");
         }
@@ -7455,11 +7460,10 @@ async function confirmSendItem(isAdding = true) {
         if (type === 'health_regen_potion') {
             if (!isAdding) throw new Error("Can Yenileme İksirleri sadece gönderilebilir, silinemez.");
             const potionRef = userRef.child(`inventory/health_regen_potion/${value}`);
-            await potionRef.transaction(currentValue => (currentValue || 0) + 1);
-            successMessage = `${targetUserForSend} kullanıcısına %${value} Can Yenileme İksiri başarıyla gönderildi.`;
-            notificationMessage = `Yönetici envanterine %${value} Can Yenileme İksiri ekledi.`;
+            await potionRef.transaction(currentValue => (currentValue || 0) + amount);
+            successMessage = `${targetUserForSend} kullanıcısına ${amount} adet %${value} Can Yenileme İksiri başarıyla gönderildi.`;
+            notificationMessage = `Yönetici envanterine ${amount} adet %${value} Can Yenileme İksiri ekledi.`;
         }
-        // --- DEĞİŞİKLİK BURADA BAŞLIYOR: Dirilme taşı için özel ve hatasız bir blok eklendi ---
         else if (type === 'revival_stone') {
             const stoneRef = userRef.child('inventory/revival_stone');
             const op = isAdding ? 1 : -1;
@@ -7467,7 +7471,6 @@ async function confirmSendItem(isAdding = true) {
             successMessage = `${targetUserForSend} kullanıcısının Dirilme Taşı envanteri başarıyla güncellendi.`;
             notificationMessage = `Yönetici envanterin${isAdding ? 'e' : 'den'} ${value} adet ${typeToName[type]} ${actionVerb}.`;
         }
-        // --- DEĞİŞİKLİK SONU ---
         else if (type.endsWith('_potion')) {
             const statKeyMap = { 
                 'health_potion': { key: 'hp', name: 'Can' }, 
@@ -7561,22 +7564,37 @@ async function confirmBulkSendItem(isAdding = true) {
         return;
     }
     
+    // Gerekli tüm input değerlerini en başta alalım
     const value = parseInt(document.getElementById('bulkSendItemValue').value);
     const usesInput = document.getElementById('bulkSendItemUses');
     const uses = usesInput ? parseInt(usesInput.value) : 0;
+    const amountInput = document.getElementById('bulkSendItemAmount');
+    const amount = amountInput ? parseInt(amountInput.value) : 0;
 
-    if (isNaN(value) || value <= 0) {
+    // Doğrulamaları yapalım
+    if (type === 'health_regen_potion') {
+        if (isNaN(value) || value <= 0 || isNaN(amount) || amount <= 0) {
+            displayMessage("Lütfen geçerli bir Yüzde Değeri ve Adet girin.");
+            return;
+        }
+    } else if (type === 'tempMultiplier') {
+        if (isNaN(value) || value <= 1 || isNaN(uses) || uses <= 0) {
+            displayMessage("Lütfen geçerli bir Çarpan Değeri (>1) ve Kullanım Hakkı (>0) girin.");
+            return;
+        }
+    } else if (isNaN(value) || value <= 0) {
         displayMessage("Lütfen geçerli bir Miktar/Adet girin.");
         return;
     }
-    if (type === 'tempMultiplier' && (isNaN(uses) || uses <= 0)) {
-        displayMessage("Lütfen geçerli bir Kullanım Hakkı girin.");
-        return;
-    }
 
-    const itemText = (type === 'tempMultiplier') 
-        ? `${uses} adet ${value}x Çarpan`
-        : `${value} ${typeToName[type]}`;
+    let itemText = '';
+    if (type === 'tempMultiplier') {
+        itemText = `${uses} adet ${value}x Çarpan`;
+    } else if (type === 'health_regen_potion') {
+        itemText = `${amount} adet %${value} Can Yenileme İksiri`;
+    } else {
+        itemText = `${value} ${typeToName[type]}`;
+    }
     
     const actionText = isAdding ? "eklenecek" : "silinecek";
     const targetText = isAdding ? "Tüm aktif kullanıcılara" : "Tüm aktif kullanıcılardan";
@@ -7594,22 +7612,19 @@ async function confirmBulkSendItem(isAdding = true) {
         if (user.approved && !user.blocked && username !== "weizendtv") {
             const userPath = `/users/${username}`;
             
-            // --- YENİ EKLENEN KART PAKETİ MANTIĞI ---
             if (type.startsWith('card_pack')) {
                 if (isAdding) {
-                    const packKey = db.ref().push().key; // Benzersiz bir anahtar oluştur
+                    const packKey = db.ref().push().key; 
                     updates[`${userPath}/pendingActions/cardPacks/${packKey}`] = {
                         type: type,
                         count: value
                     };
                 }
-                // Kart paketleri için silme işlemi desteklenmiyor, bu yüzden else bloğu yok.
             }
-            // --- KART PAKETİ MANTIĞI SONU ---
             else if (type === 'health_regen_potion') {
                  if(isAdding) {
                     const currentPotions = user.inventory?.health_regen_potion?.[value] || 0;
-                    updates[`${userPath}/inventory/health_regen_potion/${value}`] = currentPotions + 1;
+                    updates[`${userPath}/inventory/health_regen_potion/${value}`] = currentPotions + amount;
                  }
             }
             else if (type.endsWith('_potion')) {
