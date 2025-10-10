@@ -11380,53 +11380,12 @@ async function claimDailyReward(rewardId) {
     }
 }
 
-// ESKİ handleBulkSendItemTypeChange FONKSİYONUNU SİL VE BUNU YAPIŞTIR
-
 function handleBulkSendItemTypeChange(selectElement) {
-    const type = selectElement.value;
-    const container = document.getElementById('bulkSendItemFieldsContainer');
-    container.innerHTML = ''; 
-
-    if (type === 'tempMultiplier') {
-        container.innerHTML = `
-            <input type="number" id="bulkSendItemValue" class="box-setting-input" placeholder="Çarpan Değeri (örn: 2, 3)">
-            <input type="number" id="bulkSendItemUses" class="box-setting-input" placeholder="Kullanım Hakkı">
-        `;
-    } else if (type === 'health_regen_potion') {
-        container.innerHTML = `
-            <input type="number" id="bulkSendItemValue" class="box-setting-input" placeholder="Yüzde Değeri (örn: 10)">
-            <input type="number" id="bulkSendItemAmount" class="box-setting-input" placeholder="Adet">
-        `;
-    } else if (type) {
-        container.innerHTML = `<input type="number" id="bulkSendItemValue" class="box-setting-input" placeholder="Miktar / Adet">`;
-    }
+    updateRewardInputFields(selectElement);
 }
 
-// ESKİ handleSendItemTypeChange FONKSİYONUNU SİL VE BUNU YAPIŞTIR
-
 function handleSendItemTypeChange(selectElement) {
-    const type = selectElement.value;
-    const container = document.getElementById('sendItemFieldsContainer');
-    container.innerHTML = '';
-
-    if (type === 'tempMultiplier') {
-        container.innerHTML = `
-            <input type="number" id="sendItemValue" class="box-setting-input" placeholder="Çarpan Değeri (örn: 2, 3)">
-            <input type="number" id="sendItemUses" class="box-setting-input" placeholder="Kullanım Hakkı">
-        `;
-    } else if (type === 'avatar') {
-        container.innerHTML = `
-            <input type="text" id="sendItemAvatarName" class="box-setting-input" placeholder="Avatarın Adı">
-            <input type="text" id="sendItemAvatarImageUrl" class="box-setting-input" placeholder="Avatar Resim URL">
-        `;
-    } else if (type === 'health_regen_potion') {
-        container.innerHTML = `
-            <input type="number" id="sendItemValue" class="box-setting-input" placeholder="Yüzde Değeri (örn: 10)">
-            <input type="number" id="sendItemAmount" class="box-setting-input" placeholder="Adet">
-        `;
-    } else if (type) {
-        container.innerHTML = `<input type="number" id="sendItemValue" class="box-setting-input" placeholder="Miktar / Adet">`;
-    }
+    updateRewardInputFields(selectElement);
 }
 
 // ESKİ saveStoreItem FONKSİYONUNU SİL VE BUNU YAPIŞTIR
@@ -11530,42 +11489,8 @@ async function saveStoreItem() {
     }
 }
 
-// ESKİ handleStoreItemTypeChange FONKSİYONUNU SİL VE BUNU YAPIŞTIR
-
 function handleStoreItemTypeChange() {
-    const type = document.getElementById('newItemType').value;
-    const valueInput = document.getElementById('newItemValue');
-    const durationInput = document.getElementById('newItemMultiplierDuration');
-    const priceIncreaseInput = document.getElementById('newItemPriceIncrease');
-    const avatarFields = document.getElementById('storeItemAvatarFields');
-
-    valueInput.classList.remove('hidden');
-    durationInput.classList.add('hidden');
-    priceIncreaseInput.classList.add('hidden');
-    avatarFields.classList.add('hidden');
-    valueInput.placeholder = 'Değer / Adet';
-
-    if (type === 'tempMultiplier') {
-        durationInput.classList.remove('hidden');
-        valueInput.placeholder = 'Çarpan Değeri (örn: 2)';
-    } else if (type.endsWith('_potion')) {
-        priceIncreaseInput.classList.remove('hidden');
-        const isPercent = ['defense_potion', 'crit_potion', 'crit_damage_potion', 'dodge_potion', 'pierce_potion'].includes(type);
-        if (isPercent) {
-            valueInput.placeholder = 'Yüzde Değeri (örn: 2.5)';
-        }
-        // ★★★ DEĞİŞİKLİK BURADA ★★★
-        if (type === 'health_regen_potion') {
-            durationInput.classList.remove('hidden'); // Adet alanı için duration input'unu göster
-            durationInput.placeholder = 'Adet';
-            valueInput.placeholder = 'Yüzde Değeri (%)';
-        }
-    } else if (type === 'avatar') {
-        valueInput.classList.add('hidden');
-        avatarFields.classList.remove('hidden');
-    } else if (type === 'special') {
-        valueInput.classList.add('hidden');
-    }
+    updateRewardInputFields(document.getElementById('newItemType'));
 }
 
 // ESKİ saveDailyReward FONKSİYONUNU SİL VE BUNU YAPIŞTIR
@@ -11659,32 +11584,8 @@ async function saveDailyReward() {
     openDailyRewardModal();
 }
 
-// ESKİ handleDailyRewardTypeChange FONKSİYONUNU SİL VE BUNU YAPIŞTIR
-
 function handleDailyRewardTypeChange() {
-    const type = document.getElementById('dailyRewardType').value;
-    const valueInput = document.getElementById('dailyRewardValue');
-    const usesInput = document.getElementById('dailyRewardMultiplierUses');
-    const avatarFields = document.getElementById('dailyRewardAvatarFields');
-
-    valueInput.classList.remove('hidden');
-    usesInput.classList.add('hidden');
-    avatarFields.classList.add('hidden');
-    valueInput.placeholder = 'Değer / Miktar';
-    usesInput.placeholder = 'Kullanım Hakkı';
-
-    if (type === 'tempMultiplier') {
-        usesInput.classList.remove('hidden');
-        valueInput.placeholder = 'Çarpan Değeri';
-    } else if (type === 'avatar') {
-        valueInput.classList.add('hidden');
-        avatarFields.classList.remove('hidden');
-    } else if (type === 'health_regen_potion') {
-        // ★★★ DEĞİŞİKLİK BURADA ★★★
-        usesInput.classList.remove('hidden'); // Adet alanı için uses input'unu göster
-        usesInput.placeholder = 'Adet';
-        valueInput.placeholder = 'Yüzde Değeri (%)';
-    }
+    updateRewardInputFields(document.getElementById('dailyRewardType'));
 }
 
 // Bu event listener'ı script'in en altına veya uygun bir yere ekleyin.
@@ -19109,13 +19010,12 @@ function getRewardItemHTML(prefix, data = {}) {
     const layoutClass = prefix === 'output' ? 'sm:grid-cols-3' : 'sm:grid-cols-2';
     const fieldsColSpan = prefix === 'output' ? 'sm:col-span-2' : 'sm:col-span-1';
 
-    const fieldsContainerClasses = prefix === 'output' 
-        ? `reward-fields-container col-span-2 ${fieldsColSpan}`
-        : `reward-fields-container grid grid-cols-1 sm:grid-cols-2 gap-2 col-span-2 ${fieldsColSpan}`;
+    // ★★★ YENİ: Alanlar için konteynerin kendisi artık bu fonksiyon içinde tanımlanıyor ★★★
+    const fieldsContainerClasses = `reward-fields-container col-span-2 ${fieldsColSpan}`;
 
     return `
         <div class="reward-entry grid grid-cols-1 ${layoutClass} gap-2 p-2 bg-gray-900/50 rounded-md items-center">
-            <select class="box-setting-input reward-type col-span-2 sm:col-span-1" onchange="handleAdminRewardTypeChange(this)">
+            <select class="box-setting-input reward-type col-span-2 sm:col-span-1" onchange="updateRewardInputFields(this)">
                 ${prefix === 'material' ? materialOptions : outputOptions}
             </select>
             <div class="${fieldsContainerClasses}">
@@ -19126,56 +19026,7 @@ function getRewardItemHTML(prefix, data = {}) {
 }
       
 function handleAdminRewardTypeChange(selectElement, rewardData = {}) {
-    const type = selectElement.value;
-    const rewardEntry = selectElement.closest('.reward-entry');
-    const container = rewardEntry.querySelector('.reward-fields-container');
-    let fieldsHtml = '';
-    
-    const isOutput = selectElement.closest('#recipeOutputContainer');
-
-    if (isOutput) {
-         fieldsHtml += `
-            <input type="text" class="box-setting-input reward-name" placeholder="Üretilen Eşyanın Adı" value="${rewardData.name || ''}">
-            <input type="text" class="box-setting-input reward-imageUrl" placeholder="Eşya Resim URL" value="${rewardData.imageUrl || ''}">
-        `;
-    }
-
-    const isPercent = ['defense_potion', 'crit_potion', 'crit_damage_potion', 'dodge_potion', 'pierce_potion'].includes(type);
-    const valuePlaceholder = isPercent ? 'Değer (örn: 2.5)' : 'Miktar / Adet';
-    const isRarityCard = ['card_normal', 'card_gumus', 'card_altin', 'card_efsanevi'].includes(type);
-
-    if (type === 'tempMultiplier') {
-        fieldsHtml += `
-            <input type="number" class="box-setting-input reward-value" placeholder="Çarpan Değeri (örn: 2)" value="${rewardData.value || ''}">
-            <input type="number" class="box-setting-input reward-uses" placeholder="Kullanım Hakkı" value="${rewardData.uses || ''}">
-        `;
-    } else if (type === 'avatar') {
-        fieldsHtml += `
-            <input type="text" class="box-setting-input reward-avatarName" placeholder="Avatarın Adı" value="${rewardData.avatarName || ''}">
-            <input type="text" class="box-setting-input reward-avatarImageUrl" placeholder="Avatar Resim URL" value="${rewardData.avatarImageUrl || ''}">
-        `;
-    } else if (type === 'card') {
-        let cardOptions = allCardsCache.map(card => `<option value="${card.id}" ${rewardData.cardId === card.id ? 'selected' : ''}>${card.cardName}</option>`).join('');
-        fieldsHtml += `
-            <select class="box-setting-input reward-cardId">${cardOptions}</select>
-            <input type="number" class="box-setting-input reward-value" placeholder="Adet" value="${rewardData.amount || ''}">
-        `;
-    } else if (type === 'special') {
-        fieldsHtml += `
-            <input type="text" class="box-setting-input reward-specialName" placeholder="Özel Ürün Adı (Onayda Görünecek)" value="${rewardData.specialName || ''}">
-        `;
-    } else if (type === 'health_regen_potion') {
-        fieldsHtml += `
-            <input type="number" class="box-setting-input reward-value" placeholder="Yüzde Değeri (%)" value="${rewardData.value || ''}">
-            <input type="number" class="box-setting-input reward-amount" placeholder="Adet" value="${rewardData.amount || 1}">
-        `;
-    } else {
-        fieldsHtml += `
-            <input type="text" class="box-setting-input reward-value" placeholder="${valuePlaceholder}" value="${rewardData.amount || rewardData.value || ''}">
-        `;
-    }
-    
-    container.innerHTML = fieldsHtml;
+    updateRewardInputFields(selectElement, rewardData);
 }
       
 // ESKİ saveRecipe FONKSİYONUNU SİLİP, BUNU YAPIŞTIRIN
@@ -19377,36 +19228,38 @@ function generateRewardFields(answerInput, lettersData = null) {
     }
 }
 
-// ESKİ parseRewardDataFromRow FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+// MEVCUT parseRewardDataFromRow FONKSİYONUNU SİL VE BUNU YAPIŞTIR
 
 function parseRewardDataFromRow(rowElement) {
+    if (!rowElement) return null;
     const type = rowElement.querySelector('.reward-type').value;
     const data = { type };
 
     if (type === 'tempMultiplier') {
-        data.value = parseInt(rowElement.querySelector('.reward-value').value);
-        data.uses = parseInt(rowElement.querySelector('.reward-uses').value);
+        data.value = parseInt(rowElement.querySelector('.reward-value')?.value);
+        data.uses = parseInt(rowElement.querySelector('.reward-uses')?.value);
         if (isNaN(data.value) || isNaN(data.uses)) return null;
     } else if (type === 'avatar') {
-        data.avatarName = rowElement.querySelector('.reward-avatarName').value.trim();
-        data.avatarImageUrl = rowElement.querySelector('.reward-avatarImageUrl').value.trim();
+        data.avatarName = rowElement.querySelector('.reward-avatarName')?.value.trim();
+        data.avatarImageUrl = rowElement.querySelector('.reward-avatarImageUrl')?.value.trim();
         if (!data.avatarName || !data.avatarImageUrl) return null;
     } else if (type === 'card') {
-        data.cardId = rowElement.querySelector('.reward-cardId').value;
-        data.amount = parseInt(rowElement.querySelector('.reward-value').value); // amount olarak oku
+        data.cardId = rowElement.querySelector('.reward-cardId')?.value;
+        data.amount = parseInt(rowElement.querySelector('.reward-value')?.value);
         if (!data.cardId || isNaN(data.amount)) return null;
     } else if (type === 'special') {
-        data.specialName = rowElement.querySelector('.reward-specialName').value.trim();
+        data.specialName = rowElement.querySelector('.reward-specialName')?.value.trim();
         if (!data.specialName) return null;
     } else if (type === 'health_regen_potion') {
-        // ★★★ DEĞİŞİKLİK BURADA: Yüzde ve adet için doğru input'ları okuyoruz ★★★
-        data.value = parseInt(rowElement.querySelector('.reward-value').value);
-        data.amount = parseInt(rowElement.querySelector('.reward-amount').value);
+        data.value = parseInt(rowElement.querySelector('.reward-value')?.value);
+        data.amount = parseInt(rowElement.querySelector('.reward-amount')?.value);
         if (isNaN(data.value) || isNaN(data.amount)) return null;
     } else {
-        // ★★★ DEĞİŞİKLİK BURADA: Geri kalan her şey için `amount` özelliğini kullanıyoruz ★★★
-        data.amount = parseStatValue(type, rowElement.querySelector('.reward-value').value);
-        if (isNaN(data.amount)) return null;
+        const valueInput = rowElement.querySelector('.reward-value');
+        if (valueInput) {
+            data.amount = parseStatValue(type, valueInput.value);
+            if (isNaN(data.amount)) return null;
+        }
     }
     
     data.name = rowElement.querySelector('.reward-name')?.value.trim();
@@ -19674,111 +19527,6 @@ async function openCraftingDetailModal(recipeId) {
       
 function closeCraftingDetailModal() {
     document.getElementById('craftingDetailModal').style.display = 'none';
-}
-
-function applyRewardToUser(userData, reward) {
-    const cardPacksToOpen = [];
-    let message = ''; // Mesajı döndürmek için değişken
-    const value = reward.value || reward.amount || 0;
-    const uses = reward.uses || 0;
-    const source = reward.source || "Bir yerden"; // Kaynak bilgisini al
-
-    const statKeyMap = { 
-        'health_potion': 'hp', 'damage_potion': 'damage', 'defense_potion': 'defense', 
-        'crit_potion': 'critChance', 'crit_damage_potion': 'critDamage', 
-        'dodge_potion': 'dodgeChance', 'pierce_potion': 'pierceChance' 
-    };
-    const statKey = statKeyMap[reward.type];
-
-    if (statKey) {
-        const amountToAdd = reward.amount || reward.value || 0;
-        const capCheck = checkPotionCap(userData, reward.type, amountToAdd);
-        
-        if (capCheck.canAdd && capCheck.amount > 0) {
-            if (!userData.globalPotionBuffs) userData.globalPotionBuffs = {};
-            userData.globalPotionBuffs[statKey] = (userData.globalPotionBuffs[statKey] || 0) + capCheck.amount;
-        } else {
-            userData.kutuHakki = (userData.kutuHakki || 0) + 1;
-            return { cardPacksToOpen, convertedToBoxRight: true, originalReward: reward, message: '' };
-        }
-    } 
-    else if (reward.type === 'tempMultiplier') {
-        const hasActiveMultiplier = (userData.multiplierSource === 'store' && (userData.multiplierRemainingUses || 0) > 0);
-        
-        if (hasActiveMultiplier) {
-            const existingValue = userData.activeMultiplier;
-            const existingUses = userData.multiplierRemainingUses;
-            
-            if (reward.value > existingValue) {
-                const boxRightsToRefund = existingUses;
-                userData.kutuHakki = (userData.kutuHakki || 0) + boxRightsToRefund;
-                userData.activeMultiplier = reward.value;
-                userData.multiplierRemainingUses = reward.uses;
-                userData.multiplierSource = 'store';
-                logActivity('multiplierUpgraded', currentUser, { source: source, oldValue: existingValue, oldUses: existingUses, newValue: reward.value, newUses: reward.uses, boxRights: boxRightsToRefund });
-                message = `Mevcut çarpanın, ${source} gelen daha güçlü ${reward.value}x ile değiştirildi. Eski hakların için +${boxRightsToRefund} Kutu Hakkı iade edildi.`;
-            } else if (reward.value < existingValue) {
-                const boxRightsFromNew = reward.uses * reward.value;
-                userData.kutuHakki = (userData.kutuHakki || 0) + boxRightsFromNew;
-                logActivity('dailyRewardMultiplierConverted', currentUser, { keptMultiplierValue: existingValue, boxRights: boxRightsFromNew, rewardValue: reward.value, source: source });
-                message = `Mevcut çarpanın daha güçlü olduğu için korundu. ${source} gelen ödül +${boxRightsFromNew} Kutu Hakkı'na dönüştürüldü.`;
-            } else {
-                userData.multiplierRemainingUses += reward.uses;
-                logActivity('dailyRewardMultiplierStacked', currentUser, { source: source, usesAdded: reward.uses, newTotalUses: userData.multiplierRemainingUses, multiplierValue: reward.value });
-                message = `Mevcut ${reward.value}x çarpanına +${reward.uses} kullanım hakkı eklendi.`;
-            }
-        } else {
-            userData.activeMultiplier = reward.value;
-            userData.multiplierRemainingUses = reward.uses;
-            userData.multiplierSource = 'store';
-            message = `${reward.value}x (${reward.uses} kullanım) Çarpan envanterine eklendi!`;
-        }
-    }
-    else if (reward.type === 'health_regen_potion') {
-        const percentage = reward.value;
-        const amount = reward.amount || 1;
-        if (!userData.inventory) userData.inventory = {};
-        if (!userData.inventory.health_regen_potion) userData.inventory.health_regen_potion = {};
-        const currentCount = userData.inventory.health_regen_potion[percentage] || 0;
-        userData.inventory.health_regen_potion[percentage] = currentCount + amount;
-    }
-    else {
-        switch (reward.type) {
-            case 'points':
-                userData.balance = (userData.balance || 0) + value;
-                userData.kariyerPuani = (userData.kariyerPuani || 0) + value;
-                break;
-            case 'boxRights': userData.kutuHakki = (userData.kutuHakki || 0) + value; break;
-            case 'wheelTicket': userData.carkBileti = (userData.carkBileti || 0) + value; break;
-            case 'clickCatchTicket': userData.clickCatchTickets = (userData.clickCatchTickets || 0) + value; break;
-            case 'iflasShield': userData.iflasShieldUses = (userData.iflasShieldUses || 0) + value; break;
-            case 'wildcard': userData.wildcards = (userData.wildcards || 0) + value; break;
-            case 'revival_stone':
-                if (!userData.inventory) userData.inventory = {};
-                userData.inventory.revival_stone = (userData.inventory.revival_stone || 0) + value;
-                break;
-            case 'avatar':
-                const newAvatarId = firebase.database().ref().push().key;
-                if (!userData.avatars) userData.avatars = {};
-                userData.avatars[newAvatarId] = { id: newAvatarId, name: reward.avatarName, imageUrl: reward.avatarImageUrl };
-                break;
-            case 'card':
-                if (!userData.cardCollection) userData.cardCollection = {};
-                if (!userData.cardCollection[reward.cardId]) {
-                    userData.cardCollection[reward.cardId] = { count: 0 };
-                }
-                userData.cardCollection[reward.cardId].count += (reward.amount || 1);
-                break;
-            case 'card_pack':
-            case 'card_pack_normal':
-            case 'card_pack_gumus':
-            case 'card_pack_altin':
-            case 'card_pack_efsanevi':
-                cardPacksToOpen.push({ type: reward.type, value: value });
-                break;
-        }
-    }
-    return { cardPacksToOpen, convertedToBoxRight: false, message: message };
 }
 
 // MEVCUT loadCraftingRecipes FONKSİYONUNU SİLİP, BUNU YAPIŞTIRIN
@@ -23380,6 +23128,148 @@ function goToSectionAndScroll(sectionId, elementId) {
     }
 }
 
+// MEVCUT applyRewardToUser FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+
+function applyRewardToUser(userData, reward) {
+    const cardPacksToOpen = [];
+    let message = '';
+    const value = reward.value || reward.amount || 0;
+    const uses = reward.uses || 0;
+    const source = reward.source || "Bir yerden";
+
+    // ★★★ DEĞİŞİKLİK BURADA: Özel Ürün mantığı eklendi ★★★
+    if (reward.type === 'special') {
+        const specialPurchaseId = db.ref().push().key;
+        if (!userData.pendingSpecialPurchases) userData.pendingSpecialPurchases = {};
+        userData.pendingSpecialPurchases[specialPurchaseId] = { 
+            username: userData.username, // Kullanıcı adını da ekleyelim
+            itemName: reward.specialName, 
+            itemCost: `Ödül (${source})`, 
+            source: source, 
+            timestamp: firebase.database.ServerValue.TIMESTAMP 
+        };
+        // Satın alma geçmişine de ekleyelim ki kullanıcı görsün
+        if (!userData.purchaseHistory) userData.purchaseHistory = {};
+        userData.purchaseHistory[specialPurchaseId] = { 
+            username: userData.username, 
+            itemName: reward.specialName, 
+            itemCost: `Ödül (${source})`, 
+            imageUrl: reward.imageUrl || 'https://i.hizliresim.com/sv85j2u.png', 
+            status: 'pending', 
+            purchaseType: 'reward', 
+            timestamp: firebase.database.ServerValue.TIMESTAMP 
+        };
+        // Kullanıcıya bildirim gönder
+        const notifKey = db.ref().push().key;
+        if (!userData.notifications) userData.notifications = {};
+        userData.notifications[notifKey] = {
+            message: `'${source}' kaynağından kazandığınız '${reward.specialName}' adlı özel ürün, admin onayı için sıraya alındı.`,
+            timestamp: firebase.database.ServerValue.TIMESTAMP
+        };
+        // Ödül uygulandı, fonksiyondan çık
+        return { cardPacksToOpen, convertedToBoxRight: false, message: '' };
+    }
+    // ★★★ DEĞİŞİKLİK SONU ★★★
+
+    const statKeyMap = { 
+        'health_potion': 'hp', 'damage_potion': 'damage', 'defense_potion': 'defense', 
+        'crit_potion': 'critChance', 'crit_damage_potion': 'critDamage', 
+        'dodge_potion': 'dodgeChance', 'pierce_potion': 'pierceChance' 
+    };
+    const statKey = statKeyMap[reward.type];
+
+    if (statKey) {
+        const amountToAdd = reward.amount || reward.value || 0;
+        const capCheck = checkPotionCap(userData, reward.type, amountToAdd);
+        
+        if (capCheck.canAdd && capCheck.amount > 0) {
+            if (!userData.globalPotionBuffs) userData.globalPotionBuffs = {};
+            userData.globalPotionBuffs[statKey] = (userData.globalPotionBuffs[statKey] || 0) + capCheck.amount;
+        } else {
+            userData.kutuHakki = (userData.kutuHakki || 0) + 1;
+            return { cardPacksToOpen, convertedToBoxRight: true, originalReward: reward, message: '' };
+        }
+    } 
+    else if (reward.type === 'tempMultiplier') {
+        const hasActiveMultiplier = (userData.multiplierSource === 'store' && (userData.multiplierRemainingUses || 0) > 0);
+        
+        if (hasActiveMultiplier) {
+            const existingValue = userData.activeMultiplier;
+            const existingUses = userData.multiplierRemainingUses;
+            
+            if (reward.value > existingValue) {
+                const boxRightsToRefund = existingUses;
+                userData.kutuHakki = (userData.kutuHakki || 0) + boxRightsToRefund;
+                userData.activeMultiplier = reward.value;
+                userData.multiplierRemainingUses = reward.uses;
+                userData.multiplierSource = 'store';
+                logActivity('multiplierUpgraded', currentUser, { source: source, oldValue: existingValue, oldUses: existingUses, newValue: reward.value, newUses: reward.uses, boxRights: boxRightsToRefund });
+                message = `Mevcut çarpanın, ${source} gelen daha güçlü ${reward.value}x ile değiştirildi. Eski hakların için +${boxRightsToRefund} Kutu Hakkı iade edildi.`;
+            } else if (reward.value < existingValue) {
+                const boxRightsFromNew = reward.uses * reward.value;
+                userData.kutuHakki = (userData.kutuHakki || 0) + boxRightsFromNew;
+                logActivity('dailyRewardMultiplierConverted', currentUser, { keptMultiplierValue: existingValue, boxRights: boxRightsFromNew, rewardValue: reward.value, source: source });
+                message = `Mevcut çarpanın daha güçlü olduğu için korundu. ${source} gelen ödül +${boxRightsFromNew} Kutu Hakkı'na dönüştürüldü.`;
+            } else {
+                userData.multiplierRemainingUses += reward.uses;
+                logActivity('dailyRewardMultiplierStacked', currentUser, { source: source, usesAdded: reward.uses, newTotalUses: userData.multiplierRemainingUses, multiplierValue: reward.value });
+                message = `Mevcut ${reward.value}x çarpanına +${reward.uses} kullanım hakkı eklendi.`;
+            }
+        } else {
+            userData.activeMultiplier = reward.value;
+            userData.multiplierRemainingUses = reward.uses;
+            userData.multiplierSource = 'store';
+            message = `${reward.value}x (${reward.uses} kullanım) Çarpan envanterine eklendi!`;
+        }
+    }
+    else if (reward.type === 'health_regen_potion') {
+        const percentage = reward.value;
+        const amount = reward.amount || 1;
+        if (!userData.inventory) userData.inventory = {};
+        if (!userData.inventory.health_regen_potion) userData.inventory.health_regen_potion = {};
+        const currentCount = userData.inventory.health_regen_potion[percentage] || 0;
+        userData.inventory.health_regen_potion[percentage] = currentCount + amount;
+    }
+    else {
+        switch (reward.type) {
+            case 'points':
+                userData.balance = (userData.balance || 0) + value;
+                userData.kariyerPuani = (userData.kariyerPuani || 0) + value;
+                break;
+            case 'kasaPuani': userData.kasaPuani = (userData.kasaPuani || 0) + value; break;
+            case 'boxRights': userData.kutuHakki = (userData.kutuHakki || 0) + value; break;
+            case 'wheelTicket': userData.carkBileti = (userData.carkBileti || 0) + value; break;
+            case 'clickCatchTicket': userData.clickCatchTickets = (userData.clickCatchTickets || 0) + value; break;
+            case 'iflasShield': userData.iflasShieldUses = (userData.iflasShieldUses || 0) + value; break;
+            case 'wildcard': userData.wildcards = (userData.wildcards || 0) + value; break;
+            case 'revival_stone':
+                if (!userData.inventory) userData.inventory = {};
+                userData.inventory.revival_stone = (userData.inventory.revival_stone || 0) + value;
+                break;
+            case 'avatar':
+                const newAvatarId = firebase.database().ref().push().key;
+                if (!userData.avatars) userData.avatars = {};
+                userData.avatars[newAvatarId] = { id: newAvatarId, name: reward.avatarName, imageUrl: reward.avatarImageUrl };
+                break;
+            case 'card':
+                if (!userData.cardCollection) userData.cardCollection = {};
+                if (!userData.cardCollection[reward.cardId]) {
+                    userData.cardCollection[reward.cardId] = { count: 0 };
+                }
+                userData.cardCollection[reward.cardId].count += (reward.amount || 1);
+                break;
+            case 'card_pack':
+            case 'card_pack_normal':
+            case 'card_pack_gumus':
+            case 'card_pack_altin':
+            case 'card_pack_efsanevi':
+                cardPacksToOpen.push({ type: reward.type, value: value });
+                break;
+        }
+    }
+    return { cardPacksToOpen, convertedToBoxRight: false, message: message };
+}
+
 // BU YEPYENİ FONKSİYONU SCRIPT'İN UYGUN BİR YERİNE EKLE
 
 /**
@@ -23408,6 +23298,51 @@ async function applyRewardToUserDB(username, prizeData, source = null) {
         }
         return userData;
     });
+}
+
+// BU YEPYENİ FONKSİYONU SCRIPT BLOĞUNUN UYGUN BİR YERİNE EKLE
+
+function updateRewardInputFields(selectElement, data = {}) {
+    const type = selectElement.value;
+    const container = selectElement.closest('.reward-entry').querySelector('.reward-fields-container');
+    if (!container) return;
+    
+    let fieldsHtml = '';
+
+    if (type === 'tempMultiplier') {
+        fieldsHtml = `
+            <input type="number" class="box-setting-input reward-value" placeholder="Çarpan Değeri (örn: 2)" value="${data.value || ''}">
+            <input type="number" class="box-setting-input reward-uses" placeholder="Kullanım Hakkı" value="${data.uses || ''}">
+        `;
+    } else if (type === 'avatar') {
+        fieldsHtml = `
+            <input type="text" class="box-setting-input reward-avatarName" placeholder="Avatarın Adı" value="${data.avatarName || ''}">
+            <input type="text" class="box-setting-input reward-avatarImageUrl" placeholder="Avatar Resim URL" value="${data.avatarImageUrl || ''}">
+        `;
+    } else if (type === 'card') {
+        let cardOptions = allCardsCache.map(card => `<option value="${card.id}" ${data.cardId === card.id ? 'selected' : ''}>${card.cardName}</option>`).join('');
+        fieldsHtml = `
+            <select class="box-setting-input reward-cardId">${cardOptions}</select>
+            <input type="number" class="box-setting-input reward-value" placeholder="Adet" value="${data.amount || data.value || ''}">
+        `;
+    } else if (type === 'special') {
+        fieldsHtml = `
+            <input type="text" class="box-setting-input reward-specialName" placeholder="Özel Ürün Adı (Onayda Görünecek)" value="${data.specialName || ''}">
+        `;
+    } else if (type === 'health_regen_potion') {
+        fieldsHtml = `
+            <input type="number" class="box-setting-input reward-value" placeholder="Yüzde Değeri (%)" value="${data.value || ''}">
+            <input type="number" class="box-setting-input reward-amount" placeholder="Adet" value="${data.amount || ''}">
+        `;
+    } else {
+        const isPercent = ['defense_potion', 'crit_potion', 'crit_damage_potion', 'dodge_potion', 'pierce_potion'].includes(type);
+        const placeholder = isPercent ? 'Değer (örn: 2.5)' : 'Miktar / Adet';
+        fieldsHtml = `
+            <input type="text" class="box-setting-input reward-value" placeholder="${placeholder}" value="${data.amount || data.value || ''}">
+        `;
+    }
+    
+    container.innerHTML = fieldsHtml;
 }
    
 // YENİ EKLENECEK FONKSİYONLAR SONU
