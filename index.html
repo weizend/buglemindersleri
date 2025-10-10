@@ -9122,10 +9122,10 @@ function formatRewardText(type, value, uses = 0) {
  * @param {string|number} valueString - Çevrilecek değer.
  * @returns {number} İşlenmiş sayısal değer.
  */
-// Ondalıklı sayıları da işleyebilen değer ayrıştırıcı.
 function parseStatValue(type, valueString) {
     const isPercentPotion = ['crit_potion', 'crit_damage_potion', 'dodge_potion', 'pierce_potion', 'defense_potion', 'health_regen_potion'].includes(type);
     if (isPercentPotion) {
+        // Virgülü noktaya çevirerek ondalıklı sayıya dönüştür
         return parseFloat(String(valueString).replace(',', '.'));
     }
     return parseInt(valueString);
@@ -11380,14 +11380,6 @@ async function claimDailyReward(rewardId) {
     }
 }
 
-function handleBulkSendItemTypeChange(selectElement) {
-    updateRewardInputFields(selectElement);
-}
-
-function handleSendItemTypeChange(selectElement) {
-    updateRewardInputFields(selectElement);
-}
-
 // ESKİ saveStoreItem FONKSİYONUNU SİL VE BUNU YAPIŞTIR
 
 async function saveStoreItem() {
@@ -11397,7 +11389,6 @@ async function saveStoreItem() {
         const name = document.getElementById('newItemName').value.trim();
         const description = document.getElementById('newItemDescription').value.trim();
         const cost = parseInt(document.getElementById('newItemCost').value);
-        const type = document.getElementById('newItemType').value;
         const imageUrl = document.getElementById('newItemImageUrl').value.trim();
         let stockInput = document.getElementById('newItemStock').value;
 
@@ -11407,55 +11398,26 @@ async function saveStoreItem() {
         const seconds = parseInt(document.getElementById('storeItemCountdownSeconds').value) || 0;
         const totalMinutes = (days * 24 * 60) + (hours * 60) + minutes + Math.round(seconds / 60);
 
-        if (!name || !description || isNaN(cost) || !type) {
-            displayMessage("Lütfen Ad, Açıklama, Maliyet ve Tip alanlarını doldurun.");
-            return;
+        if (!name || !description || isNaN(cost)) {
+            throw new Error("Lütfen Ad, Açıklama ve Maliyet alanlarını doldurun.");
         }
 
         const stock = (stockInput === '' || stockInput === null) ? null : parseInt(stockInput);
-        const itemData = { name, description, cost, stock, type, imageUrl: imageUrl || 'https://via.placeholder.com/150' };
-
-        if (type.endsWith('_potion')) {
-            const priceIncreaseInput = document.getElementById('newItemPriceIncrease').value;
-            const priceIncrease = priceIncreaseInput === '' ? 0 : parseInt(priceIncreaseInput);
-            if (isNaN(priceIncrease) || priceIncrease < 0) {
-                throw new Error("İksirler için geçerli bir 'Fiyat Artışı' (0 veya daha büyük) girmelisiniz.");
-            }
-            itemData.priceIncrease = priceIncrease;
+        const itemData = { name, description, cost, stock, imageUrl: imageUrl || 'https://via.placeholder.com/150' };
+        
+        // Ödül verisini, `adminStoreModal` içindeki `reward-entry`'den oku
+        const rewardData = parseRewardDataFromRow(document.querySelector('#adminStoreModal .reward-entry'));
+        if (!rewardData) {
+            throw new Error("Lütfen geçerli bir Ürün Tipi ve değeri girin.");
         }
+        
+        // Okunan veriyi ana `itemData` objesiyle birleştir
+        Object.assign(itemData, rewardData);
 
-        if (type === 'tempMultiplier') {
-            const value = parseInt(document.getElementById('newItemValue').value);
-            const multiplierDuration = parseInt(document.getElementById('newItemMultiplierDuration').value);
-            if (isNaN(value) || value <= 0) { throw new Error("Çarpan için geçerli bir 'Değer' (2x, 3x gibi) girmelisiniz."); }
-            if (isNaN(multiplierDuration) || multiplierDuration <= 0) { throw new Error("Çarpan için geçerli bir 'Kullanım Sayısı' girmelisiniz."); }
-            itemData.value = value;
-            itemData.duration = multiplierDuration;
-        } else if (type === 'avatar') {
-            itemData.avatarName = document.getElementById('newItemAvatarName').value.trim();
-            itemData.avatarImageUrl = document.getElementById('newItemAvatarImageUrl').value.trim();
-            if (!itemData.avatarName || !itemData.avatarImageUrl) {
-                throw new Error("Avatar tipi için 'Avatar Adı' ve 'Avatar Resim URL'si' alanları zorunludur.");
-            }
-        } else if (type === 'health_regen_potion') {
-            // ★★★ DEĞİŞİKLİK BURADA: Artık amount'u da okuyoruz ★★★
-            const value = parseInt(document.getElementById('newItemValue').value);
-            const amount = parseInt(document.getElementById('newItemMultiplierDuration').value); // Duration input'unu amount için kullanıyoruz
-            if (isNaN(value) || value <= 0 || isNaN(amount) || amount <= 0) {
-                throw new Error("Can Yenileme İksiri için geçerli bir 'Yüzde Değeri' ve 'Adet' girmelisiniz.");
-            }
-            itemData.value = value;
-            itemData.duration = amount; // duration alanına adeti kaydediyoruz
-        } else {
-            const typesThatNeedValue = [ 'boxRights', 'wheelTicket', 'clickCatchTicket', 'iflasShield', 'wildcard', 'card_pack', 'card_pack_normal', 'card_pack_gumus', 'card_pack_altin', 'card_pack_efsanevi', 'revival_stone', 'health_potion', 'damage_potion', 'defense_potion', 'crit_potion', 'crit_damage_potion', 'dodge_potion', 'pierce_potion' ];
-            if (typesThatNeedValue.includes(type)) {
-                const value = parseStatValue(type, document.getElementById('newItemValue').value);
-                if (isNaN(value) || value <= 0) {
-                    const friendlyName = typeToName[type] || type;
-                    throw new Error(`'${friendlyName}' tipi için geçerli bir 'Değer/Adet' girmelisiniz.`);
-                }
-                itemData.value = value;
-            }
+        const priceIncreaseInput = document.getElementById('newItemPriceIncrease').value;
+        const priceIncrease = priceIncreaseInput === '' ? 0 : parseInt(priceIncreaseInput);
+        if (!isNaN(priceIncrease) && priceIncrease >= 0) {
+            itemData.priceIncrease = priceIncrease;
         }
 
         if (totalMinutes > 0) { itemData.countdownDurationMinutes = totalMinutes; } 
@@ -11481,16 +11443,11 @@ async function saveStoreItem() {
         }
         
         closeAdminStoreModal();
-        loadStoreItems();
 
     } catch (error) {
         console.error("Mağaza ürünü kaydetme hatası:", error);
         displayMessage("Ürün kaydedilirken bir hata oluştu: " + error.message);
     }
-}
-
-function handleStoreItemTypeChange() {
-    updateRewardInputFields(document.getElementById('newItemType'));
 }
 
 // ESKİ saveDailyReward FONKSİYONUNU SİL VE BUNU YAPIŞTIR
@@ -11499,7 +11456,6 @@ async function saveDailyReward() {
     if (!isAdmin) return;
     
     const name = document.getElementById('dailyRewardName').value.trim();
-    const type = document.getElementById('dailyRewardType').value;
     const description = document.getElementById('dailyRewardDescription').value.trim();
     const imageUrl = document.getElementById('dailyRewardImageUrl').value.trim();
     
@@ -11508,8 +11464,8 @@ async function saveDailyReward() {
     const minutes = parseInt(document.getElementById('dailyRewardCooldownMinutes').value) || 0;
     const seconds = parseInt(document.getElementById('dailyRewardCooldownSeconds').value) || 0;
 
-    if (!name || !type || !description) {
-        displayMessage("Lütfen ödül için tüm zorunlu alanları (Ad, Tip, Açıklama) doldurun.");
+    if (!name || !description) {
+        displayMessage("Lütfen ödül için Ad ve Açıklama alanlarını doldurun.");
         return;
     }
 
@@ -11521,71 +11477,33 @@ async function saveDailyReward() {
     if(seconds > 0) cooldownText += `${seconds}sn`;
     if (cooldownText === '') cooldownText = 'Tek Seferlik';
 
-    const rewardData = { name, type, description, cooldownMs, cooldownText, imageUrl: imageUrl || 'https://via.placeholder.com/150' };
-
+    const rewardData = { name, description, cooldownMs, cooldownText, imageUrl: imageUrl || 'https://via.placeholder.com/150' };
+    
+    // Ödül verisini `adminDailyRewardModal` içindeki `reward-entry`'den oku
+    const parsedReward = parseRewardDataFromRow(document.querySelector('#adminDailyRewardModal .reward-entry'));
+    if (!parsedReward) {
+        displayMessage("Lütfen geçerli bir Ödül Tipi ve değeri girin.");
+        return;
+    }
+    // Okunan veriyi ana `rewardData` objesiyle birleştir
+    Object.assign(rewardData, parsedReward);
+    
     if (editingDailyRewardId) {
         const existingRewardSnap = await db.ref('dailyRewardOptions/' + editingDailyRewardId).once('value');
         const existingReward = existingRewardSnap.val();
         rewardData.order = existingReward.order;
+        await db.ref('dailyRewardOptions/' + editingDailyRewardId).update(rewardData);
+        displayMessage("Günlük ödül başarıyla güncellendi.");
     } else {
         const maxOrderSnap = await db.ref('dailyRewardOptions').orderByChild('order').limitToLast(1).once('value');
         let maxOrder = -1;
         if(maxOrderSnap.exists()){ maxOrder = Object.values(maxOrderSnap.val())[0].order || 0; }
         rewardData.order = maxOrder + 1;
-    }
-
-    if (type === 'tempMultiplier') {
-        const value = parseInt(document.getElementById('dailyRewardValue').value);
-        const uses = parseInt(document.getElementById('dailyRewardMultiplierUses').value);
-        if (isNaN(uses) || uses <= 0 || isNaN(value) || value <= 0) {
-            displayMessage("Çarpan için geçerli bir 'Değer' ve 'Kullanım Hakkı' girin.");
-            return;
-        }
-        rewardData.uses = uses;
-        rewardData.value = value;
-    } else if (type === 'avatar') {
-        const avatarName = document.getElementById('dailyRewardAvatarName').value.trim();
-        const avatarImageUrl = document.getElementById('dailyRewardAvatarImageUrl').value.trim();
-        if (!avatarName || !avatarImageUrl) {
-            displayMessage("Avatar ödülü için Avatar Adı ve Resim URL'si zorunludur.");
-            return;
-        }
-        rewardData.avatarName = avatarName;
-        rewardData.avatarImageUrl = avatarImageUrl;
-    } else if (type === 'health_regen_potion') {
-        // ★★★ DEĞİŞİKLİK BURADA: Artık amount'u da okuyoruz ★★★
-        const value = parseInt(document.getElementById('dailyRewardValue').value);
-        const amount = parseInt(document.getElementById('dailyRewardMultiplierUses').value); // Uses input'unu amount için kullanıyoruz
-        if (isNaN(value) || value <= 0 || isNaN(amount) || amount <= 0) {
-            displayMessage("Can Yenileme İksiri için geçerli bir 'Yüzde Değeri' ve 'Adet' girin.");
-            return;
-        }
-        rewardData.value = value;
-        rewardData.amount = amount; // amount olarak kaydediyoruz
-    } else {
-        const value = parseStatValue(type, document.getElementById('dailyRewardValue').value);
-        if (isNaN(value) || value <= 0) {
-            displayMessage("Bu ödül tipi için geçerli bir 'Değer' girmelisiniz.");
-            return;
-        }
-        rewardData.value = value;
-    }
-    
-    if (editingDailyRewardId) {
-        await db.ref('dailyRewardOptions/' + editingDailyRewardId).update(rewardData);
-        displayMessage("Günlük ödül başarıyla güncellendi.");
-    } else {
         await db.ref('dailyRewardOptions').push(rewardData);
         displayMessage("Yeni günlük ödül başarıyla oluşturuldu.");
     }
     
-    resetDailyRewardForm();
     closeAdminDailyRewardModal();
-    openDailyRewardModal();
-}
-
-function handleDailyRewardTypeChange() {
-    updateRewardInputFields(document.getElementById('dailyRewardType'));
 }
 
 // Bu event listener'ı script'in en altına veya uygun bir yere ekleyin.
@@ -18440,93 +18358,58 @@ function addLoginStreakDay(dayData = { rewards: [] }, dayNumber = null) {
 // MEVCUT addRewardToDay FONKSİYONUNU SİL VE BUNU YAPIŞTIR
 
 function addRewardToDay(element, rewardData = {}) {
+    // Bu fonksiyon, bir butondan veya bir konteynerden çağrılabilir. Doğru listeyi bulur.
     const rewardsListContainer = element.matches('.rewards-list') ? element : element.closest('.p-4').querySelector('.rewards-list');
     
     const rewardRow = document.createElement('div');
-    rewardRow.className = 'reward-entry grid grid-cols-1 sm:grid-cols-3 gap-2 p-2 bg-gray-900/50 rounded-md';
-    rewardRow.innerHTML = `
-        <select class="box-setting-input reward-type" onchange="handleAdminRewardTypeChange(this)">
-            <option value="points">💰 Puan</option>
-            <option value="kasaPuani">🏦 Kasa Puanı</option>
-            <option value="boxRights">📦 Kutu Hakkı</option>
-            <option value="wheelTicket">🎫 Çark Bileti</option>
-            <option value="clickCatchTicket">🎟️ T-Y Bileti</option>
-            <option value="iflasShield">🛡️ İflas Kalkanı</option>
-            <option value="wildcard">🃏 Joker Kart</option>
-            <option value="revival_stone">💎 Dirilme Taşı</option>
-            <option value="avatar">👤 Avatar</option>
-            <option value="card">🎴 Belirli Koleksiyon Kartı</option>
-            <option value="tempMultiplier">✖️ Belirli Bir Çarpan</option>
-            <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
-            <option value="health_potion">🧪 Can Bonusu</option>
-            <option value="damage_potion">⚔️ Hasar Bonusu</option>
-            <option value="defense_potion">🛡️ Savunma Bonusu</option>
-            <option value="crit_potion">💥 Kritik Vuruş Bonusu</option>
-            <option value="crit_damage_potion">🎯 Kritik Hasar Bonusu</option>
-            <option value="dodge_potion">💨 Sıyrılma Bonusu</option>
-            <option value="pierce_potion">📌 Delici Vuruş Bonusu</option>
-            <option value="special">🚀 Özel Ürün (Onay Gerekir)</option>
-            <option value="card_pack">🎴 Standart Kart Paketi</option>
-            <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
-            <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
-            <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
-            <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
-        </select>
-        <div class="reward-fields-container grid grid-cols-2 gap-2 sm:col-span-2">
-            </div>
-    `;
+    // Yeni `getRewardItemHTML` fonksiyonunu kullanarak satırın iskeletini oluşturur
+    rewardRow.innerHTML = getRewardItemHTML('login_streak_reward', rewardData);
     rewardsListContainer.appendChild(rewardRow);
+
+    // Yeni eklenen satırdaki select elementini bulur
     const selectElement = rewardRow.querySelector('.reward-type');
-    selectElement.value = rewardData.type || 'points'; // Değeri ayarla
-    handleAdminRewardTypeChange(selectElement, rewardData);
+    if (selectElement) {
+        // Değerini ayarlar (eğer düzenleme yapılıyorsa)
+        selectElement.value = rewardData.type || 'points';
+        // Ve doğru input alanlarının oluşması için ana fonksiyonu çağırır.
+        handleAdminRewardTypeChange(selectElement, rewardData);
+    }
 }
       
-      
-// YENİ JAVASCRIPT KODU (BUNU YAPIŞTIR)
+// MEVCUT saveLoginStreakRewards FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+
 async function saveLoginStreakRewards(shouldResetProgress = false) {
     if (!isAdmin) return;
     const container = document.getElementById('adminLoginStreakRowsContainer');
     const newRewardsData = [];
     let hasError = false;
 
+    // Her gün için verileri oku
     Array.from(container.children).forEach((dayRow, dayIndex) => {
         if (hasError) return;
         const dayRewards = [];
         
+        // O güne ait tüm ödül satırlarını oku
         dayRow.querySelectorAll('.rewards-list .reward-entry').forEach((rewardRow, rewardIndex) => {
             if (hasError) return;
-            const reward = { type: rewardRow.querySelector('.reward-type').value };
-
-            if (reward.type === 'tempMultiplier') {
-                reward.value = parseInt(rewardRow.querySelector('.reward-value').value);
-                reward.uses = parseInt(rewardRow.querySelector('.reward-uses').value);
-                if (isNaN(reward.value) || isNaN(reward.uses) || reward.value <= 0 || reward.uses <= 0) {
-                    displayMessage(`${dayIndex + 1}. gün, ${rewardIndex + 1}. ödül (Çarpan) için geçerli Değer ve Kullanım Hakkı girin.`);
-                    hasError = true; return;
-                }
-            } else if (reward.type === 'avatar') {
-                reward.avatarName = rewardRow.querySelector('.reward-avatarName').value.trim();
-                reward.avatarImageUrl = rewardRow.querySelector('.reward-avatarImageUrl').value.trim();
-                if (!reward.avatarName || !reward.avatarImageUrl) {
-                    displayMessage(`${dayIndex + 1}. gün, ${rewardIndex + 1}. ödül (Avatar) için Ad ve Resim URL'si girin.`);
-                    hasError = true; return;
-                }
+            // Yeni `parseRewardDataFromRow` fonksiyonunu kullanarak ödül verisini al
+            const reward = parseRewardDataFromRow(rewardRow);
+            if (reward) {
+                dayRewards.push(reward);
             } else {
-                reward.value = parseStatValue(reward.type, rewardRow.querySelector('.reward-value').value);
-                if (isNaN(reward.value) || reward.value <= 0) {
-                    displayMessage(`${dayIndex + 1}. gün, ${rewardIndex + 1}. ödül için geçerli bir Miktar/Adet girin.`);
-                    hasError = true; return;
-                }
+                displayMessage(`${dayIndex + 1}. gün, ${rewardIndex + 1}. ödül için girdiğiniz bilgiler geçersiz.`);
+                hasError = true;
             }
-            dayRewards.push(reward);
         });
         
         if (hasError) return;
 
+        // Paket bilgilerini oku
         const dayName = dayRow.querySelector('.reward-name')?.value.trim() || `${dayIndex + 1}. Gün Ödülü`;
         const dayDescription = dayRow.querySelector('.reward-description')?.value.trim() || `Giriş yaparak bu paketi kazan!`;
         const dayImageUrl = dayRow.querySelector('.reward-imageUrl')?.value.trim() || '';
         
+        // Eğer o günde en az bir ödül varsa, günü ana listeye ekle
         if (dayRewards.length > 0) {
             newRewardsData.push({ 
                 day: dayIndex + 1, 
@@ -18540,19 +18423,13 @@ async function saveLoginStreakRewards(shouldResetProgress = false) {
 
     if (hasError) return;
 
-    // --- DEĞİŞİKLİK BURADA BAŞLIYOR ---
-
-    // 1. Basılan butona göre (true/false) farklı bir onay mesajı gösteriyoruz.
-    let confirmationMessage = '';
-    if (shouldResetProgress) {
-        confirmationMessage = `${newRewardsData.length} günlük yeni bir Giriş Serisi oluşturulacak. Mevcut seri silinecek ve tüm kullanıcıların ilerlemesi SIFIRLANACAK. Emin misiniz?`;
-    } else {
-        confirmationMessage = `Giriş serisi ödüllerini bu ayarlarla güncellemek istediğinize emin misiniz? <br><br><small class="text-yellow-300">Bu işlem oyuncuların mevcut serilerini SIFIRLAMAZ, sadece ödülleri günceller.</small>`;
-    }
+    // Onay ve kaydetme mantığı (bu kısım zaten doğruydu)
+    let confirmationMessage = shouldResetProgress
+        ? `${newRewardsData.length} günlük yeni bir Giriş Serisi oluşturulacak. Mevcut seri silinecek ve tüm kullanıcıların ilerlemesi SIFIRLANACAK. Emin misiniz?`
+        : `Giriş serisi ödüllerini bu ayarlarla güncellemek istediğinize emin misiniz? <br><br><small class="text-yellow-300">Bu işlem oyuncuların mevcut serilerini SIFIRLAMAZ, sadece ödülleri günceller.</small>`;
 
     const confirmed = await customConfirm(confirmationMessage);
     if (confirmed) {
-        // 2. Eğer "Sıfırla" butonuna basıldıysa (shouldResetProgress === true ise) bu blok çalışır.
         if (shouldResetProgress) {
             const usersSnap = await db.ref('users').once('value');
             const updates = {};
@@ -18564,21 +18441,15 @@ async function saveLoginStreakRewards(shouldResetProgress = false) {
             await db.ref().update(updates);
         }
 
-        // Bu kısım her iki durumda da çalışır: Ödül ayarlarını kaydeder.
         await db.ref('gameConfig/loginStreakRewards').set(newRewardsData);
         loginStreakRewardsCache = newRewardsData;
 
-        // 3. Başarı mesajını da basılan butona göre dinamik olarak gösteriyoruz.
-        let successMessage = '';
-        if (shouldResetProgress) {
-            successMessage = "Giriş Serisi başarıyla güncellendi ve tüm oyuncuların ilerlemesi sıfırlandı.";
-        } else {
-            successMessage = "Giriş Serisi başarıyla güncellendi. Oyuncuların ilerlemesi korunmuştur.";
-        }
+        let successMessage = shouldResetProgress
+            ? "Giriş Serisi başarıyla güncellendi ve tüm oyuncuların ilerlemesi sıfırlandı."
+            : "Giriş Serisi başarıyla güncellendi. Oyuncuların ilerlemesi korunmuştur.";
         displayMessage(successMessage);
 
         closeAdminLoginStreakModal();
-        openLoginStreakModal();
     }
 }
       
@@ -18946,7 +18817,7 @@ function addMaterialRowToRecipeCreatorFromButton(button) {
     addMaterialRowToRecipeCreator();
 }
 
-// MEVCUT getRewardItemHTML FONKSİYONUNU SİLİP BUNU YAPIŞTIRIN
+// MEVCUT getRewardItemHTML FONKSİYONUNU SİL VE BUNU YAPIŞTIR
 
 /**
  * Admin: Giriş serisi veya Üretim paneli için bir ödül/malzeme satırının HTML'ini oluşturur.
@@ -18954,8 +18825,6 @@ function addMaterialRowToRecipeCreatorFromButton(button) {
  * @param {object} data - Varsa, satırı doldurmak için kullanılacak veri.
  * @returns {string} Oluşturulan HTML satırı.
  */
-// MEVCUT getRewardItemHTML FONKSİYONUNU SİL VE BUNU YAPIŞTIR
-
 function getRewardItemHTML(prefix, data = {}) {
     let cardOptions = allCardsCache.map(card => 
         `<option value="${card.id}" ${data.cardId === card.id ? 'selected' : ''}>${card.cardName}</option>`
@@ -19003,7 +18872,7 @@ function getRewardItemHTML(prefix, data = {}) {
     
     const deleteButton = prefix === 'material' ? 
         `<div class="col-span-2 sm:col-span-1 flex justify-end">
-            <button onclick="this.parentElement.parentElement.remove()" class="py-1 px-2 bg-red-600 hover:bg-red-500 rounded-md text-xs">Sil</button>
+            <button onclick="this.parentElement.parentElement.parentElement.remove()" class="py-1 px-2 bg-red-600 hover:bg-red-500 rounded-md text-xs">Sil</button>
          </div>` 
         : '';
     
@@ -19025,6 +18894,25 @@ function getRewardItemHTML(prefix, data = {}) {
     `;
 }
       
+// MEVCUT handle...Change FONKSİYONLARINI BU BLOKTAKİLERLE DEĞİŞTİR
+
+function handleBulkSendItemTypeChange(selectElement) {
+    updateRewardInputFields(selectElement);
+}
+
+function handleSendItemTypeChange(selectElement) {
+    updateRewardInputFields(selectElement);
+}
+
+function handleStoreItemTypeChange() {
+    updateRewardInputFields(document.getElementById('newItemType'));
+}
+
+function handleDailyRewardTypeChange() {
+    updateRewardInputFields(document.getElementById('dailyRewardType'));
+}
+
+// Bu fonksiyon, Üretim ve Kelime Oyunu panellerindeki satır içi select'ler için genel bir handler olur
 function handleAdminRewardTypeChange(selectElement, rewardData = {}) {
     updateRewardInputFields(selectElement, rewardData);
 }
@@ -19130,6 +19018,7 @@ async function saveWordGameSettings(shouldResetProgress = false) {
                     solvedAt: null
                 };
 
+                // Eğer ilerleme korunacaksa, eski çözülmüş harfleri yeni veriye aktar
                 if (!shouldResetProgress && oldGameData && oldGameData.questions && oldGameData.questions[qIndex]) {
                     const oldQuestion = oldGameData.questions[qIndex];
                     if (oldQuestion.answer === answer && oldQuestion.letters[i] && oldQuestion.letters[i].solved) {
@@ -19145,6 +19034,7 @@ async function saveWordGameSettings(shouldResetProgress = false) {
         
         if (hasError) return;
 
+        // Bekleme sürelerini oku
         const days = parseInt(document.getElementById('cooldownDays').value) || 0;
         const hours = parseInt(document.getElementById('cooldownHours').value) || 0;
         const minutes = parseInt(document.getElementById('cooldownMinutes').value) || 0;
@@ -19157,18 +19047,19 @@ async function saveWordGameSettings(shouldResetProgress = false) {
         const cSeconds = parseInt(document.getElementById('correctCooldownSeconds').value) || 0;
         const totalCorrectCooldownSeconds = (cDays * 86400) + (cHours * 3600) + (cMinutes * 60) + cSeconds;
 
-        // ★★★ DEĞİŞİKLİK BURADA: Şampiyon ödülünü de okuyup kaydediyoruz ★★★
+        // Şampiyon ödülünü oku
         const championPrizeContainer = document.getElementById('wordGameChampionPrizeContainer');
         const championPrize = parseRewardDataFromRow(championPrizeContainer.querySelector('.reward-entry'));
         if (!championPrize) {
             throw new Error("Şampiyon ödülü bilgileri geçersiz.");
         }
         
+        // Tüm güncellemeleri hazırla
         const updates = {};
         updates['/wordGame/settings'] = {
             cooldown: totalCooldownSeconds,
             correctGuessCooldown: totalCorrectCooldownSeconds,
-            championPrize: championPrize // Şampiyon ödülünü de ayarlara ekle
+            championPrize: championPrize
         };
         updates['/wordGame/questions'] = questions;
 
@@ -19177,6 +19068,7 @@ async function saveWordGameSettings(shouldResetProgress = false) {
             updates['/wordGame/leaderboard'] = null; 
             updates['/gameStats/wordGameChampion'] = null;
             
+            // Tüm kullanıcıların bekleme sürelerini sıfırla
             const usersSnap = await db.ref('users').once('value');
             if (usersSnap.exists()) {
                 usersSnap.forEach(user => {
@@ -19226,49 +19118,6 @@ function generateRewardFields(answerInput, lettersData = null) {
             handleAdminRewardTypeChange(newRow.querySelector('.reward-type'), rewardData);
         }
     }
-}
-
-// MEVCUT parseRewardDataFromRow FONKSİYONUNU SİL VE BUNU YAPIŞTIR
-
-function parseRewardDataFromRow(rowElement) {
-    if (!rowElement) return null;
-    const type = rowElement.querySelector('.reward-type').value;
-    const data = { type };
-
-    if (type === 'tempMultiplier') {
-        data.value = parseInt(rowElement.querySelector('.reward-value')?.value);
-        data.uses = parseInt(rowElement.querySelector('.reward-uses')?.value);
-        if (isNaN(data.value) || isNaN(data.uses)) return null;
-    } else if (type === 'avatar') {
-        data.avatarName = rowElement.querySelector('.reward-avatarName')?.value.trim();
-        data.avatarImageUrl = rowElement.querySelector('.reward-avatarImageUrl')?.value.trim();
-        if (!data.avatarName || !data.avatarImageUrl) return null;
-    } else if (type === 'card') {
-        data.cardId = rowElement.querySelector('.reward-cardId')?.value;
-        data.amount = parseInt(rowElement.querySelector('.reward-value')?.value);
-        if (!data.cardId || isNaN(data.amount)) return null;
-    } else if (type === 'special') {
-        data.specialName = rowElement.querySelector('.reward-specialName')?.value.trim();
-        if (!data.specialName) return null;
-    } else if (type === 'health_regen_potion') {
-        data.value = parseInt(rowElement.querySelector('.reward-value')?.value);
-        data.amount = parseInt(rowElement.querySelector('.reward-amount')?.value);
-        if (isNaN(data.value) || isNaN(data.amount)) return null;
-    } else {
-        const valueInput = rowElement.querySelector('.reward-value');
-        if (valueInput) {
-            data.amount = parseStatValue(type, valueInput.value);
-            if (isNaN(data.amount)) return null;
-        }
-    }
-    
-    data.name = rowElement.querySelector('.reward-name')?.value.trim();
-    data.imageUrl = rowElement.querySelector('.reward-imageUrl')?.value.trim();
-    
-    if(!data.name) delete data.name;
-    if(!data.imageUrl) delete data.imageUrl;
-    
-    return data;
 }
 
 // ESKİ checkIfUserCanCraft FONKSİYONUNU SİLİP, BUNU YAPIŞTIRIN
@@ -23300,14 +23149,22 @@ async function applyRewardToUserDB(username, prizeData, source = null) {
     });
 }
 
-// BU YEPYENİ FONKSİYONU SCRIPT BLOĞUNUN UYGUN BİR YERİNE EKLE
+// BU YEPYENİ FONKSİYONLARI SCRIPT BLOĞUNUN UYGUN BİR YERİNE EKLE
 
+/**
+ * Bir ödül tipi seçildiğinde ilgili input alanlarını dinamik olarak oluşturur ve doldurur.
+ * Tüm admin panelleri bu tek fonksiyonu kullanır.
+ * @param {HTMLElement} selectElement - `onchange` event'inin geldiği <select> elementi.
+ * @param {object} data - Varsa, input'ları doldurmak için kullanılacak veri.
+ */
 function updateRewardInputFields(selectElement, data = {}) {
     const type = selectElement.value;
     const container = selectElement.closest('.reward-entry').querySelector('.reward-fields-container');
     if (!container) return;
     
     let fieldsHtml = '';
+    // Kart listesini her seferinde taze olarak oluştur
+    let cardOptions = allCardsCache.map(card => `<option value="${card.id}" ${data.cardId === card.id ? 'selected' : ''}>${card.cardName}</option>`).join('');
 
     if (type === 'tempMultiplier') {
         fieldsHtml = `
@@ -23320,7 +23177,6 @@ function updateRewardInputFields(selectElement, data = {}) {
             <input type="text" class="box-setting-input reward-avatarImageUrl" placeholder="Avatar Resim URL" value="${data.avatarImageUrl || ''}">
         `;
     } else if (type === 'card') {
-        let cardOptions = allCardsCache.map(card => `<option value="${card.id}" ${data.cardId === card.id ? 'selected' : ''}>${card.cardName}</option>`).join('');
         fieldsHtml = `
             <select class="box-setting-input reward-cardId">${cardOptions}</select>
             <input type="number" class="box-setting-input reward-value" placeholder="Adet" value="${data.amount || data.value || ''}">
@@ -23343,6 +23199,57 @@ function updateRewardInputFields(selectElement, data = {}) {
     }
     
     container.innerHTML = fieldsHtml;
+}
+
+/**
+ * Bir ödül/malzeme satırındaki input'lardan veriyi okur ve gestandart bir obje formatında döndürür.
+ * Tüm admin "kaydet" fonksiyonları bu tek fonksiyonu kullanır.
+ * @param {HTMLElement} rowElement - Verinin okunacağı .reward-entry class'ına sahip div elementi.
+ * @returns {object|null} Başarılıysa veri objesi, değilse null.
+ */
+function parseRewardDataFromRow(rowElement) {
+    if (!rowElement) return null;
+    const type = rowElement.querySelector('.reward-type').value;
+    const data = { type };
+
+    // Her tipe göre ilgili input'lardan veriyi oku ve işle
+    if (type === 'tempMultiplier') {
+        data.value = parseInt(rowElement.querySelector('.reward-value')?.value);
+        data.uses = parseInt(rowElement.querySelector('.reward-uses')?.value);
+        if (isNaN(data.value) || isNaN(data.uses)) return null;
+    } else if (type === 'avatar') {
+        data.avatarName = rowElement.querySelector('.reward-avatarName')?.value.trim();
+        data.avatarImageUrl = rowElement.querySelector('.reward-avatarImageUrl')?.value.trim();
+        if (!data.avatarName || !data.avatarImageUrl) return null;
+    } else if (type === 'card') {
+        data.cardId = rowElement.querySelector('.reward-cardId')?.value;
+        data.amount = parseInt(rowElement.querySelector('.reward-value')?.value);
+        if (!data.cardId || isNaN(data.amount)) return null;
+    } else if (type === 'special') {
+        data.specialName = rowElement.querySelector('.reward-specialName')?.value.trim();
+        if (!data.specialName) return null;
+    } else if (type === 'health_regen_potion') {
+        data.value = parseInt(rowElement.querySelector('.reward-value')?.value);
+        data.amount = parseInt(rowElement.querySelector('.reward-amount')?.value);
+        if (isNaN(data.value) || isNaN(data.amount)) return null;
+    } else {
+        const valueInput = rowElement.querySelector('.reward-value');
+        if (valueInput) {
+            // parseStatValue, ondalıklı sayıları doğru işlemeni sağlar
+            data.amount = parseStatValue(type, valueInput.value);
+            if (isNaN(data.amount)) return null;
+        }
+    }
+    
+    // Opsiyonel alanları da oku (Üretim Paneli için)
+    data.name = rowElement.querySelector('.reward-name')?.value.trim();
+    data.imageUrl = rowElement.querySelector('.reward-imageUrl')?.value.trim();
+    
+    // Eğer bu alanlar boşsa, objeye ekleme
+    if(!data.name) delete data.name;
+    if(!data.imageUrl) delete data.imageUrl;
+    
+    return data;
 }
    
 // YENİ EKLENECEK FONKSİYONLAR SONU
