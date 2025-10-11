@@ -13194,11 +13194,19 @@ async function listenForGlobalNotifications() {
         prize: parseInt(document.getElementById('lobbyPrize').value) || 1000,
         itemInterval: parseInt(document.getElementById('lobbyItemInterval').value) || 800,
         state: 'waiting',
-        players: {} // Yeni lobi her zaman boş oyuncu listesiyle başlar
+        players: {} 
     };
     await db.ref('clickCatchLobby').set(lobbyData);
 
-    logActivity('newClickCatchLobby', 'WeizendTv', { prize: lobbyData.prize, target: lobbyData.target });
+    // --- İSTEDİĞİN GÜNCELLEME BURADA ---
+    // Lobi kurulduğunda "Son Eylemler" için bir kayıt oluşturuyoruz.
+    logActivity('newClickCatchLobby', 'WeizendTv', { 
+        prize: lobbyData.prize, 
+        target: lobbyData.target,
+        entryFee: lobbyData.entryFee,
+        entryTickets: lobbyData.entryTickets
+    });
+    // --- GÜNCELLEME SONU ---
 
     displayMessage("Lobi kuruldu. Oyuncular katıldıktan sonra 'Oyunu Başlat' butonuna bas.");
 }
@@ -23003,8 +23011,6 @@ function renderWordGameStatsAndPrize(gameData) {
     container.classList.remove('hidden');
 }
 
-// ESKİ renderActivityFeedEvents FONKSİYONUNU SİL VE BUNU YAPIŞTIR
-
 async function renderActivityFeedEvents() {
     const container = document.getElementById('activityFeedEvents');
     const toggleBtn = document.getElementById('eventsToggleBtn');
@@ -23013,33 +23019,32 @@ async function renderActivityFeedEvents() {
     container.innerHTML = `<p class="text-center text-gray-400">Etkinlik durumları yükleniyor...</p>`;
 
     try {
-        // ★★★ DEĞİŞİKLİK: Artık mağaza ürünlerini de çekiyoruz ★★★
         const [
             monsterSnap, weeklySnap, scoresSnap, wordGameSnap, 
-            cardStatusSnap, cardPrizeSnap, finishersSnap, 
-            lastMonsterChampionSnap, weeklyWinnerSnap, wordGameChampionSnap,
-            storeItemsSnap 
+            cardStatusSnap, lastMonsterChampionSnap, weeklyWinnerSnap, 
+            wordGameChampionSnap, storeItemsSnap, lobbySnap
         ] = await Promise.all([
             db.ref('gameConfig/monsterBattle').once('value'),
             db.ref('gameConfig/weeklyClickCatchReset').once('value'),
             db.ref('clickCatchWeeklyScores').orderByValue().limitToLast(1).once('value'),
             db.ref('wordGame').once('value'),
             db.ref('gameConfig/cardCollectionStatus').once('value'),
-            db.ref('gameConfig/collectionGrandPrize').once('value'),
-            db.ref('gameStats/collectionFinishers').orderByChild('timestamp').limitToFirst(1).once('value'),
             db.ref('gameStats/lastMonsterChampion').once('value'),
             db.ref('gameStats/weeklyClickCatchWinner').once('value'),
             db.ref('gameStats/wordGameChampion').once('value'),
-            db.ref('storeItems').once('value') // Mağaza ürünlerini çek
+            db.ref('storeItems').once('value'),
+            db.ref('clickCatchLobby').once('value') // Tıkla-Yakala Lobisini de çekiyoruz
         ]);
+        
+        // Asenkron fonksiyonları çağır ve sonuçlarını bekle
+        const monsterHtml = await buildMonsterEventCard(monsterSnap.val(), lastMonsterChampionSnap.val());
+        const clickCatchHtml = await buildClickCatchEventCard(weeklySnap.val(), scoresSnap.val(), weeklyWinnerSnap.val());
+        const wordGameHtml = await buildWordGameEventCard(wordGameSnap.val(), wordGameChampionSnap.val());
+        const cardCollectionHtml = await buildCardCollectionEventCard(); // Parametreleri kaldırdık, kendi içinde halledecek
+        const storeHtml = await buildStoreEventCard(storeItemsSnap.val());
+        const lobbyHtml = await buildLobbyEventCard(lobbySnap.val()); // Yeni Lobi kartı fonksiyonunu çağır
 
-        const monsterHtml = buildMonsterEventCard(monsterSnap.val(), lastMonsterChampionSnap.val());
-        const clickCatchHtml = buildClickCatchEventCard(weeklySnap.val(), scoresSnap.val(), weeklyWinnerSnap.val());
-        const wordGameHtml = buildWordGameEventCard(wordGameSnap.val(), wordGameChampionSnap.val());
-        const cardCollectionHtml = buildCardCollectionEventCard(cardStatusSnap.val(), cardPrizeSnap.val(), finishersSnap.val());
-        const storeHtml = buildStoreEventCard(storeItemsSnap.val()); // ★★★ YENİ: Mağaza kartlarını oluştur ★★★
-
-        const allHtml = [storeHtml, monsterHtml, clickCatchHtml, wordGameHtml, cardCollectionHtml].filter(Boolean);
+        const allHtml = [storeHtml, monsterHtml, lobbyHtml, clickCatchHtml, wordGameHtml, cardCollectionHtml].filter(Boolean);
         const hasActiveEvents = allHtml.some(html => html.includes('animate-pulse'));
 
         if (allHtml.length > 0) {
@@ -23061,7 +23066,26 @@ async function renderActivityFeedEvents() {
     }
 }
 
-// BU 3 YENİ FONKSİYONU SCRIPT BLOĞUNUN SONUNA EKLE
+      async function buildLobbyEventCard(lobbyData) {
+    if (!lobbyData || lobbyData.state !== 'waiting') {
+        return ''; // Sadece bekleme durumundaki lobileri göster
+    }
+
+    const useTickets = lobbyData.entryTickets > 0;
+    const entryRequirement = useTickets ? `${lobbyData.entryTickets} Bilet` : `${lobbyData.entryFee} Puan`;
+
+    return `
+        <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-blue-500">
+            <p class="font-bold text-blue-400">Tıkla-Yakala Lobisi Kuruldu!</p>
+            <p class="text-sm">Giriş: <b class="text-white">${entryRequirement}</b> | Hedef: <b class="text-white">${lobbyData.target}</b></p>
+            <p class="text-sm">Büyük Ödül: <b class="text-green-400">${formatNumber(lobbyData.prize)} Puan</b></p>
+            <div class="flex justify-between items-center mt-2">
+                <span class="text-xs text-green-400 animate-pulse">Katılım bekleniyor...</span>
+                <button onclick="goToSectionAndScroll('clickCatch', 'clickCatchStartScreen')" class="text-xs py-1 px-3 bg-blue-600 hover:bg-blue-500 rounded-md">Şimdi Git</button>
+            </div>
+        </div>
+    `;
+}
 
 function buildStoreEventCard(storeItems) {
     if (!storeItems) return '';
@@ -23138,8 +23162,8 @@ function updateEventCountdowns() {
 }
 
 async function buyItemFromEventCard(itemId) {
-    // Bu fonksiyon, ana `buyItem` fonksiyonunu çağırarak kod tekrarını önler.
-    // Bu sayede mağazadaki tüm kontroller (bakiye, stok vb.) burada da geçerli olur.
+    closeActivityFeed(); // Önce etkinlik panelini kapat
+    // Ana 'buyItem' fonksiyonunu çağırarak tüm kontrolleri (bakiye, stok vb.) kullan
     await buyItem(itemId);
 }
 
@@ -23305,65 +23329,89 @@ async function applyRewardToUserDB(username, prizeData, source = null) {
     });
 }
 
-function buildCardCollectionEventCard(status, prizeData, finishersData) {
-    if (status !== 'active') {
-        return ''; // Sezon aktif değilse hiçbir şey gösterme
-    }
-    
-    let prizeHtml = '<p class="text-sm"><b class="text-green-400">Koleksiyon Tamamlama Ödülleri:</b><br>Henüz ödül belirlenmedi.</p>';
-    if (prizeData) {
-        let prizeParts = [];
-        if (prizeData.points > 0) prizeParts.push(`${formatNumber(prizeData.points)} Puan`);
-        if (prizeData.boxRights > 0) prizeParts.push(`${prizeData.boxRights} Kutu Hakkı`);
-        if (prizeData.wheelTickets > 0) prizeParts.push(`${prizeData.wheelTickets} Çark Bileti`);
-        if (prizeData.avatarName) prizeParts.push(`'${prizeData.avatarName}' Avatarı`);
+async function buildCardCollectionEventCard() { // Fonksiyonu async olarak değiştir
+    try {
+        const [statusSnap, prizeSnap, finishersSnap] = await Promise.all([
+            db.ref('gameConfig/cardCollectionStatus').once('value'),
+            db.ref('gameConfig/collectionGrandPrize').once('value'),
+            db.ref('gameStats/collectionFinishers').orderByChild('timestamp').limitToFirst(1).once('value')
+        ]);
+
+        const status = statusSnap.val();
+        const prizeData = prizeSnap.val();
+        const finishersData = finishersSnap.val();
+
+        if (status !== 'active') {
+            return ''; // Sezon aktif değilse hiçbir şey gösterme
+        }
         
-        if (prizeParts.length > 0) {
-            prizeHtml = `<p class="text-sm"><b class="text-green-400">Koleksiyon Tamamlama Ödülleri:</b><br>${prizeParts.join(' | ')}</p>`;
+        let prizeHtml = '<p class="text-sm"><b class="text-green-400">Koleksiyon Tamamlama Ödülleri:</b><br>Henüz ödül belirlenmedi.</p>';
+        if (prizeData) {
+            let prizeParts = [];
+            if (prizeData.points > 0) prizeParts.push(`${formatNumber(prizeData.points)} Puan`);
+            if (prizeData.boxRights > 0) prizeParts.push(`${prizeData.boxRights} Kutu Hakkı`);
+            if (prizeData.wheelTickets > 0) prizeParts.push(`${prizeData.wheelTickets} Çark Bileti`);
+            if (prizeData.avatarName) prizeParts.push(`'${prizeData.avatarName}' Avatarı`);
+            
+            if (prizeParts.length > 0) {
+                prizeHtml = `<p class="text-sm"><b class="text-green-400">Koleksiyon Tamamlama Ödülleri:</b><br>${prizeParts.join(' | ')}</p>`;
+            }
         }
-    }
 
-    // Kullanıcının istediği özel metin
-    const firstPrizeHtml = `
-        <p class="text-sm mt-2">
-            <b class="text-amber-400">Koleksiyonu İlk Tamamlama Ödülleri:</b><br>
-            İlk tamamlayan kullanıcıya ek ödüller; Profilinde kalıcı şampiyonluk başarımı, Discord sunucumuzda ki '🔑VİP' sesli sohbet odasına giriş rolü, İlave +10.000 puan, 10 kutu hakkı ve 10 çark bileti verilecektir.
-        </p>
-    `;
-
-    let leaderText = 'İlk tamamlayan: <span class="text-gray-400">bekleniyor...</span>';
-    if (finishersData) {
-        const firstFinisher = Object.values(finishersData)[0];
-        if (firstFinisher) {
-            leaderText = `İlk tamamlayan: <b class="text-white">${firstFinisher.username}</b>`;
+        // --- İSTEDİĞİN GÜNCELLEME BURADA ---
+        // Artık "description" alanını kontrol edip, varsa onu gösteriyoruz.
+        let firstPrizeHtml = '';
+        if (prizeData && prizeData.description) {
+            firstPrizeHtml = `
+                <p class="text-sm mt-2">
+                    <b class="text-amber-400">Ek Ödüller & Bilgiler:</b><br>
+                    ${prizeData.description}
+                </p>
+            `;
         }
-    }
-    
-    return `
-        <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-yellow-500">
-            <p class="font-bold text-yellow-400">Kart Koleksiyonu Etkinliği Başladı!</p>
-            ${prizeHtml}
-            ${firstPrizeHtml}
-            <p class="text-sm mt-2">${leaderText}</p>
-            <div class="flex justify-between items-center mt-2">
-                <span class="text-xs text-green-400 animate-pulse">Sezon Devam Ediyor</span>
-                <button onclick="goToSectionAndScroll('cardCollection', 'collectionFinishersLeaderboard')" class="text-xs py-1 px-3 bg-yellow-600 hover:bg-yellow-500 rounded-md">Şimdi Git</button>
+        // --- GÜNCELLEME SONU ---
+
+        let leaderText = 'İlk tamamlayan: <span class="text-gray-400">bekleniyor...</span>';
+        if (finishersData) {
+            const firstFinisher = Object.values(finishersData)[0];
+            if (firstFinisher) {
+                leaderText = `İlk tamamlayan: <b class="text-white">${firstFinisher.username}</b>`;
+            }
+        }
+        
+        return `
+            <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-yellow-500">
+                <p class="font-bold text-yellow-400">Kart Koleksiyonu Etkinliği Başladı!</p>
+                ${prizeHtml}
+                ${firstPrizeHtml}
+                <p class="text-sm mt-2">${leaderText}</p>
+                <div class="flex justify-between items-center mt-2">
+                    <span class="text-xs text-green-400 animate-pulse">Sezon Devam Ediyor</span>
+                    <button onclick="goToSectionAndScroll('cardCollection', 'collectionFinishersLeaderboard')" class="text-xs py-1 px-3 bg-yellow-600 hover:bg-yellow-500 rounded-md">Şimdi Git</button>
+                </div>
             </div>
-        </div>
-    `;
+        `;
+
+    } catch (error) {
+        console.error("Kart koleksiyonu etkinlik kartı oluşturulurken hata:", error);
+        return ''; // Hata durumunda boş döndür
+    }
 }
 
-// --- YENİ EKLENECEK FONKSİYON: ETKİNLİK BÖLÜMÜNÜ AÇIP KAPATIR ---
 function toggleEventsSection() {
     const eventsContainer = document.getElementById('activityFeedEvents');
-    const toggleBtn = document.getElementById('eventsToggleBtn').querySelector('span');
+    const toggleBtn = document.getElementById('eventsToggleBtn');
+    const btnSpan = toggleBtn.querySelector('span');
     
     eventsContainer.classList.toggle('hidden');
     
     if (eventsContainer.classList.contains('hidden')) {
-        toggleBtn.textContent = 'Etkinlikleri Gör';
+        btnSpan.textContent = 'Etkinlikleri Gör';
     } else {
-        toggleBtn.textContent = 'Sayfayı Küçült';
+        btnSpan.textContent = 'Sayfayı Küçült';
+        // Kullanıcı butona tıkladığında, yani etkinlikleri gördüğünde,
+        // kırmızı nokta (animasyon) sınıfını kaldırıyoruz.
+        toggleBtn.classList.remove('has-active-events');
     }
 }
 
