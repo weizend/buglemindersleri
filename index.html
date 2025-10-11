@@ -2772,9 +2772,18 @@ body.modal-open .modal-content {
       <p class="text-center text-gray-400">Tüm yönetim araçları elinizin altında.</p>
     </div>
 
-    <div class="flex-grow grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-y-auto scrollable-list pr-2">
+    <div class="flex-grow grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto scrollable-list pr-2">
+      
+      <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700 flex flex-col">
+        <h4 class="text-yellow-200 text-xl font-semibold mb-4 border-b border-gray-600 pb-2 flex-shrink-0">Kullanıcı Yönetimi</h4>
+        <div class="flex-shrink-0 mb-4">
+          <input type="text" id="searchUser" placeholder="Kullanıcı Ara..." oninput="searchUsers()" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 transition duration-300">
+        </div>
+        <div id="allUsers" class="flex-grow scrollable-list overflow-y-auto bg-gray-900/50 p-2 rounded-md max-h-[65rem]">Yükleniyor...</div>
+      </div>
       
       <div class="flex flex-col gap-6">
+
         <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
           <h4 class="text-yellow-200 text-xl font-semibold mb-4 border-b border-gray-600 pb-2">Onay Bekleyenler</h4>
           <div class="space-y-4">
@@ -2789,104 +2798,93 @@ body.modal-open .modal-content {
           </div>
         </div>
 
+        <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
+          <h4 class="text-yellow-200 text-xl font-semibold mb-4 border-b border-gray-600 pb-2">Toplu Eşya Gönderimi</h4>
+          <div class="space-y-4">
+              <div>
+                  <label for="bulkSendItemType" class="block text-sm font-medium text-gray-300 mb-1">Tüm Kullanıcılara Gönderilecek Eşya:</label>
+                  <select id="bulkSendItemType" class="box-setting-input" onchange="handleBulkSendItemTypeChange(this)">
+                    <option value="">-- Tip Seçin --</option>
+                    <option value="points">💰 Puan</option>
+                    <option value="kasaPuani">🏦 Kasa Puanı</option>
+                    <option value="boxRights">📦 Kutu Hakkı</option>
+                    <option value="wheelTicket">🎫 Çark Bileti</option>
+                    <option value="clickCatchTicket">🎟️ Tıkla-Yakala Bileti</option>
+                    <option value="iflasShield">🛡️ İflas Kalkanı</option>
+                    <option value="tempMultiplier">✖️ Çarpan (Adetli)</option>
+                    <option value="wildcard">🃏 Joker Kart</option>
+                    <option value="card_pack">🎴 Standart Kart Paketi</option>
+                    <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
+                    <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
+                    <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
+                    <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
+                    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
+                    <option value="revival_stone">💎 Dirilme Taşı</option>
+                    <option value="health_potion">🧪 Can İksiri</option>
+                    <option value="damage_potion">⚔️ Hasar İksiri</option>
+                    <option value="defense_potion">🛡️ Savunma İksiri</option>
+                    <option value="crit_potion">💥 Kritik Vuruş İksiri</option>
+                    <option value="crit_damage_potion">🎯 Kritik Hasar İksiri</option>
+                    <option value="dodge_potion">💨 Sıyrılma Şansı İksiri</option>
+                    <option value="pierce_potion">📌 Delici Şansı İksiri</option>
+                  </select>
+              </div>
+              <div id="bulkSendItemFieldsContainer" class="space-y-3"></div>
+              <div class="mt-4 flex flex-col sm:flex-row gap-4">
+                  <button onclick="confirmBulkSendItem(false)" class="flex-1 py-3 bg-red-800 hover:bg-red-700 text-white font-bold rounded-lg shadow-md">TÜM KULLANICILARDAN SİL</button>
+                  <button onclick="confirmBulkSendItem(true)" class="flex-1 py-3 bg-green-800 hover:bg-green-700 text-white font-bold rounded-lg shadow-md">TÜM KULLANICILARA GÖNDER</button>
+              </div>
+              <div class="mt-4 pt-4 border-t border-gray-600">
+                  <button onclick="resetAllPotionBonuses()" class="w-full py-3 bg-pink-800 hover:bg-pink-700 text-white font-bold rounded-lg shadow-md">
+                      🧪 Tüm Kullanıcıların İksir Bonuslarını Sıfırla
+                  </button>
+              </div>
+              <div class="mt-6 pt-4 border-t border-gray-600">
+                  <h5 class="text-yellow-200 text-lg font-semibold mb-3">Sohbet Ayarları</h5>
+                  <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+                      <label for="slowModeInput" class="text-gray-300 flex-shrink-0">Yavaş Mod (Saniye):</label>
+                      <input type="number" id="slowModeInput" class="box-setting-input flex-grow" placeholder="0 = kapalı">
+                      <button onclick="saveSlowModeSettings()" class="py-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-lg font-bold">Kaydet</button>
+                  </div>
+              </div>
+          </div>
+        </div>
+
         <div class="bg-gray-800/80 p-6 rounded-xl border border-red-400">
-  <h4 class="text-red-400 text-xl font-semibold mb-4 border-b border-gray-600 pb-2">Tehlikeli Bölge</h4>
-  <div class="flex flex-wrap gap-3 justify-center">
-    <div class="bg-gray-800/80 p-6 rounded-xl border border-green-500 w-full">
-        <h4 class="text-green-300 text-xl font-semibold mb-4 border-b border-gray-600 pb-2">🏆 Aylık Sezon Yönetimi 👑</h4>
-        <button onclick="openSeasonManagementModal()" class="w-full py-3 bg-green-800 hover:bg-green-700 text-white font-bold rounded-lg">Sezon Ayarlarını Aç</button>
-    </div>
-    <button onclick="openMaintenanceSettingsModal()" class="flex-1 py-2 px-3 bg-yellow-700 hover:bg-yellow-600 text-white font-bold rounded-lg text-sm">
-        Bakım Modu
-    </button>
-    <button onclick="forceClientUpdate()" class="w-full py-3 bg-teal-700 hover:bg-teal-600 text-white font-bold rounded-lg text-sm">
-        Tüm Kullanıcılara Güncellemeyi Zorla
-    </button>
-    <button onclick="openSurpriseCardSettingsModal()" class="flex-1 py-2 px-3 bg-yellow-600 hover:bg-yellow-500 text-black font-bold rounded-lg text-sm">Sürpriz Kart Ayarları</button>
-    <button onclick="restartSystem()" class="flex-1 py-2 px-3 bg-red-800 hover:bg-red-700 text-white font-bold rounded-lg text-sm">Sistemi Sıfırla</button>
-    <button onclick="clearAllTotalSpentPoints()" class="flex-1 py-2 px-3 bg-purple-800 hover:bg-purple-700 text-white font-bold rounded-lg text-sm">Harcanan Puanları Temizle</button>
-    <button onclick="clearPurchaseHistory()" class="flex-1 py-2 px-3 bg-pink-800 hover:bg-pink-700 text-white font-bold rounded-lg text-sm">Satın Alma Geçmişini Sil</button>
-  </div>
-</div>
-      
-      <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700 flex flex-col">
-        <h4 class="text-yellow-200 text-xl font-semibold mb-4 border-b border-gray-600 pb-2 flex-shrink-0">Kullanıcı Yönetimi</h4>
-        <div class="flex-shrink-0 mb-4">
-          <input type="text" id="searchUser" placeholder="Kullanıcı Ara..." oninput="searchUsers()" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500 transition duration-300">
-        </div>
-        <div id="allUsers" class="flex-grow scrollable-list overflow-y-auto bg-gray-900/50 p-2 rounded-md max-h-[568px]">Yükleniyor...</div>
-      </div>
-      
-      <div class="bg-gray-800/80 p-6 rounded-xl border border-gray-700">
-    <h4 class="text-yellow-200 text-xl font-semibold mb-4 border-b border-gray-600 pb-2">Toplu Eşya Gönderimi</h4>
-    <div class="space-y-4">
-        <div>
-            <label for="bulkSendItemType" class="block text-sm font-medium text-gray-300 mb-1">Tüm Kullanıcılara Gönderilecek Eşya:</label>
-            <select id="bulkSendItemType" class="box-setting-input" onchange="handleBulkSendItemTypeChange(this)">
-    <option value="">-- Tip Seçin --</option>
-    <option value="points">💰 Puan</option>
-    <option value="kasaPuani">🏦 Kasa Puanı</option>
-    <option value="boxRights">📦 Kutu Hakkı</option>
-    <option value="wheelTicket">🎫 Çark Bileti</option>
-    <option value="clickCatchTicket">🎟️ Tıkla-Yakala Bileti</option>
-    <option value="iflasShield">🛡️ İflas Kalkanı</option>
-    <option value="tempMultiplier">✖️ Çarpan (Adetli)</option>
-    <option value="wildcard">🃏 Joker Kart</option>
-    <option value="card_pack">🎴 Standart Kart Paketi</option>
-    <option value="card_pack_normal">🥉 Bronz Kart Paketi</option>
-    <option value="card_pack_gumus">🥈 Gümüş Kart Paketi</option>
-    <option value="card_pack_altin">🥇 Altın Kart Paketi</option>
-    <option value="card_pack_efsanevi">🏆 Efsanevi Kart Paketi</option>
-    <option value="health_regen_potion">🧪 Can Yenileme İksiri</option>
-    <option value="revival_stone">💎 Dirilme Taşı</option>
-    <option value="health_potion">🧪 Can İksiri</option>
-    <option value="damage_potion">⚔️ Hasar İksiri</option>
-    <option value="defense_potion">🛡️ Savunma İksiri</option>
-    <option value="crit_potion">💥 Kritik Vuruş İksiri</option>
-    <option value="crit_damage_potion">🎯 Kritik Hasar İksiri</option>
-    <option value="dodge_potion">💨 Sıyrılma Şansı İksiri</option>
-    <option value="pierce_potion">📌 Delici Şansı İksiri</option>
-</select>
-        </div>
-        <div id="bulkSendItemFieldsContainer" class="space-y-3">
-        </div>
-        <div class="mt-4 flex flex-col sm:flex-row gap-4">
-            <button onclick="confirmBulkSendItem(false)" class="flex-1 py-3 bg-red-800 hover:bg-red-700 text-white font-bold rounded-lg shadow-md">TÜM KULLANICILARDAN SİL</button>
-            <button onclick="confirmBulkSendItem(true)" class="flex-1 py-3 bg-green-800 hover:bg-green-700 text-white font-bold rounded-lg shadow-md">TÜM KULLANICILARA GÖNDER</button>
-        </div>
-
-        <div class="mt-4 pt-4 border-t border-gray-600">
-            <button onclick="resetAllPotionBonuses()" class="w-full py-3 bg-pink-800 hover:bg-pink-700 text-white font-bold rounded-lg shadow-md">
-                🧪 Tüm Kullanıcıların İksir Bonuslarını Sıfırla
-            </button>
-        </div>
-        <div id="surpriseCardSettingsModal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-[9999] hidden">
-  <div class="modal-content bg-gray-800 p-8 rounded-xl shadow-2xl border border-yellow-500 w-11/12 max-w-lg text-center relative max-h-[90vh] flex flex-col">
-    <button class="modal-close-button" onclick="closeSurpriseCardSettingsModal()">&times;</button>
-    <h3 class="text-yellow-300 text-3xl font-bold mb-6">Sürpriz Kutu Kart Ayarları</h3>
-    
-    <div class="flex-grow overflow-y-auto scrollable-list pr-4 space-y-3" id="surpriseCardSettingsRowsContainer">
-      </div>
-
-    <div class="mt-6 pt-4 border-t border-gray-700 flex flex-col sm:flex-row gap-4">
-        <button onclick="addSurpriseCardRow()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow-md">Yeni Kart Ekle</button>
-        <button onclick="resetSurpriseCardsToDefault()" class="flex-1 py-3 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg shadow-md">Varsayılana Sıfırla</button>
-        <button onclick="saveSurpriseCardSettings()" class="flex-1 py-3 bg-green-700 hover:bg-green-600 text-white font-bold rounded-lg shadow-md">Kaydet</button>
-    </div>
-  </div>
-</div>
-        
-        <div class="mt-6 pt-4 border-t border-gray-600">
-            <h5 class="text-yellow-200 text-lg font-semibold mb-3">Sohbet Ayarları</h5>
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                <label for="slowModeInput" class="text-gray-300 flex-shrink-0">Yavaş Mod (Saniye):</label>
-                <input type="number" id="slowModeInput" class="box-setting-input flex-grow" placeholder="0 = kapalı">
-                <button onclick="saveSlowModeSettings()" class="py-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-lg font-bold">Kaydet</button>
+          <h4 class="text-red-400 text-xl font-semibold mb-4 border-b border-gray-600 pb-2">Tehlikeli Bölge</h4>
+          <div class="flex flex-wrap gap-3 justify-center">
+            <div class="bg-gray-800/80 p-6 rounded-xl border border-green-500 w-full">
+                <h4 class="text-green-300 text-xl font-semibold mb-4 border-b border-gray-600 pb-2">🏆 Aylık Sezon Yönetimi 👑</h4>
+                <button onclick="openSeasonManagementModal()" class="w-full py-3 bg-green-800 hover:bg-green-700 text-white font-bold rounded-lg">Sezon Ayarlarını Aç</button>
             </div>
+            <button onclick="openMaintenanceSettingsModal()" class="flex-1 py-2 px-3 bg-yellow-700 hover:bg-yellow-600 text-white font-bold rounded-lg text-sm">
+                Bakım Modu
+            </button>
+            <button onclick="forceClientUpdate()" class="w-full py-3 bg-teal-700 hover:bg-teal-600 text-white font-bold rounded-lg text-sm">
+                Tüm Kullanıcılara Güncellemeyi Zorla
+            </button>
+            <button onclick="openSurpriseCardSettingsModal()" class="flex-1 py-2 px-3 bg-yellow-600 hover:bg-yellow-500 text-black font-bold rounded-lg text-sm">Sürpriz Kart Ayarları</button>
+            <button onclick="restartSystem()" class="flex-1 py-2 px-3 bg-red-800 hover:bg-red-700 text-white font-bold rounded-lg text-sm">Sistemi Sıfırla</button>
+            <button onclick="clearAllTotalSpentPoints()" class="flex-1 py-2 px-3 bg-purple-800 hover:bg-purple-700 text-white font-bold rounded-lg text-sm">Harcanan Puanları Temizle</button>
+            <button onclick="clearPurchaseHistory()" class="flex-1 py-2 px-3 bg-pink-800 hover:bg-pink-700 text-white font-bold rounded-lg text-sm">Satın Alma Geçmişini Sil</button>
+          </div>
         </div>
+        
+        <div id="surpriseCardSettingsModal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-[9999] hidden">
+          <div class="modal-content bg-gray-800 p-8 rounded-xl shadow-2xl border border-yellow-500 w-11/12 max-w-lg text-center relative max-h-[90vh] flex flex-col">
+            <button class="modal-close-button" onclick="closeSurpriseCardSettingsModal()">&times;</button>
+            <h3 class="text-yellow-300 text-3xl font-bold mb-6">Sürpriz Kutu Kart Ayarları</h3>
+            <div class="flex-grow overflow-y-auto scrollable-list pr-4 space-y-3" id="surpriseCardSettingsRowsContainer"></div>
+            <div class="mt-6 pt-4 border-t border-gray-700 flex flex-col sm:flex-row gap-4">
+                <button onclick="addSurpriseCardRow()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-lg shadow-md">Yeni Kart Ekle</button>
+                <button onclick="resetSurpriseCardsToDefault()" class="flex-1 py-3 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-lg shadow-md">Varsayılana Sıfırla</button>
+                <button onclick="saveSurpriseCardSettings()" class="flex-1 py-3 bg-green-700 hover:bg-green-600 text-white font-bold rounded-lg shadow-md">Kaydet</button>
+            </div>
+          </div>
         </div>
-</div>
+
       </div>
+      
     </div>
   </div>
 </div>
