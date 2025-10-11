@@ -3667,44 +3667,46 @@ body.modal-open .modal-content {
 </div>
 
 <div id="lobbySettingsModal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-[9999] hidden">
-    <div class="modal-content bg-gray-800 p-8 rounded-xl shadow-2xl border border-blue-500 w-11/12 max-w-lg text-left relative">
+    <div class="modal-content bg-gray-800 p-8 rounded-xl shadow-2xl border border-blue-500 w-11/12 max-w-lg text-left relative max-h-[90vh] flex flex-col">
         <button class="modal-close-button" onclick="closeLobbySettingsModal()">&times;</button>
-        <h3 class="text-blue-300 text-3xl font-bold mb-6 text-center">Lobi Yönetim Paneli</h3>
+        <h3 class="text-blue-300 text-3xl font-bold mb-6 text-center flex-shrink-0">Lobi Yönetim Paneli</h3>
         
-        <div class="bg-gray-900 p-4 rounded-lg border border-gray-700 mb-4">
-            <h4 class="text-lg font-semibold text-yellow-300 mb-3">Lobi Ayarları</h4>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="lobbyEntryFee" class="block text-sm font-medium text-gray-300">Giriş Ücreti (Puan)</label>
-                    <input type="number" id="lobbyEntryFee" value="100" class="box-setting-input mt-1">
+        <div class="flex-grow overflow-y-auto scrollable-list pr-4 -mr-4">
+            <div class="bg-gray-900 p-4 rounded-lg border border-gray-700 mb-4">
+                <h4 class="text-lg font-semibold text-yellow-300 mb-3">Lobi Ayarları</h4>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="lobbyEntryFee" class="block text-sm font-medium text-gray-300">Giriş Ücreti (Puan)</label>
+                        <input type="number" id="lobbyEntryFee" value="100" class="box-setting-input mt-1">
+                    </div>
+                     <div>
+                        <label for="lobbyEntryTickets" class="block text-sm font-medium text-gray-300">Giriş Ücreti (Bilet)</label>
+                        <input type="number" id="lobbyEntryTickets" value="0" class="box-setting-input mt-1">
+                    </div>
+                    <div>
+                        <label for="lobbyTarget" class="block text-sm font-medium text-gray-300">Hedef Skor</label>
+                        <input type="number" id="lobbyTarget" value="10" class="box-setting-input mt-1">
+                    </div>
+                     <div>
+                        <label for="lobbyPrize" class="block text-sm font-medium text-gray-300">Kazanan Ödülü (Puan)</label>
+                        <input type="number" id="lobbyPrize" value="1000" class="box-setting-input mt-1">
+                    </div>
+                     <div class="col-span-2">
+                        <label for="lobbyItemInterval" class="block text-sm font-medium text-gray-300">Hedef Çıkma Sıklığı (ms)</label>
+                        <input type="number" id="lobbyItemInterval" value="800" class="box-setting-input mt-1">
+                    </div>
                 </div>
-                 <div>
-                    <label for="lobbyEntryTickets" class="block text-sm font-medium text-gray-300">Giriş Ücreti (Bilet)</label>
-                    <input type="number" id="lobbyEntryTickets" value="0" class="box-setting-input mt-1">
-                </div>
-                <div>
-                    <label for="lobbyTarget" class="block text-sm font-medium text-gray-300">Hedef Skor</label>
-                    <input type="number" id="lobbyTarget" value="10" class="box-setting-input mt-1">
-                </div>
-                 <div>
-                    <label for="lobbyPrize" class="block text-sm font-medium text-gray-300">Kazanan Ödülü (Puan)</label>
-                    <input type="number" id="lobbyPrize" value="1000" class="box-setting-input mt-1">
-                </div>
-                 <div class="col-span-2">
-                    <label for="lobbyItemInterval" class="block text-sm font-medium text-gray-300">Hedef Çıkma Sıklığı (ms)</label>
-                    <input type="number" id="lobbyItemInterval" value="800" class="box-setting-input mt-1">
-                </div>
+                 <button onclick="startLobbyGame()" class="w-full mt-4 py-2 bg-green-700 hover:bg-green-600 text-white font-bold rounded-lg shadow-md">Lobi Kur ve Beklemeye Al</button>
             </div>
-             <button onclick="startLobbyGame()" class="w-full mt-4 py-2 bg-green-700 hover:bg-green-600 text-white font-bold rounded-lg shadow-md">Lobi Kur ve Beklemeye Al</button>
-        </div>
 
-        <div class="bg-gray-900 p-4 rounded-lg border border-gray-700">
-            <h4 class="text-lg font-semibold text-yellow-300 mb-3">Oyun Kontrolü</h4>
-            <div class="flex gap-4">
-                <button id="lobbyStartBtn" onclick="triggerLobbyGameStart()" class="flex-1 py-3 bg-blue-700 hover:bg-blue-600 text-white font-bold rounded-lg shadow-md disabled:bg-gray-600 disabled:cursor-not-allowed" disabled>Oyunu Başlat</button>
-                <button onclick="endLobbyGame(true)" class="flex-1 py-3 bg-red-700 hover:bg-red-600 text-white font-bold rounded-lg shadow-md">Lobi İptal Et ve Ücretleri İade Et</button>
+            <div class="bg-gray-900 p-4 rounded-lg border border-gray-700">
+                <h4 class="text-lg font-semibold text-yellow-300 mb-3">Oyun Kontrolü</h4>
+                <div class="flex gap-4">
+                    <button id="lobbyStartBtn" onclick="triggerLobbyGameStart()" class="flex-1 py-3 bg-blue-700 hover:bg-blue-600 text-white font-bold rounded-lg shadow-md disabled:bg-gray-600 disabled:cursor-not-allowed" disabled>Oyunu Başlat</button>
+                    <button onclick="endLobbyGame(true)" class="flex-1 py-3 bg-red-700 hover:bg-red-600 text-white font-bold rounded-lg shadow-md">Lobi İptal Et ve Ücretleri İade Et</button>
+                </div>
+                <button onclick="resetClickCatchLeaderboard()" class="w-full mt-4 py-2 bg-orange-700 hover:bg-orange-600 text-white font-bold rounded-lg shadow-md">Haftalık Sıralamayı Sıfırla</button>
             </div>
-            <button onclick="resetClickCatchLeaderboard()" class="w-full mt-4 py-2 bg-orange-700 hover:bg-orange-600 text-white font-bold rounded-lg shadow-md">Haftalık Sıralamayı Sıfırla</button>
         </div>
     </div>
 </div>
