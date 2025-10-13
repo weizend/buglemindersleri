@@ -2475,7 +2475,7 @@ body.modal-open .modal-content {
     <button onclick="openClickCatchInfoModal()" class="info-button" title="Oyun Modları Hakkında Bilgi">?</button>
 </div>
             <div id="weeklyWinnerContainer" class="hidden w-full max-w-2xl mx-auto mt-6 mb-4 bg-gray-800 p-4 rounded-xl shadow-lg border-2 border-green-500 text-center relative">
-<h4 class="text-green-300 text-xl font-bold mb-3">🎯 Haftanın Tıkla-Yakala Şampiyonu 🎯</h4>
+<h4 class="text-green-300 text-xl font-bold mb-3">🎯 Haftanın Şampiyonu 🎯</h4>
 <div id="weeklyWinnerInfo" class="text-lg text-gray-200 space-y-2">
     </div>
 <button id="clearWeeklyWinnerBtn" onclick="clearWeeklyWinnerDisplay()" class="hidden absolute -top-3 -right-3 bg-red-600 hover:bg-red-500 text-white rounded-full h-8 w-8 flex items-center justify-center text-lg font-bold" title="Kazanan Panelini Gizle">&times;</button>
@@ -5422,7 +5422,7 @@ async function saveWeeklyResetSettings() {
             displayMessage("Lütfen Özel Ürün için bir ad girin.");
             return;
         }
-        prizeData.name = prizeName; // Miktar yerine isim kaydediyoruz
+        prizeData.name = prizeName;
     } else {
         const prizeAmount = parseInt(document.getElementById('weeklyPrizeAmount').value);
         if (isNaN(prizeAmount) || prizeAmount <= 0) {
@@ -5437,7 +5437,13 @@ async function saveWeeklyResetSettings() {
         prize: prizeData
     };
     
-    await db.ref('gameConfig/weeklyClickCatchReset').set(settings);
+    // YENİ EKLENEN KOD BAŞLANGICI
+    const updates = {
+        'gameConfig/weeklyClickCatchReset': settings,
+        'gameConfig/lastEventUpdateTimestamp': firebase.database.ServerValue.TIMESTAMP
+    };
+    await db.ref().update(updates);
+    // YENİ EKLENEN KOD SONU
     
     displayMessage("Haftalık otomatik sıfırlama ayarları kaydedildi. Geri sayım başlayacak.");
     closeSoloGameSettingsModal();
@@ -11425,7 +11431,7 @@ function handleSendItemTypeChange(selectElement) {
     }
 }
 
-// ESKİ saveStoreItem FONKSİYONUNU SİL VE BUNU YAPIŞTIR
+// MEVCUT saveStoreItem FONKSİYONUNU SİL VE BUNU YAPIŞTIR
 
 async function saveStoreItem() {
     if (!isAdmin) return;
@@ -11475,14 +11481,13 @@ async function saveStoreItem() {
                 throw new Error("Avatar tipi için 'Avatar Adı' ve 'Avatar Resim URL'si' alanları zorunludur.");
             }
         } else if (type === 'health_regen_potion') {
-            // ★★★ DEĞİŞİKLİK BURADA: Artık amount'u da okuyoruz ★★★
             const value = parseInt(document.getElementById('newItemValue').value);
-            const amount = parseInt(document.getElementById('newItemMultiplierDuration').value); // Duration input'unu amount için kullanıyoruz
+            const amount = parseInt(document.getElementById('newItemMultiplierDuration').value); 
             if (isNaN(value) || value <= 0 || isNaN(amount) || amount <= 0) {
                 throw new Error("Can Yenileme İksiri için geçerli bir 'Yüzde Değeri' ve 'Adet' girmelisiniz.");
             }
             itemData.value = value;
-            itemData.duration = amount; // duration alanına adeti kaydediyoruz
+            itemData.duration = amount; 
         } else {
             const typesThatNeedValue = [ 'boxRights', 'wheelTicket', 'clickCatchTicket', 'iflasShield', 'wildcard', 'card_pack', 'card_pack_normal', 'card_pack_gumus', 'card_pack_altin', 'card_pack_efsanevi', 'revival_stone', 'health_potion', 'damage_potion', 'defense_potion', 'crit_potion', 'crit_damage_potion', 'dodge_potion', 'pierce_potion' ];
             if (typesThatNeedValue.includes(type)) {
@@ -11501,9 +11506,20 @@ async function saveStoreItem() {
         if (editingItemId) {
             const existingItemSnap = await storeItemsRef.child(editingItemId).once('value');
             const existingItem = existingItemSnap.val();
-            itemData.createdAt = existingItem.createdAt || firebase.database.ServerValue.TIMESTAMP;
-            itemData.order = existingItem.order;
-            itemData.purchaseCount = existingItem.purchaseCount || 0;
+            
+            // --- YENİ EKLENEN VE SORUNU ÇÖZEN MANTIK ---
+            // Eğer yeni bir geri sayım süresi ayarlanıyorsa, başlangıç zamanını ŞİMDİ olarak güncelle.
+            if (totalMinutes > 0) {
+                itemData.createdAt = firebase.database.ServerValue.TIMESTAMP;
+            } else {
+                // Eğer geri sayım kaldırılıyorsa, eski zaman damgasını temizle.
+                itemData.createdAt = null; 
+            }
+            // --- KOD SONU ---
+
+            itemData.order = existingItem.order; // Mevcut sıralamasını koru
+            itemData.purchaseCount = existingItem.purchaseCount || 0; // Mevcut satın alma sayısını koru
+            
             await storeItemsRef.child(editingItemId).update(itemData);
             displayMessage(`'${name}' ürünü başarıyla güncellendi!`);
         } else {
@@ -12416,8 +12432,7 @@ function closeLobbySettingsModal() {
     }
   }
   
-  // endSoloClickCatchGame FONKSİYONUNUN GÜNCELLENMİŞ HALİ
-async function endSoloClickCatchGame() {
+  async function endSoloClickCatchGame() {
     clickCatchGameActive = false;
     clearInterval(clickCatchTimerInterval);
     clearInterval(clickCatchItemInterval);
@@ -12438,36 +12453,41 @@ async function endSoloClickCatchGame() {
     const user = userSnap.val();
     if (!user) return;
 
-    // ★★★ DEĞİŞİKLİK 2: YAKALANAN EŞYALARI DOĞRU KAYDETME MANTIĞI ★★★
     const weeklyStatsRef = db.ref(`clickCatchWeeklyStats/${currentUser}`);
     await weeklyStatsRef.transaction(currentStats => {
         if (!currentStats) {
             currentStats = { normal: 0, gold: 0, bomb: 0, time: 0, special: {} };
         }
+        // ★★★ İSTEDİĞİN GÜNCELLEME BURADA BAŞLIYOR ★★★
+        // Skor, bomba ve süre gibi temel öğeler artık bilet sayısıyla ÇARPILMIYOR. Sadece tıklanma sayısı ekleniyor.
         currentStats.normal = (currentStats.normal || 0) + (soloGameItemCounts.normal || 0);
         currentStats.gold = (currentStats.gold || 0) + (soloGameItemCounts.gold || 0);
         currentStats.bomb = (currentStats.bomb || 0) + (soloGameItemCounts.bomb || 0);
         currentStats.time = (currentStats.time || 0) + (soloGameItemCounts.time || 0);
 
+        // Özel eşyalar ise bilet sayısıyla ÇARPILMAYA DEVAM EDİYOR.
         if (soloGameItemCounts.special && Object.keys(soloGameItemCounts.special).length > 0) {
             if (!currentStats.special) {
                 currentStats.special = {};
             }
-            // Artık her bir özel eşya türünü kendi adıyla sayıyoruz
             for (const type in soloGameItemCounts.special) {
-                const count = soloGameItemCounts.special[type];
+                const count = (soloGameItemCounts.special[type] || 0) * ticketsUsedThisRound;
                 currentStats.special[type] = (currentStats.special[type] || 0) + count;
             }
         }
+        // ★★★ GÜNCELLEME BURADA BİTİYOR ★★★
         return currentStats;
     });
-    // ★★★ DEĞİŞİKLİK 2 SONU ★★★
     
     const finalScore = clickCatchScore * ticketsUsedThisRound;
     const finalBoxRights = collectedBoxRights * ticketsUsedThisRound;
     const finalIflasShields = collectedIflasShields * ticketsUsedThisRound;
     const finalWheelTickets = collectedWheelTickets * ticketsUsedThisRound;
     const finalWildcards = collectedWildcards * ticketsUsedThisRound;
+    
+    const finalMultipliers = collectedMultipliers.map(m => ({ ...m, count: ticketsUsedThisRound })).flat();
+    const finalCardPacks = collectedCardPacks.map(p => ({ ...p, count: ticketsUsedThisRound })).flat();
+    const finalPotions = collectedPotions.map(p => ({ ...p, count: ticketsUsedThisRound })).flat();
 
     const weeklyScoreRef = db.ref(`clickCatchWeeklyScores/${currentUser}`);
     const currentWeeklyScore = (await weeklyScoreRef.once('value')).val() || 0;
@@ -12478,41 +12498,27 @@ async function endSoloClickCatchGame() {
 
     const updates = {};
     const specialItemsWonDetails = [];
-    let finalUser = JSON.parse(JSON.stringify(user)); 
-
+    
     if (finalBoxRights > 0) {
-        finalUser.kutuHakki = (finalUser.kutuHakki || 0) + finalBoxRights;
+        updates[`/users/${currentUser}/kutuHakki`] = (user.kutuHakki || 0) + finalBoxRights;
         specialItemsWonDetails.push({ name: 'Kutu Hakkı', amount: `+${finalBoxRights}` });
     }
     if (finalIflasShields > 0) {
-        finalUser.iflasShieldUses = (finalUser.iflasShieldUses || 0) + finalIflasShields;
+        updates[`/users/${currentUser}/iflasShieldUses`] = (user.iflasShieldUses || 0) + finalIflasShields;
         specialItemsWonDetails.push({ name: 'İflas Kalkanı', amount: `+${finalIflasShields}` });
     }
     if (finalWheelTickets > 0) {
-        finalUser.carkBileti = (finalUser.carkBileti || 0) + finalWheelTickets;
+        updates[`/users/${currentUser}/carkBileti`] = (user.carkBileti || 0) + finalWheelTickets;
         specialItemsWonDetails.push({ name: 'Çark Bileti', amount: `+${finalWheelTickets}` });
     }
     if (finalWildcards > 0) {
-        finalUser.wildcards = (finalUser.wildcards || 0) + finalWildcards;
+        updates[`/users/${currentUser}/wildcards`] = (user.wildcards || 0) + finalWildcards;
         specialItemsWonDetails.push({ name: 'Joker Kart', amount: `+${finalWildcards}` });
     }
 
-    if (collectedMultipliers.length > 0) {
-        for (const multiplier of collectedMultipliers) {
-            // Çarpan mantığı burada (değişiklik yok)
-        }
+    if (Object.keys(updates).length > 0) {
+        await db.ref().update(updates);
     }
-    
-    if (collectedPotions.length > 0) {
-         for (const potion of collectedPotions) {
-             // İksir mantığı burada (değişiklik yok)
-         }
-    }
-
-    updates[`/users/${currentUser}/kutuHakki`] = finalUser.kutuHakki;
-    updates[`/users/${currentUser}/iflasShieldUses`] = finalUser.iflasShieldUses;
-    updates[`/users/${currentUser}/carkBileti`] = finalUser.carkBileti;
-    updates[`/users/${currentUser}/wildcards`] = finalUser.wildcards;
     
     logActivity('clickCatchSolo', currentUser, {
         baseScore: clickCatchScore,
@@ -12527,17 +12533,15 @@ async function endSoloClickCatchGame() {
         const itemsText = specialItemsWonDetails.map(item => `${item.amount} ${item.name}`).join(', ');
         endMessage += `<br>Ayrıca, <b>${itemsText}</b> kazandın!`;
     }
-    if (collectedCardPacks.length > 0) {
-        const totalPacks = collectedCardPacks.reduce((sum, pack) => sum + pack.value, 0) * ticketsUsedThisRound;
+    if (finalCardPacks.length > 0) {
+        const totalPacks = finalCardPacks.reduce((sum, pack) => sum + (pack.value * pack.count), 0);
         endMessage += `<br>Ve <b class="text-purple-400">${totalPacks} adet Kart Paketi</b> kazandın! Paketler şimdi açılacak...`;
     }
     displayMessage(endMessage);
 
-    await db.ref().update(updates);
-
-    if (collectedCardPacks.length > 0) {
-        const totalPacks = collectedCardPacks.reduce((sum, pack) => sum + pack.value, 0) * ticketsUsedThisRound;
-        const packType = collectedCardPacks[0].type; 
+    if (finalCardPacks.length > 0) {
+        const totalPacks = finalCardPacks.reduce((sum, pack) => sum + (pack.value * pack.count), 0);
+        const packType = finalCardPacks[0].type; 
         await startCardPackOpening(totalPacks, 'Tıkla-Yakala Oyunu', 1, packType);
     }
     
@@ -13181,10 +13185,8 @@ async function listenForGlobalNotifications() {
   async function startLobbyGame() {
     if (!isAdmin) return;
     
-    // Önceki lobi verilerini temizle
     await db.ref('clickCatchLobby').remove();
     
-    // Yeni lobi verilerini kur
     const lobbyData = {
         entryFee: parseInt(document.getElementById('lobbyEntryFee').value) || 100,
         entryTickets: parseInt(document.getElementById('lobbyEntryTickets').value) || 0,
@@ -13194,18 +13196,22 @@ async function listenForGlobalNotifications() {
         state: 'waiting',
         players: {} 
     };
-    await db.ref('clickCatchLobby').set(lobbyData);
 
-    // --- İSTEDİĞİN GÜNCELLEME BURADA ---
-    // Lobi kurulduğunda "Son Eylemler" için bir kayıt oluşturuyoruz.
+    // YENİ EKLENEN KOD BAŞLANGICI
+    const updates = {
+        'clickCatchLobby': lobbyData,
+        'gameConfig/lastEventUpdateTimestamp': firebase.database.ServerValue.TIMESTAMP
+    };
+    await db.ref().update(updates);
+    // YENİ EKLENEN KOD SONU
+    
     logActivity('newClickCatchLobby', 'WeizendTv', { 
         prize: lobbyData.prize, 
         target: lobbyData.target,
         entryFee: lobbyData.entryFee,
         entryTickets: lobbyData.entryTickets
     });
-    // --- GÜNCELLEME SONU ---
-
+    
     displayMessage("Lobi kuruldu. Oyuncular katıldıktan sonra 'Oyunu Başlat' butonuna bas.");
 }
 
@@ -19210,8 +19216,6 @@ async function saveRecipe() {
     }
 }
 
-// ESKİ saveWordGameSettings FONKSİYONUNU SİL VE BUNU YAPIŞTIR
-
 async function saveWordGameSettings(shouldResetProgress = false) {
     if (!isAdmin) return;
     
@@ -19290,7 +19294,6 @@ async function saveWordGameSettings(shouldResetProgress = false) {
         const cSeconds = parseInt(document.getElementById('correctCooldownSeconds').value) || 0;
         const totalCorrectCooldownSeconds = (cDays * 86400) + (cHours * 3600) + (cMinutes * 60) + cSeconds;
 
-        // ★★★ DEĞİŞİKLİK BURADA: Şampiyon ödülünü de okuyup kaydediyoruz ★★★
         const championPrizeContainer = document.getElementById('wordGameChampionPrizeContainer');
         const championPrize = parseRewardDataFromRow(championPrizeContainer.querySelector('.reward-entry'));
         if (!championPrize) {
@@ -19301,7 +19304,7 @@ async function saveWordGameSettings(shouldResetProgress = false) {
         updates['/wordGame/settings'] = {
             cooldown: totalCooldownSeconds,
             correctGuessCooldown: totalCorrectCooldownSeconds,
-            championPrize: championPrize // Şampiyon ödülünü de ayarlara ekle
+            championPrize: championPrize
         };
         updates['/wordGame/questions'] = questions;
 
@@ -19309,6 +19312,8 @@ async function saveWordGameSettings(shouldResetProgress = false) {
             logActivity('newWordGameStarted', 'WeizendTv', {});
             updates['/wordGame/leaderboard'] = null; 
             updates['/gameStats/wordGameChampion'] = null;
+            // YENİ EKLENEN SATIR
+            updates['/gameConfig/lastEventUpdateTimestamp'] = firebase.database.ServerValue.TIMESTAMP;
             
             const usersSnap = await db.ref('users').once('value');
             if (usersSnap.exists()) {
@@ -20377,9 +20382,7 @@ async function updateMonsterStats() {
     }
 }
     
-    // MEVCUT saveAndSpawnMonster FONKSİYONUNU SİL VE BUNU YAPIŞTIR
-
-async function saveAndSpawnMonster() {
+   async function saveAndSpawnMonster() {
     if (!isAdmin) return;
     await db.ref('gameStats/lastMonsterChampion').remove();
     const minDamage = parseInt(document.getElementById('adminMonsterMinDamage').value) || 500;
@@ -20401,7 +20404,6 @@ async function saveAndSpawnMonster() {
     };
     monsterDetails.currentHP = monsterDetails.maxHP;
 
-    // ★★★ DEĞİŞİKLİK BURADA: Ödülleri tek bir obje içinde topluyoruz ★★★
     const onKillRewardType = document.getElementById('adminMonsterKillRewardType').value;
     const onKillRewardValue = parseStatValue(onKillRewardType, document.getElementById('adminMonsterKillReward').value);
     const onLastHitRewardType = document.getElementById('adminMonsterLastHitRewardType').value;
@@ -20411,7 +20413,6 @@ async function saveAndSpawnMonster() {
         onKillLeader: { type: onKillRewardType, value: onKillRewardValue || 50000 },
         onLastHit: { type: onLastHitRewardType, value: onLastHitRewardValue || 10000 }
     };
-    // ★★★ DEĞİŞİKLİK SONU ★★★
     
     const damageTiers = [];
     document.querySelectorAll('.damage-tier-row').forEach(tierRow => {
@@ -20430,12 +20431,19 @@ async function saveAndSpawnMonster() {
     });
     const confirmed = await customConfirm(`<b>${monsterDetails.name}</b> canavarı ${formatNumber(monsterDetails.maxHP)} can ile çağrılacak. Mevcut savaş ilerlemesi (varsa) sıfırlanacak. Onaylıyor musun?`);
     if (!confirmed) return;
-    await db.ref('gameConfig/monsterBattle').set({
-        monsterDetails: monsterDetails,
-        rewards: rewards,
-        damageTiers: damageTiers,
-        damageLeaderboard: null 
-    });
+
+    // YENİ EKLENEN KOD BAŞLANGICI
+    const updates = {
+        'gameConfig/monsterBattle': {
+            monsterDetails: monsterDetails,
+            rewards: rewards,
+            damageTiers: damageTiers,
+            damageLeaderboard: null 
+        },
+        'gameConfig/lastEventUpdateTimestamp': firebase.database.ServerValue.TIMESTAMP
+    };
+    await db.ref().update(updates);
+    // YENİ EKLENEN KOD SONU
 
     logActivity('newMonsterSpawned', 'WeizendTv', { monsterName: monsterDetails.name });
 
@@ -23017,37 +23025,48 @@ async function renderActivityFeedEvents() {
     container.innerHTML = `<p class="text-center text-gray-400">Etkinlik durumları yükleniyor...</p>`;
 
     try {
+        const results = await Promise.all([
+            db.ref('gameConfig/monsterBattle').once('value').catch(e => { console.error("Monster data failed:", e); return null; }),
+            db.ref('gameConfig/weeklyClickCatchReset').once('value').catch(e => { console.error("Weekly data failed:", e); return null; }),
+            db.ref('clickCatchWeeklyScores').orderByValue().limitToLast(1).once('value').catch(e => { console.error("Scores data failed:", e); return null; }),
+            db.ref('wordGame').once('value').catch(e => { console.error("WordGame data failed:", e); return null; }),
+            db.ref('gameConfig/cardCollectionStatus').once('value').catch(e => { console.error("Card status failed:", e); return null; }),
+            db.ref('gameStats/lastMonsterChampion').once('value').catch(e => { console.error("Last champion failed:", e); return null; }),
+            db.ref('gameStats/weeklyClickCatchWinner').once('value').catch(e => { console.error("Weekly winner failed:", e); return null; }),
+            db.ref('gameStats/wordGameChampion').once('value').catch(e => { console.error("WordGame champion failed:", e); return null; }),
+            db.ref('storeItems').once('value').catch(e => { console.error("Store items failed:", e); return null; }),
+            db.ref('clickCatchLobby').once('value').catch(e => { console.error("Lobby data failed:", e); return null; }),
+            db.ref('gameConfig/lastEventUpdateTimestamp').once('value').catch(e => { console.error("Event timestamp failed:", e); return null; }),
+            currentUser ? db.ref(`users/${currentUser}`).once('value').catch(e => { console.error("User data failed:", e); return null; }) : Promise.resolve(null)
+        ]);
+
         const [
             monsterSnap, weeklySnap, scoresSnap, wordGameSnap, 
             cardStatusSnap, lastMonsterChampionSnap, weeklyWinnerSnap, 
-            wordGameChampionSnap, storeItemsSnap, lobbySnap
-        ] = await Promise.all([
-            db.ref('gameConfig/monsterBattle').once('value'),
-            db.ref('gameConfig/weeklyClickCatchReset').once('value'),
-            db.ref('clickCatchWeeklyScores').orderByValue().limitToLast(1).once('value'),
-            db.ref('wordGame').once('value'),
-            db.ref('gameConfig/cardCollectionStatus').once('value'),
-            db.ref('gameStats/lastMonsterChampion').once('value'),
-            db.ref('gameStats/weeklyClickCatchWinner').once('value'),
-            db.ref('gameStats/wordGameChampion').once('value'),
-            db.ref('storeItems').once('value'),
-            db.ref('clickCatchLobby').once('value') // Tıkla-Yakala Lobisini de çekiyoruz
-        ]);
+            wordGameChampionSnap, storeItemsSnap, lobbySnap,
+            lastEventUpdateSnap, userSnap // Kullanıcı verisini buradan alıyoruz
+        ] = results;
         
-        // Asenkron fonksiyonları çağır ve sonuçlarını bekle
-        const monsterHtml = await buildMonsterEventCard(monsterSnap.val(), lastMonsterChampionSnap.val());
-        const clickCatchHtml = await buildClickCatchEventCard(weeklySnap.val(), scoresSnap.val(), weeklyWinnerSnap.val());
-        const wordGameHtml = await buildWordGameEventCard(wordGameSnap.val(), wordGameChampionSnap.val());
-        const cardCollectionHtml = await buildCardCollectionEventCard(); // Parametreleri kaldırdık, kendi içinde halledecek
-        const storeHtml = await buildStoreEventCard(storeItemsSnap.val());
-        const lobbyHtml = await buildLobbyEventCard(lobbySnap.val()); // Yeni Lobi kartı fonksiyonunu çağır
+        const userData = userSnap ? userSnap.val() : {};
+
+        const monsterHtml = await buildMonsterEventCard(monsterSnap ? monsterSnap.val() : null, lastMonsterChampionSnap ? lastMonsterChampionSnap.val() : null);
+        const clickCatchHtml = await buildClickCatchEventCard(weeklySnap ? weeklySnap.val() : null, scoresSnap ? scoresSnap.val() : null, weeklyWinnerSnap ? weeklyWinnerSnap.val() : null);
+        const wordGameHtml = await buildWordGameEventCard(wordGameSnap ? wordGameSnap.val() : null, wordGameChampionSnap ? wordGameChampionSnap.val() : null);
+        const cardCollectionHtml = await buildCardCollectionEventCard();
+        // Mağaza kartını oluştururken artık kullanıcı verisini de gönderiyoruz
+        const storeHtml = await buildStoreEventCard(storeItemsSnap ? storeItemsSnap.val() : null, userData);
+        const lobbyHtml = await buildLobbyEventCard(lobbySnap ? lobbySnap.val() : null);
 
         const allHtml = [storeHtml, monsterHtml, lobbyHtml, clickCatchHtml, wordGameHtml, cardCollectionHtml].filter(Boolean);
         const hasActiveEvents = allHtml.some(html => html.includes('animate-pulse'));
 
+        const lastEventTimestamp = lastEventUpdateSnap ? lastEventUpdateSnap.val() || 0 : 0;
+        const userLastSeenTimestamp = userData.lastSeenEventsTimestamp || 0;
+        const isNewEventAvailable = hasActiveEvents && (lastEventTimestamp > userLastSeenTimestamp);
+
         if (allHtml.length > 0) {
             container.innerHTML = allHtml.join('');
-            if (hasActiveEvents) {
+            if (isNewEventAvailable && !isAdmin) {
                 toggleBtn.classList.add('has-active-events');
             } else {
                 toggleBtn.classList.remove('has-active-events');
@@ -23058,75 +23077,295 @@ async function renderActivityFeedEvents() {
         }
 
     } catch (error) {
-        console.error("Etkinlikler yüklenirken hata oluştu:", error);
-        container.innerHTML = `<p class="text-center text-red-500">Etkinlikler yüklenemedi.</p>`;
+        console.error("Etkinlikler yüklenirken genel bir hata oluştu:", error);
+        container.innerHTML = `<p class="text-center text-red-500">Etkinlikler yüklenemedi. Konsolu kontrol et.</p>`;
         toggleBtn.classList.remove('has-active-events');
     }
 }
 
-      async function buildLobbyEventCard(lobbyData) {
-    if (!lobbyData || lobbyData.state !== 'waiting') {
-        return ''; // Sadece bekleme durumundaki lobileri göster
+// --- YENİ EKLENECEK ETKİNLİK KARTI OLUŞTURMA FONKSİYONLARI ---
+
+/**
+ * Bir etkinliğin üzerine tıklandığında ilgili sekmeye gider ve sayfayı kaydırır.
+ */
+function goToSectionAndScroll(sectionId, elementId) {
+    // Önce ilgili ana sekmeyi aç
+    showSection(sectionId);
+    // Sonra eylemler panelini kapat
+    closeActivityFeed();
+    
+    // Kısa bir gecikme ile (sekmenin açılmasına zaman tanımak için)
+    // istediğimiz elemente doğru sayfayı kaydır.
+    setTimeout(() => {
+        const targetElement = document.getElementById(elementId);
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, 200);
+}
+
+/**
+ * Canavar Savaşı etkinliği için bir bilgilendirme kartı oluşturur.
+ */
+function buildMonsterEventCard(battleData, lastChampion) {
+    // Canavar etkinliği bittiyse ve önceki şampiyon belliyse
+    if (!battleData || !battleData.monsterDetails || battleData.monsterDetails.currentHP <= 0) {
+        if (lastChampion && lastChampion.winner) {
+            const leaderText = `Hasar Şampiyonu: <b class="text-white">${lastChampion.winner}</b> (${formatNumber(lastChampion.winnerTotalDamage || 0)} Hasar) <br> Ödül: <b class="text-green-400">${lastChampion.winnerPrizeText || ''}</b>`;
+            const lastHitterText = lastChampion.lastHitter 
+                ? `<br>Son Vuruş Uzmanı: <b class="text-white">${lastChampion.lastHitter}</b> <br> Ödül: <b class="text-green-400">${lastChampion.lastHitterPrizeText || ''}</b>`
+                : '';
+            
+            return `
+                <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-red-500">
+                    <p class="font-bold text-red-400">Canavar Savaşı Etkinliği Bitti!</p>
+                    <p class="text-sm">${lastChampion.monsterName || 'Önceki Canavar'} yok edildi.</p>
+                    <p class="text-sm">${leaderText}${lastHitterText}</p>
+                    <p class="text-sm text-gray-400 mt-1">Yeni canavarın gelmesini bekleyin.</p>
+                </div>
+            `;
+        }
+        return ''; // Aktif savaş yok ve şampiyon bilgisi de yoksa hiçbir şey gösterme
+    }
+    
+    // Aktif Canavar Savaşı etkinliği varsa
+    const monster = battleData.monsterDetails;
+    const leaderPrize = battleData.rewards?.onKillLeader;
+    const lastHitPrize = battleData.rewards?.onLastHit;
+    const leaderboard = battleData.damageLeaderboard || {};
+    const leader = Object.keys(leaderboard).length > 0 ? Object.keys(leaderboard).sort((a,b) => leaderboard[b].totalDamage - leaderboard[a].totalDamage)[0] : null;
+
+    let lastHitPrizeHtml = '';
+    if (lastHitPrize) {
+        lastHitPrizeHtml = `<p class="text-sm mt-1">🎯 Son Vuruş Ödülü: <b class="text-green-400">${formatRewardText(lastHitPrize.type, lastHitPrize.value)}</b></p>`;
     }
 
-    const useTickets = lobbyData.entryTickets > 0;
-    const entryRequirement = useTickets ? `${lobbyData.entryTickets} Bilet` : `${lobbyData.entryFee} Puan`;
-
     return `
-        <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-blue-500">
-            <p class="font-bold text-blue-400">Tıkla-Yakala Lobisi Kuruldu!</p>
-            <p class="text-sm">Giriş: <b class="text-white">${entryRequirement}</b> | Hedef: <b class="text-white">${lobbyData.target}</b></p>
-            <p class="text-sm">Büyük Ödül: <b class="text-green-400">${formatNumber(lobbyData.prize)} Puan</b></p>
+        <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-red-500">
+            <p class="font-bold text-red-400">Canavar Savaşı Etkinliği Başladı!</p>
+            <p class="text-sm"><b class="text-white">${monster.name}</b> canavarı arenaya geldi.</p>
+            <p class="text-sm">👹 Yüksek Hasar Ödülü: <b class="text-green-400">${leaderPrize ? formatRewardText(leaderPrize.type, leaderPrize.value) : 'Belirlenmedi'}</b></p>
+            ${lastHitPrizeHtml}
+            <p class="text-sm mt-1">1. sırada: ${leader ? `<b class="text-white">${leader}</b> (${formatNumber(leaderboard[leader].totalDamage)} Hasar)` : 'Oyuncu bekleniyor.'}</p>
             <div class="flex justify-between items-center mt-2">
-                <span class="text-xs text-green-400 animate-pulse">Katılım bekleniyor...</span>
-                <button onclick="goToSectionAndScroll('clickCatch', 'clickCatchStartScreen')" class="text-xs py-1 px-3 bg-blue-600 hover:bg-blue-500 rounded-md">Şimdi Git</button>
+                <span class="text-xs text-green-400 animate-pulse">Etkinlik devam ediyor</span>
+                <button onclick="goToSectionAndScroll('monsterBattle', 'attackMonsterBtn')" class="text-xs py-1 px-3 bg-red-600 hover:bg-red-500 rounded-md">Şimdi Git</button>
             </div>
         </div>
     `;
 }
 
-function buildStoreEventCard(storeItems) {
+/**
+ * Tıkla-Yakala etkinliği için bir bilgilendirme kartı oluşturur.
+ */
+function buildClickCatchEventCard(weeklyData, scoresData, lastWinner) {
+    if (!weeklyData || !weeklyData.prize) {
+        if (lastWinner && lastWinner.winnerName) {
+             return `
+                <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-purple-500">
+                    <p class="font-bold text-purple-400">Tıkla-Yakala Haftalık Etkinliği Bitti!</p>
+                    <p class="text-sm">Son Kazanan: <b class="text-white">${lastWinner.winnerName}</b> (${formatNumber(lastWinner.winningScore || 0)} Skor)</p>
+                    <p class="text-sm">Kazanılan Ödül: <b class="text-green-400">${lastWinner.prizeAwarded || 'Belirtilmemiş'}</b></p>
+                    <p class="text-sm text-gray-400 mt-1">Yeni haftanın başlamasını bekleyin.</p>
+                </div>
+            `;
+        }
+        return '';
+    }
+
+    const prize = weeklyData.prize;
+    const prizeText = prize.type === 'special' ? prize.name : formatRewardText(prize.type, prize.amount);
+    
+    let leaderText = '1. sıra için oyuncu bekleniyor.';
+    if(scoresData){
+        const leaderUsername = Object.keys(scoresData)[0];
+        const leaderScore = scoresData[leaderUsername];
+        leaderText = `1. sırada <b class="text-white">${leaderUsername}</b> (${formatNumber(leaderScore)} Skor)`;
+    }
+
+    return `
+        <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-purple-500">
+            <p class="font-bold text-purple-400">Tıkla-Yakala Haftalık Skor Etkinliği Başladı</p>
+            <p class="text-sm">Şampiyon Ödülü: <b class="text-green-400">${prizeText}</b></p>
+            <p class="text-sm">${leaderText}</p>
+            <div class="flex justify-between items-center mt-2">
+                <span class="text-xs text-green-400 animate-pulse">Etkinlik devam ediyor</span>
+                <button onclick="goToSectionAndScroll('clickCatch', 'clickCatchStartScreen')" class="text-xs py-1 px-3 bg-purple-600 hover:bg-purple-500 rounded-md">Şimdi Git</button>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Kelime Oyunu etkinliği için bir bilgilendirme kartı oluşturur.
+ */
+function buildWordGameEventCard(wordGameData, championData) {
+    if (championData && championData.username) {
+        return `
+            <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-cyan-500">
+                <p class="font-bold text-cyan-400">Kelime Oyunu Etkinliği Bitti!</p>
+                <p class="text-sm">Kelime Avcısı Şampiyonu: <b class="text-white">${championData.username}</b> (${championData.score} Harf)  Ödül: <b class="text-green-400">${championData.prizeAwarded}</b></p>
+                <p class="text-sm text-gray-400">Yeni bulmacanın başlamasını bekleyin.</p>
+            </div>
+        `;
+    }
+
+    if (!wordGameData || !wordGameData.questions) {
+        return '';
+    }
+
+    const prize = wordGameData.settings?.championPrize;
+    const prizeText = prize ? formatRewardText(prize.type, prize.amount || prize.value, prize.uses) : 'Belirlenmedi';
+    const leaderboard = wordGameData.leaderboard;
+    let leaderText = '1. sıra için oyuncu bekleniyor.';
+    if (leaderboard) {
+        const leader = Object.keys(leaderboard).sort((a, b) => leaderboard[b].score - leaderboard[a].score)[0];
+        if(leader) {
+            leaderText = `1. sırada <b class="text-white">${leader}</b> (${leaderboard[leader].score} Harf)`;
+        }
+    }
+
+    return `
+        <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-cyan-500">
+            <p class="font-bold text-cyan-400">Kelime Oyunu Etkinliği Başladı!</p>
+            <p class="text-sm">Şampiyon Ödülü: <b class="text-green-400">${prizeText}</b></p>
+            <p class="text-sm">${leaderText}</p>
+            <div class="flex justify-between items-center mt-2">
+                <span class="text-xs text-green-400 animate-pulse">Etkinlik devam ediyor</span>
+                <button onclick="goToSectionAndScroll('wordGame', 'questionsContainer')" class="text-xs py-1 px-3 bg-cyan-600 hover:bg-cyan-500 rounded-md">Şimdi Git</button>
+            </div>
+        </div>
+    `;
+}
+
+/**
+ * Kart Koleksiyonu etkinliği için bir bilgilendirme kartı oluşturur.
+ */
+async function buildCardCollectionEventCard() {
+    try {
+        const [statusSnap, prizeSnap, finishersSnap] = await Promise.all([
+            db.ref('gameConfig/cardCollectionStatus').once('value'),
+            db.ref('gameConfig/collectionGrandPrize').once('value'),
+            db.ref('gameStats/collectionFinishers').orderByChild('timestamp').limitToFirst(1).once('value')
+        ]);
+
+        const status = statusSnap.val();
+        if (status !== 'active') return '';
+
+        const prizeData = prizeSnap.val();
+        const finishersData = finishersSnap.val();
+        
+        let prizeHtml = '<p class="text-sm"><b class="text-green-400">Koleksiyon Tamamlama Ödülleri:</b><br>Henüz ödül belirlenmedi.</p>';
+        if (prizeData) {
+            let prizeParts = [];
+            if (prizeData.points > 0) prizeParts.push(`${formatNumber(prizeData.points)} Puan`);
+            if (prizeData.boxRights > 0) prizeParts.push(`${prizeData.boxRights} Kutu Hakkı`);
+            if (prizeData.wheelTickets > 0) prizeParts.push(`${prizeData.wheelTickets} Çark Bileti`);
+            if (prizeData.avatarName) prizeParts.push(`'${prizeData.avatarName}' Avatarı`);
+            
+            if (prizeParts.length > 0) {
+                prizeHtml = `<p class="text-sm"><b class="text-green-400">Koleksiyon Tamamlama Ödülleri:</b><br>${prizeParts.join(' | ')}</p>`;
+            }
+        }
+
+        let firstPrizeHtml = '';
+        if (prizeData && prizeData.description) {
+            firstPrizeHtml = `<p class="text-sm mt-2"><b class="text-amber-400">Ek Ödüller & Bilgiler:</b><br>${prizeData.description}</p>`;
+        }
+
+        let leaderText = 'İlk tamamlayan: <span class="text-gray-400">bekleniyor...</span>';
+        if (finishersData) {
+            const firstFinisher = Object.values(finishersData)[0];
+            if (firstFinisher) {
+                leaderText = `İlk tamamlayan: <b class="text-white">${firstFinisher.username}</b>`;
+            }
+        }
+        
+        return `
+            <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-yellow-500">
+                <p class="font-bold text-yellow-400">Kart Koleksiyonu Etkinliği Başladı!</p>
+                ${prizeHtml}
+                ${firstPrizeHtml}
+                <p class="text-sm mt-2">${leaderText}</p>
+                <div class="flex justify-between items-center mt-2">
+                    <span class="text-xs text-green-400 animate-pulse">Sezon Devam Ediyor</span>
+                    <button onclick="goToSectionAndScroll('cardCollection', 'collectionFinishersLeaderboard')" class="text-xs py-1 px-3 bg-yellow-600 hover:bg-yellow-500 rounded-md">Şimdi Git</button>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error("Kart koleksiyonu etkinlik kartı oluşturulurken hata:", error);
+        return '';
+    }
+}
+
+/**
+ * Mağazadaki süreli teklifler için bir kart oluşturur.
+ */
+async function buildStoreEventCard(storeItems, userData) {
     if (!storeItems) return '';
-
     let html = '';
-    if (eventCountdownInterval) clearInterval(eventCountdownInterval);
-    activeEventCountdowns = {};
-
     const now = Date.now();
+    const userKasaPuani = userData.kasaPuani || 0; 
 
-    Object.entries(storeItems).forEach(([itemId, item]) => {
+    for (const [itemId, item] of Object.entries(storeItems)) {
         if (item.countdownDurationMinutes && item.createdAt) {
             const endTime = item.createdAt + item.countdownDurationMinutes * 60 * 1000;
             if (now < endTime) {
-                activeEventCountdowns[itemId] = { endTime: endTime };
                 const priceText = item.type === 'special' ? `${formatNumber(item.cost)} KP` : `${formatNumber(item.cost)} Puan`;
+                
+                activeEventCountdowns[itemId] = { endTime: endTime };
 
                 html += `
                     <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-green-500">
-                        <p class="font-bold text-green-400">Sınırlı Süreli Teklif!</p>
-                        <div class="flex items-center gap-3 my-2">
-                            <img src="${item.imageUrl || 'https://via.placeholder.com/150'}" class="w-12 h-12 rounded-md object-cover">
-                            <div>
-                                <p class="text-sm font-bold text-white">${item.name}</p>
-                                <p class="text-xs text-gray-300">Fiyat: <b class="text-yellow-300">${priceText}</b></p>
+                        <p class="font-bold text-green-400 mb-2">Sınırlı Süreli Teklif!</p>
+                        <div class="flex items-start gap-4">
+                            <img src="${item.imageUrl || 'https://via.placeholder.com/150'}" class="w-16 h-16 rounded-md object-cover flex-shrink-0">
+                            
+                            <div class="flex-grow flex flex-col items-start">
+                                <p class="font-bold text-white">${item.name}</p>
+                                <p class="text-sm text-gray-300">Fiyat: <b class="text-yellow-300">${priceText}</b></p>
+                                <p class="text-xs text-gray-400 mt-1">Mevcut KP: <b class="text-white">${formatNumber(userKasaPuani)}</b></p>
+                                <button onclick="goToSectionAndScroll('store', 'kasaTransferBolumu')" class="text-xs py-1 px-3 mt-2 bg-purple-700 hover:bg-purple-600 rounded-md">KP Ekle</button>
                             </div>
+                            
+                            <button onclick="buyItemFromEventCard('${itemId}')" class="text-sm py-2 px-4 bg-green-600 hover:bg-green-500 rounded-md self-center flex-shrink-0">Şimdi Al</button>
                         </div>
-                        <div id="event-countdown-${itemId}" class="text-xs text-yellow-300 font-bold animate-pulse"></div>
-                        <div class="flex justify-end items-center mt-2">
-                            <button onclick="buyItemFromEventCard('${itemId}')" class="text-xs py-1 px-3 bg-green-600 hover:bg-green-500 rounded-md">Şimdi Al</button>
-                        </div>
+                         <div id="event-countdown-${itemId}" class="text-xs text-yellow-300 font-bold mt-2 text-right"></div>
                     </div>
                 `;
             }
         }
-    });
-
-    if (Object.keys(activeEventCountdowns).length > 0) {
-        updateEventCountdowns();
+    }
+    
+    if (Object.keys(activeEventCountdowns).length > 0 && !eventCountdownInterval) {
         eventCountdownInterval = setInterval(updateEventCountdowns, 1000);
     }
-
+    
     return html;
+}
+
+/**
+ * Aktif bir Tıkla-Yakala lobisi varsa kart oluşturur.
+ */
+function buildLobbyEventCard(lobbyData) {
+    if (!lobbyData || lobbyData.state !== 'waiting') return '';
+
+    const useTickets = lobbyData.entryTickets > 0;
+    const entryRequirement = useTickets ? `${lobbyData.entryTickets} Bilet` : `${lobbyData.entryFee} Puan`;
+    const playerCount = Object.keys(lobbyData.players || {}).length;
+
+    return `
+        <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-blue-500">
+            <p class="font-bold text-blue-400">Tıkla-Yakala Lobisi Açıldı!</p>
+            <p class="text-sm">Ödül: <b class="text-green-400">${lobbyData.prize} Puan</b> | Giriş: <b class="text-white">${entryRequirement}</b></p>
+            <p class="text-sm">Katılımcı Sayısı: <b class="text-white">${playerCount}</b></p>
+            <div class="flex justify-between items-center mt-2">
+                <span class="text-xs text-green-400 animate-pulse">Katılım bekleniyor...</span>
+                <button onclick="goToSectionAndScroll('clickCatch', 'clickCatchStartScreen')" class="text-xs py-1 px-3 bg-blue-600 hover:bg-blue-500 rounded-md">Şimdi Katıl</button>
+            </div>
+        </div>
+    `;
 }
 
 function updateEventCountdowns() {
@@ -23163,127 +23402,6 @@ async function buyItemFromEventCard(itemId) {
     closeActivityFeed(); // Önce etkinlik panelini kapat
     // Ana 'buyItem' fonksiyonunu çağırarak tüm kontrolleri (bakiye, stok vb.) kullan
     await buyItem(itemId);
-}
-
-function buildMonsterEventCard(battleData, lastChampion) {
-    if (!battleData || !battleData.monsterDetails || battleData.monsterDetails.currentHP <= 0) {
-        if (lastChampion) {
-            // ★★★ DEĞİŞİKLİK BURADA: Son vuruş yapanı da ekliyoruz ★★★
-            const leaderText = `Hasar Şampiyonu: <b class="text-white">${lastChampion.winner}</b> (${formatNumber(lastChampion.winnerTotalDamage)} Hasar) <br> Ödül: <b class="text-green-400">${lastChampion.winnerPrizeText}</b>`;
-            const lastHitterText = lastChampion.lastHitter 
-                ? `<br>Son Vuruş Uzmanı: <b class="text-white">${lastChampion.lastHitter}</b> <br> Ödül: <b class="text-green-400">${lastChampion.lastHitterPrizeText}</b>`
-                : '';
-            
-            return `
-                <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-red-500">
-                    <p class="font-bold text-red-400">Canavar Savaşı Etkinliği Bitti!</p>
-                    <p class="text-sm">${lastChampion.monsterName || 'Canavar'} yok edildi.</p>
-                    <p class="text-sm">${leaderText}${lastHitterText}</p>
-                    <p class="text-sm text-gray-400 mt-1">Yeni canavarın gelmesini bekleyin.</p>
-                </div>
-            `;
-            // ★★★ DEĞİŞİKLİK SONU ★★★
-        }
-        return '';
-    }
-    
-    const monster = battleData.monsterDetails;
-    const prize = battleData.rewards?.onKillLeader;
-    const leaderboard = battleData.damageLeaderboard || {};
-    const leader = Object.keys(leaderboard).length > 0 ? Object.keys(leaderboard).sort((a,b) => leaderboard[b].totalDamage - leaderboard[a].totalDamage)[0] : null;
-
-    return `
-        <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-red-500">
-            <p class="font-bold text-red-400">Canavar Savaşı Etkinliği Başladı!</p>
-            <p class="text-sm"><b class="text-white">${monster.name}</b> canavarı arenaya geldi.</p>
-            <p class="text-sm">Canavar Avcısı Ödülü:<br><b class="text-green-400">${prize ? formatRewardText(prize.type, prize.value) : 'Belirlenmedi'}</b></p>
-            <p class="text-sm">1. sırada: ${leader ? `<b class="text-white">${leader}</b> (${formatNumber(leaderboard[leader].totalDamage)} Hasar)` : 'Oyuncu bekleniyor.'}</p>
-            <div class="flex justify-between items-center mt-2">
-                <span class="text-xs text-green-400 animate-pulse">Etkinlik devam ediyor</span>
-                <button onclick="goToSectionAndScroll('monsterBattle', 'attackMonsterBtn')" class="text-xs py-1 px-3 bg-red-600 hover:bg-red-500 rounded-md">Şimdi Git</button>
-            </div>
-        </div>
-    `;
-}
-
-function buildClickCatchEventCard(weeklyData, scoresData, lastWinner) {
-    if (!weeklyData || !weeklyData.prize) {
-        if (lastWinner) {
-             return `
-                <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-purple-500">
-                    <p class="font-bold text-purple-400">Tıkla-Yakala Haftalık Etkinliği Bitti!</p>
-                    <p class="text-sm">Son Kazanan: <b class="text-white">${lastWinner.winnerName}</b> (${formatNumber(lastWinner.winningScore)} Skor)</p>
-                    <p class="text-sm text-gray-400">Yeni haftanın başlamasını bekleyin.</p>
-                </div>
-            `;
-        }
-        return '';
-    }
-
-    const prize = weeklyData.prize;
-    const prizeText = prize.type === 'special' ? prize.name : formatRewardText(prize.type, prize.amount);
-    
-    let leaderText = '1. sıra için oyuncu bekleniyor.';
-    if(scoresData){
-        const leaderUsername = Object.keys(scoresData)[0];
-        const leaderScore = scoresData[leaderUsername];
-        leaderText = `1. sırada <b class="text-white">${leaderUsername}</b> (${formatNumber(leaderScore)} Skor)`;
-    }
-
-    return `
-        <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-purple-500">
-            <p class="font-bold text-purple-400">Tıkla-Yakala Haftalık Skor Etkinliği Başladı</p>
-            <p class="text-sm">Haftanın Şampiyonu Ödülü:<br><b class="text-green-400">${prizeText}</b></p>
-            <p class="text-sm">${leaderText}</p>
-            <div class="flex justify-between items-center mt-2">
-                <span class="text-xs text-green-400 animate-pulse">Etkinlik devam ediyor</span>
-                <button onclick="goToSectionAndScroll('clickCatch', 'clickCatchStartScreen')" class="text-xs py-1 px-3 bg-purple-600 hover:bg-purple-500 rounded-md">Şimdi Git</button>
-            </div>
-        </div>
-    `;
-}
-      
-// MEVCUT buildWordGameEventCard FONKSİYONUNU SİL VE BUNU YAPIŞTIR
-
-function buildWordGameEventCard(wordGameData, championData) {
-    if (championData) {
-        // ★★★ DEĞİŞİKLİK BURADA ★★★
-        return `
-            <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-cyan-500">
-                <p class="font-bold text-cyan-400">Kelime Oyunu Etkinliği Bitti!</p>
-                <p class="text-sm">Kelime Avcısı Şampiyonu: <b class="text-white">${championData.username}</b> (${championData.score} Harf)  Ödül: <b class="text-green-400">${championData.prizeAwarded}</b></p>
-                <p class="text-sm text-gray-400">Yeni bulmacanın başlamasını bekleyin.</p>
-            </div>
-        `;
-        // ★★★ DEĞİŞİKLİK SONU ★★★
-    }
-
-    if (!wordGameData || !wordGameData.questions) {
-        return '';
-    }
-
-    const prize = wordGameData.settings?.championPrize;
-    const prizeText = prize ? formatRewardText(prize.type, prize.amount || prize.value, prize.uses) : 'Belirlenmedi';
-    const leaderboard = wordGameData.leaderboard;
-    let leaderText = '1. sıra için oyuncu bekleniyor.';
-    if (leaderboard) {
-        const leader = Object.keys(leaderboard).sort((a, b) => leaderboard[b].score - leaderboard[a].score)[0];
-        if(leader) {
-            leaderText = `1. sırada <b class="text-white">${leader}</b> (${leaderboard[leader].score} Harf)`;
-        }
-    }
-
-    return `
-        <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-cyan-500">
-            <p class="font-bold text-cyan-400">Kelime Oyunu Etkinliği Başladı!</p>
-            <p class="text-sm">Şampiyon Ödülü: <b class="text-green-400">${prizeText}</b></p>
-            <p class="text-sm">${leaderText}</p>
-            <div class="flex justify-between items-center mt-2">
-                <span class="text-xs text-green-400 animate-pulse">Etkinlik devam ediyor</span>
-                <button onclick="goToSectionAndScroll('wordGame', 'questionsContainer')" class="text-xs py-1 px-3 bg-cyan-600 hover:bg-cyan-500 rounded-md">Şimdi Git</button>
-            </div>
-        </div>
-    `;
 }
 
 // BU YEPYENİ FONKSİYONU SCRIPT BLOĞUNUZUN UYGUN BİR YERİNE EKLEYİN
@@ -23327,75 +23445,6 @@ async function applyRewardToUserDB(username, prizeData, source = null) {
     });
 }
 
-async function buildCardCollectionEventCard() { // Fonksiyonu async olarak değiştir
-    try {
-        const [statusSnap, prizeSnap, finishersSnap] = await Promise.all([
-            db.ref('gameConfig/cardCollectionStatus').once('value'),
-            db.ref('gameConfig/collectionGrandPrize').once('value'),
-            db.ref('gameStats/collectionFinishers').orderByChild('timestamp').limitToFirst(1).once('value')
-        ]);
-
-        const status = statusSnap.val();
-        const prizeData = prizeSnap.val();
-        const finishersData = finishersSnap.val();
-
-        if (status !== 'active') {
-            return ''; // Sezon aktif değilse hiçbir şey gösterme
-        }
-        
-        let prizeHtml = '<p class="text-sm"><b class="text-green-400">Koleksiyon Tamamlama Ödülleri:</b><br>Henüz ödül belirlenmedi.</p>';
-        if (prizeData) {
-            let prizeParts = [];
-            if (prizeData.points > 0) prizeParts.push(`${formatNumber(prizeData.points)} Puan`);
-            if (prizeData.boxRights > 0) prizeParts.push(`${prizeData.boxRights} Kutu Hakkı`);
-            if (prizeData.wheelTickets > 0) prizeParts.push(`${prizeData.wheelTickets} Çark Bileti`);
-            if (prizeData.avatarName) prizeParts.push(`'${prizeData.avatarName}' Avatarı`);
-            
-            if (prizeParts.length > 0) {
-                prizeHtml = `<p class="text-sm"><b class="text-green-400">Koleksiyon Tamamlama Ödülleri:</b><br>${prizeParts.join(' | ')}</p>`;
-            }
-        }
-
-        // --- İSTEDİĞİN GÜNCELLEME BURADA ---
-        // Artık "description" alanını kontrol edip, varsa onu gösteriyoruz.
-        let firstPrizeHtml = '';
-        if (prizeData && prizeData.description) {
-            firstPrizeHtml = `
-                <p class="text-sm mt-2">
-                    <b class="text-amber-400">Ek Ödüller & Bilgiler:</b><br>
-                    ${prizeData.description}
-                </p>
-            `;
-        }
-        // --- GÜNCELLEME SONU ---
-
-        let leaderText = 'İlk tamamlayan: <span class="text-gray-400">bekleniyor...</span>';
-        if (finishersData) {
-            const firstFinisher = Object.values(finishersData)[0];
-            if (firstFinisher) {
-                leaderText = `İlk tamamlayan: <b class="text-white">${firstFinisher.username}</b>`;
-            }
-        }
-        
-        return `
-            <div class="p-3 bg-gray-900/50 rounded-lg border-l-4 border-yellow-500">
-                <p class="font-bold text-yellow-400">Kart Koleksiyonu Etkinliği Başladı!</p>
-                ${prizeHtml}
-                ${firstPrizeHtml}
-                <p class="text-sm mt-2">${leaderText}</p>
-                <div class="flex justify-between items-center mt-2">
-                    <span class="text-xs text-green-400 animate-pulse">Sezon Devam Ediyor</span>
-                    <button onclick="goToSectionAndScroll('cardCollection', 'collectionFinishersLeaderboard')" class="text-xs py-1 px-3 bg-yellow-600 hover:bg-yellow-500 rounded-md">Şimdi Git</button>
-                </div>
-            </div>
-        `;
-
-    } catch (error) {
-        console.error("Kart koleksiyonu etkinlik kartı oluşturulurken hata:", error);
-        return ''; // Hata durumunda boş döndür
-    }
-}
-
 function toggleEventsSection() {
     const eventsContainer = document.getElementById('activityFeedEvents');
     const toggleBtn = document.getElementById('eventsToggleBtn');
@@ -23407,36 +23456,13 @@ function toggleEventsSection() {
         btnSpan.textContent = 'Etkinlikleri Gör';
     } else {
         btnSpan.textContent = 'Sayfayı Küçült';
-        // Kullanıcı butona tıkladığında, yani etkinlikleri gördüğünde,
-        // kırmızı nokta (animasyon) sınıfını kaldırıyoruz.
         toggleBtn.classList.remove('has-active-events');
-    }
-}
-
-// --- YENİ EKLENECEK FONKSİYON: BÖLÜME GİT VE SCROLL YAP ---
-function goToSectionAndScroll(sectionId, elementId) {
-    // Önce ilgili ana sekmeyi aç
-    showSection(sectionId);
-    // Sonra eylemler panelini kapat
-    closeActivityFeed();
-    
-    // Kısa bir gecikme ile (sekmenin açılmasına zaman tanımak için)
-    // istediğimiz elemente doğru sayfayı kaydır.
-    setTimeout(() => {
-        const targetElement = document.getElementById(elementId);
-        if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }, 200); // 200 milisaniye gecikme
-}
-
-    async function deleteStoreItem(itemId) {
-    if (!isAdmin) return;
-    const confirmed = await customConfirm("Bu ürünü mağazadan kalıcı olarak silmek istediğinizden emin misiniz?");
-    if (confirmed) {
-        await storeItemsRef.child(itemId).remove();
-        displayMessage("Ürün başarıyla silindi.");
-        loadStoreItems(); // Listeyi anında yenile
+        // YENİ EKLENEN KOD: Kullanıcı etkinlikleri gördüğünde, en son etkinlik zamanını kaydet
+        db.ref('gameConfig/lastEventUpdateTimestamp').once('value').then(snap => {
+            if (snap.exists()) {
+                db.ref(`users/${currentUser}/lastSeenEventsTimestamp`).set(snap.val());
+            }
+        });
     }
 }
    
