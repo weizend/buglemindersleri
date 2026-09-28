@@ -22,7 +22,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent; /* Mobildeki mavi tıklama efektini kaldırır */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -33,18 +33,12 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            user-select: none; /* Metin seçimini engeller */
+            user-select: none;
         }
 
-        /* EBEVEYN KONTROLÜ & KUMBARA */
         .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; position: sticky; top: 0; z-index: 100;
         }
         .parental-btn {
             background: rgba(0,0,0,0.1); border: none; color: #747d8c;
@@ -59,12 +53,10 @@
             transition: transform 0.2s;
         }
 
-        /* ÜST HARF MENÜSÜ */
         .letters-bar {
             width: 100%; background: white; padding: 10px 15px;
             display: flex; gap: 10px; overflow-x: auto; white-space: nowrap;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            scrollbar-width: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); scrollbar-width: none;
         }
         .letters-bar::-webkit-scrollbar { display: none; }
         .letter-chip {
@@ -73,7 +65,6 @@
         }
         .letter-chip.active { background: var(--primary); color: white; transform: scale(1.1); border: 2px solid #ff7f50; }
 
-        /* ANA OYUN ALANI */
         .game-area {
             flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 15px; text-align: center;
@@ -89,7 +80,6 @@
 
         h2 { color: var(--secondary); font-size: 1.4rem; margin-bottom: 20px; }
 
-        /* BUTONLAR & KARTLAR */
         .listen-btn {
             font-size: 7rem; font-weight: 900; color: var(--primary); background: none; border: none;
             cursor: pointer; text-shadow: 4px 4px 0px var(--accent); transition: 0.1s;
@@ -112,11 +102,10 @@
         }
         .option-card:active { transform: scale(0.95); }
 
-        /* CANVAS (ÇİZİM) ALANI */
         .canvas-wrapper {
             position: relative; width: 300px; height: 300px; margin: 0 auto;
             border: 4px dashed #ced6e0; border-radius: 20px; background: #f8f9fa;
-            touch-action: none; overflow: hidden; /* Sadece canvas bölgesinde ekran kaymasını engelle */
+            touch-action: none; overflow: hidden;
         }
         .canvas-bg {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -124,7 +113,6 @@
         }
         canvas { position: absolute; top: 0; left: 0; cursor: crosshair; touch-action: none; }
 
-        /* SÜRÜKLE BIRAK BÖLÜMÜ */
         .drag-stage { display: flex; flex-direction: column; align-items: center; gap: 30px; touch-action: none; }
         .drop-target {
             font-size: 6rem; width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
@@ -143,14 +131,12 @@
         }
         .drag-item.dragging { opacity: 0.9; transform: scale(1.1); z-index: 100; }
 
-        /* HATA TOAST */
         .toast {
             position: fixed; bottom: -100px; left: 50%; transform: translateX(-50%);
             background: var(--primary); color: white; padding: 15px 30px; border-radius: 50px;
             font-weight: bold; font-size: 1.2rem; transition: 0.3s; z-index: 1000;
         }
         .toast.show { bottom: 30px; }
-
     </style>
 </head>
 <body>
@@ -173,7 +159,7 @@
 
         <!-- STAGE 2: Büyük A Çiz -->
         <div id="stage2" class="stage-container">
-            <h2>Şimdi parmağınla Büyük A harfini çiz!<br>Taşırmamaya dikkat et!</h2>
+            <h2>Şimdi parmağınla Büyük A harfini çiz!<br>Ortadaki çizgiyi çizmeyi unutma!</h2>
             <div class="canvas-wrapper">
                 <div class="canvas-bg">A</div>
                 <canvas id="drawBigA" width="300" height="300"></canvas>
@@ -192,9 +178,9 @@
             </div>
         </div>
 
-        <!-- STAGE 4: Ayıcığı Besle (Sürükle) -->
+        <!-- STAGE 4: Ayıcığı Besle -->
         <div id="stage4" class="stage-container">
-            <h2>🐻 Ayıcığın karnı çok acıkmış! Aşağıdaki harflerden Büyük A harfini tutup ayıcığa yedir!</h2>
+            <h2>🐻 Ayıcığın karnı çok acıkmış! Büyük A harfini tutup ayıcığa yedir!</h2>
             <div class="drag-stage">
                 <div class="drop-target" data-accept="A">🐻</div>
                 <div class="drag-items-container">
@@ -205,51 +191,60 @@
             </div>
         </div>
 
-        <!-- STAGE 5: Hızlı Çizim Büyük A -->
+        <!-- STAGE 5: Gölge Bulmaca (Yeni Bölüm) -->
         <div id="stage5" class="stage-container">
-            <h2>Evet, şimdi A harfini ne kadar hızlı çizebildiğine bakalım! Sadece 3 Saniyen var!</h2>
-            <div id="timerDisplay" style="font-size: 3rem; color: var(--primary); font-weight: 900;">3</div>
-            <div class="canvas-wrapper" id="speedWrapper" style="display:none;">
-                <div class="canvas-bg">A</div>
-                <canvas id="speedCanvas" width="300" height="300"></canvas>
+            <h2>Büyük A harfinin gölgesi hangisi? Doğruyu seç!</h2>
+            <div class="grid-options">
+                <div class="option-card" onclick="checkClick(false)">E</div>
+                <div class="option-card" onclick="checkClick(false)">M</div>
+                <div class="option-card" onclick="checkClick(true, 6)">A</div>
             </div>
-            <button class="btn" id="startSpeedBtn" onclick="startSpeedTest()">Başla!</button>
         </div>
 
-        <!-- STAGE 6: Vedalaşma -->
+        <!-- STAGE 6: Hızlı Çizim Büyük A -->
         <div id="stage6" class="stage-container">
-            <h2>Büyük A harfi bize veda ediyor. Lütfen vedalaşması için küçük a kardeşini yanına sürükle.</h2>
+            <h2>Büyük A harfini ne kadar hızlı çizebileceksin? 3 Saniyen var!</h2>
+            <div id="timerDisplayA" style="font-size: 3rem; color: var(--primary); font-weight: 900;">3</div>
+            <div class="canvas-wrapper" id="speedWrapperA" style="display:none;">
+                <div class="canvas-bg">A</div>
+                <canvas id="speedCanvasA" width="300" height="300"></canvas>
+            </div>
+            <button class="btn" id="startSpeedBtnA" onclick="startSpeedTest('A')">Başla!</button>
+        </div>
+
+        <!-- STAGE 7: Vedalaşma -->
+        <div id="stage7" class="stage-container">
+            <h2>Büyük A harfi veda ediyor. Küçük a kardeşini yanına sürükle.</h2>
             <div class="drag-stage">
                 <div class="drop-target colorful-A" data-accept="a">A</div>
                 <div class="drag-items-container">
                     <div class="drag-item" data-val="e" style="background:#1E90FF;">e</div>
                     <div class="drag-item" data-val="b" style="background:#FFA502;">b</div>
-                    <div class="drag-item" data-val="c" style="background:#9b59b6;">c</div>
                     <div class="drag-item" data-val="a" style="background:#2ED573;">a</div>
                 </div>
             </div>
         </div>
 
-        <!-- STAGE 7: Küçük a Dinle -->
-        <div id="stage7" class="stage-container">
-            <h2>Şimdi küçük a harfi ile oyunlarımız başlıyor!<br>10 defa dinleyelim.</h2>
-            <button class="listen-btn" style="text-transform:lowercase;" onclick="playListenSound('Küçük a', 7)">a</button>
-            <div class="counter" id="listenCounter7">0 / 10</div>
+        <!-- STAGE 8: Küçük a Dinle -->
+        <div id="stage8" class="stage-container">
+            <h2>Küçük a harfi ile devam ediyoruz!<br>10 defa dinleyelim.</h2>
+            <button class="listen-btn" style="text-transform:lowercase;" onclick="playListenSound('Küçük a', 8)">a</button>
+            <div class="counter" id="listenCounter8">0 / 10</div>
         </div>
 
-        <!-- STAGE 8: Küçük a Çiz -->
-        <div id="stage8" class="stage-container">
+        <!-- STAGE 9: Küçük a Çiz -->
+        <div id="stage9" class="stage-container">
             <h2>Hadi parmağınla küçük a harfini çizelim!</h2>
             <div class="canvas-wrapper">
                 <div class="canvas-bg" style="font-size: 14rem; top: 45%;">a</div>
                 <canvas id="drawSmallA" width="300" height="300"></canvas>
             </div>
             <button class="btn" style="background:#ff7f50;" onclick="clearCanvas('drawSmallA')">Temizle</button>
-            <button class="btn" onclick="checkCanvas('drawSmallA', 9)">Kontrol Et</button>
+            <button class="btn" onclick="checkCanvas('drawSmallA', 10)">Kontrol Et</button>
         </div>
 
-        <!-- STAGE 9: Küçük a Bul (Balon Patlatma) -->
-        <div id="stage9" class="stage-container">
+        <!-- STAGE 10: Küçük a Bul -->
+        <div id="stage10" class="stage-container">
             <h2>Ekrandaki 3 tane küçük a harfini bul ve tıkla!</h2>
             <div class="grid-options" id="smallAGrid">
                 <div class="option-card" onclick="findMultipleA(this, false)">e</div>
@@ -261,9 +256,20 @@
             </div>
         </div>
 
-        <!-- STAGE 10: Kelime Tamamlama (Ayı) -->
-        <div id="stage10" class="stage-container">
-            <h2>🐻 Ayı kelimesinin ilk harfi eksik! Doğru harfi boşluğa sürükle.</h2>
+        <!-- STAGE 11: Küçük a Hızlı Çizim (Yeni Bölüm) -->
+        <div id="stage11" class="stage-container">
+            <h2>Küçük a harfini çok hızlı çizebilir misin? 3 Saniyen var!</h2>
+            <div id="timerDisplaySmall" style="font-size: 3rem; color: var(--primary); font-weight: 900;">3</div>
+            <div class="canvas-wrapper" id="speedWrapperSmall" style="display:none;">
+                <div class="canvas-bg" style="font-size:14rem;">a</div>
+                <canvas id="speedCanvasSmall" width="300" height="300"></canvas>
+            </div>
+            <button class="btn" id="startSpeedBtnSmall" onclick="startSpeedTest('Small')">Başla!</button>
+        </div>
+
+        <!-- STAGE 12: Kelime Tamamlama (Ayı) -->
+        <div id="stage12" class="stage-container">
+            <h2>🐻 Ayı kelimesinin başı eksik! Doğru harfi sürükle.</h2>
             <div class="drag-stage">
                 <div style="display:flex; align-items:center; gap:10px;">
                     <div class="drop-target" style="height:80px; width:80px; font-size:3rem; border-color:var(--primary);" data-accept="a">_</div>
@@ -277,10 +283,10 @@
             </div>
         </div>
 
-        <!-- STAGE 11: FİNAL KUTLAMA -->
-        <div id="stage11" class="stage-container" style="background:var(--accent); color:white;">
-            <h2 style="color:white; font-size:2.5rem;">🎉 HARİKA! 🎉</h2>
-            <p style="font-size:1.5rem; font-weight:bold;">A harfini ve küçük a harfini mükemmel öğrendin!</p>
+        <!-- STAGE 13: FİNAL -->
+        <div id="stage13" class="stage-container" style="background:var(--accent); color:white;">
+            <h2 style="color:white; font-size:2.5rem;">🎉 TEBRİKLER BUĞLEM! 🎉</h2>
+            <p style="font-size:1.5rem; font-weight:bold;">Büyük A ve küçük a harflerini harika öğrendin!</p>
             <i class="fa-solid fa-trophy" style="font-size:8rem; margin:20px 0; color:#FFD700;"></i><br>
             <button class="btn" style="background:var(--success);" onclick="location.reload()">Tekrar Oyna</button>
         </div>
@@ -290,17 +296,14 @@
     <div id="toast" class="toast">Hata!</div>
 
     <script>
-        // --- GENEL SİSTEM ---
         const alphabet = ["A","B","C","Ç","D","E","F","G","Ğ","H","I","İ","J","K","L","M","N","O","Ö","P","R","S","Ş","T","U","Ü","V","Y","Z"];
         let balance = parseInt(localStorage.getItem('buglem_balance')) || 0;
         let audioUnlocked = false;
 
         window.onload = () => { updateBank(); buildLetterBar(); setupCanvases(); setupDragAndDrop(); }
         
-        // Cihaz kilitli sesleri açmak için ilk etkileşimi bekle
         document.body.addEventListener('touchstart', unlockAudio, {once:true});
         document.body.addEventListener('click', unlockAudio, {once:true});
-
         function unlockAudio() { if(!audioUnlocked) { speechSynthesis.speak(new SpeechSynthesisUtterance('')); audioUnlocked = true; } }
         
         function speak(text) { 
@@ -317,25 +320,20 @@
             if(type === 'success') { 
                 osc.type = 'sine'; osc.frequency.setValueAtTime(600, ctx.currentTime); 
                 osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime+0.1); 
-                gain.gain.setValueAtTime(0.1, ctx.currentTime); 
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3); 
-            }
-            else if (type === 'wrong') { 
+                gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3); 
+            } else if (type === 'wrong') { 
                 osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, ctx.currentTime); 
                 osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime+0.2); 
-                gain.gain.setValueAtTime(0.1, ctx.currentTime); 
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3); 
+                gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3); 
             }
             osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.3);
         }
 
-        // --- PARA VE MENÜ ---
         function updateBank() { document.getElementById('balanceText').innerText = balance + " TL"; localStorage.setItem('buglem_balance', balance); }
         function addMoney() { 
             balance+=10; updateBank(); playSound('success'); 
             let box = document.getElementById('bankBox');
-            box.style.transform = 'scale(1.2)'; 
-            setTimeout(()=> box.style.transform = 'scale(1)', 200); 
+            box.style.transform = 'scale(1.2)'; setTimeout(()=> box.style.transform = 'scale(1)', 200); 
         }
         function loseMoney() { balance-=5; updateBank(); playSound('wrong'); showToast("-5 TL! Yanlış cevap."); }
         
@@ -346,8 +344,7 @@
         }
         
         function showToast(msg) { 
-            let t = document.getElementById('toast'); 
-            t.innerText = msg; t.classList.add('show'); 
+            let t = document.getElementById('toast'); t.innerText = msg; t.classList.add('show'); 
             setTimeout(()=>t.classList.remove('show'), 2000); 
         }
 
@@ -361,39 +358,38 @@
             });
         }
 
-        // --- BÖLÜM GEÇİŞLERİ VE DİYALOGLAR ---
         function nextStage(target) {
             document.querySelectorAll('.stage-container').forEach(e => e.classList.remove('active'));
             document.getElementById('stage' + target).classList.add('active');
             
             setTimeout(() => {
-                if(target===2) speak("Şimdi parmağınla Büyük A harfini çiz! Taşırmamaya dikkat et.");
+                if(target===2) speak("Şimdi parmağınla Büyük A harfini çiz! Çatısını yani orta çizgisinide çizmeyi unutma!");
                 if(target===3) speak("Hangisi Büyük A harfi?");
                 if(target===4) speak("Ayıcığın karnı acıktı! Büyük A harfini tutup ayıcığa yedir.");
-                if(target===5) speak("Şimdi A harfini hızlı çizeceğiz! Başla butonuna bas, 3 saniyen var.");
-                if(target===6) speak("Büyük A harfi bize veda ediyor. Vedalaşması için küçük a kardeşini Büyük A'nın yanına sürükle.");
-                if(target===7) speak("Sıra küçük a harfinde! 10 kere dinleyelim.");
-                if(target===8) speak("Şimdi parmağınla küçük a harfini çiz! Önce yuvarlak, sonra çizgi.");
-                if(target===9) speak("Ekrandaki 3 tane küçük a harfini bul ve onlara tıkla!");
-                if(target===10) speak("Ayı kelimesinin başı eksik. Küçük a harfini sürükleyip boşluğa koy.");
-                if(target===11) speak("Tebrikler Buğlem! A harfini tamamen öğrendin, bir sürü para kazandın!");
+                if(target===5) speak("Büyük A harfinin gölgesi hangisi? Doğruyu seç!");
+                if(target===6) speak("Büyük A harfini hızlı çizeceğiz! Başla butonuna bas, 3 saniyen var.");
+                if(target===7) speak("Büyük A harfi veda ediyor. Küçük a kardeşini yanına sürükle.");
+                if(target===8) speak("Sıra küçük a harfinde! 10 kere dinleyelim.");
+                if(target===9) speak("Şimdi parmağınla küçük a harfini çiz!");
+                if(target===10) speak("Ekrandaki 3 tane küçük a harfini bul ve tıkla!");
+                if(target===11) speak("Küçük a harfini hızlı çizebilir misin? 3 saniyen var!");
+                if(target===12) speak("Ayı kelimesinin başı eksik. Doğru harfi boşluğa sürükle.");
+                if(target===13) speak("Tebrikler Buğlem! Harfleri mükemmel öğrendin!");
             }, 500);
         }
 
-        // --- DİNLEME OYUNLARI ---
-        let count1 = 0; let count7 = 0;
+        let count1 = 0; let count8 = 0;
         function playListenSound(word, stageNum) {
             speak(word);
             if(stageNum === 1) {
                 count1++; document.getElementById('listenCounter1').innerText = count1 + " / 10";
-                if(count1 === 10) { addMoney(); speak("Harika! On lira kazandın, sıradaki bölüme geçelim."); setTimeout(()=>nextStage(2), 3000); }
+                if(count1 === 10) { addMoney(); speak("Harika! On lira kazandın."); setTimeout(()=>nextStage(2), 3000); }
             } else {
-                count7++; document.getElementById('listenCounter7').innerText = count7 + " / 10";
-                if(count7 === 10) { addMoney(); speak("Çok iyi! Şimdi onu çizmeyi deneyelim."); setTimeout(()=>nextStage(8), 3000); }
+                count8++; document.getElementById('listenCounter8').innerText = count8 + " / 10";
+                if(count8 === 10) { addMoney(); speak("Çok iyi! Çizme bölümüne geçiyoruz."); setTimeout(()=>nextStage(9), 3000); }
             }
         }
 
-        // --- TIKLAMA OYUNLARI ---
         function checkClick(isCorrect, nextStg) {
             if(isCorrect) { addMoney(); speak("Tebrikler! Doğru harfi buldun."); setTimeout(()=>nextStage(nextStg), 2000); }
             else { loseMoney(); speak("Yanlış! Lütfen doğru olanı bul."); }
@@ -401,27 +397,45 @@
 
         let foundSmallA = 0;
         function findMultipleA(el, isCorrect) {
-            if(el.style.background === 'var(--success)') return; // Bulunanlara tekrar tıklanmasın
+            if(el.style.background === 'var(--success)') return;
             if(isCorrect) {
                 el.style.background = 'var(--success)'; el.style.color = 'white';
                 playSound('success'); foundSmallA++;
                 if(foundSmallA === 3) {
                     addMoney(); speak("Harika! Bütün küçük a harflerini buldun.");
-                    setTimeout(()=>nextStage(10), 2000);
+                    setTimeout(()=>nextStage(11), 2000);
                 }
             } else { loseMoney(); speak("Bu küçük a değil, tekrar dene."); }
         }
 
-        // --- ÇİZİM SİSTEMİ (Nokta Algılama ve Hata Düzeltme) ---
-        let cData = { 'drawBigA': {hits:new Set(), out:false}, 'speedCanvas': {hits:new Set(), out:false}, 'drawSmallA': {hits:new Set(), out:false} };
+        // --- ÇİZİM KONTROL (Orta Çizgi Eklenmiş Gelişmiş Nokta Sistemi) ---
+        let cData = { 
+            'drawBigA': {hits:new Set(), out:false}, 
+            'speedCanvasA': {hits:new Set(), out:false}, 
+            'drawSmallA': {hits:new Set(), out:false},
+            'speedCanvasSmall': {hits:new Set(), out:false}
+        };
         let ctxs = {};
         
-        // Algılanması gereken temas noktaları
-        const ptsBigA = [{x:150, y:75}, {x:95, y:220}, {x:205, y:220}, {x:120, y:165}, {x:180, y:165}];
-        const ptsSmallA = [{x:135, y:130}, {x:100, y:160}, {x:135, y:190}, {x:180, y:120}, {x:180, y:190}]; 
+        // Büyük A: Sol bacak, sağ bacak, tepe ve ORTA ÇİZGİ (Çatı) noktaları zorunlu kılındı!
+        const ptsBigA = [
+            {x:150, y:75},   // Tepe
+            {x:95,  y:220},  // Sol alt
+            {x:205, y:220},  // Sağ alt
+            {x:125, y:165},  // Orta çizgi sol
+            {x:175, y:165}   // Orta çizgi sağ (Çatının tamamlanması için şart)
+        ];
+        
+        const ptsSmallA = [
+            {x:135, y:130}, 
+            {x:100, y:160}, 
+            {x:135, y:190}, 
+            {x:180, y:120}, 
+            {x:180, y:190}
+        ]; 
 
         function setupCanvases() {
-            ['drawBigA', 'speedCanvas', 'drawSmallA'].forEach(id => {
+            ['drawBigA', 'speedCanvasA', 'drawSmallA', 'speedCanvasSmall'].forEach(id => {
                 let cvs = document.getElementById(id); let ctx = cvs.getContext('2d'); ctxs[id] = ctx;
                 ctx.lineWidth = 15; ctx.lineCap = 'round'; ctx.strokeStyle = '#FF4757';
                 let isDrawing = false;
@@ -433,17 +447,17 @@
                 
                 const draw = (e) => { 
                     if(!isDrawing) return; 
-                    e.preventDefault(); // Sadece çizim yaparken kaydırmayı durdur (Mobildeki BUG BURADAYDI, sadece çizimde engellendi)
+                    e.preventDefault(); 
                     let p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); 
                     
-                    let targetPts = id === 'drawSmallA' ? ptsSmallA : ptsBigA;
+                    let targetPts = (id.includes('Small')) ? ptsSmallA : ptsBigA;
                     targetPts.forEach((pt, i) => { if(Math.hypot(p.x-pt.x, p.y-pt.y) < 40) cData[id].hits.add(i); });
                     
-                    if ((p.x<50 && p.y<60) || (p.x>250 && p.y<60) || (p.x<30 && p.y>250) || (p.x>270 && p.y>250)) { cData[id].out = true; }
+                    if ((p.x<40 && p.y<50) || (p.x>260 && p.y<50) || (p.x<20 && p.y>260) || (p.x>280 && p.y>260)) { cData[id].out = true; }
                 }
                 
                 const start = (e) => { e.preventDefault(); isDrawing=true; ctx.beginPath(); let p = getPos(e); ctx.moveTo(p.x, p.y); }
-                const stop = () => { isDrawing=false; } // window'daki preventDefault KALDIRILDI, tıklamalar düzeldi!
+                const stop = () => { isDrawing=false; }
 
                 cvs.addEventListener('mousedown', start); cvs.addEventListener('mousemove', draw); window.addEventListener('mouseup', stop);
                 cvs.addEventListener('touchstart', start, {passive:false}); cvs.addEventListener('touchmove', draw, {passive:false}); window.addEventListener('touchend', stop);
@@ -453,18 +467,24 @@
         function clearCanvas(id) { ctxs[id].clearRect(0,0,300,300); cData[id].hits.clear(); cData[id].out=false; }
         
         function checkCanvas(id, nextStg) {
+            // 5 noktanın (orta çizgi dahil) tamamına değmesi gerekiyor!
             if(cData[id].hits.size === 5 && !cData[id].out) {
-                addMoney(); speak("Harika çizdin! On lira daha kazandın."); setTimeout(()=>nextStage(nextStg), 2000);
+                addMoney(); speak("Harika çizdin! Orta çizgiyi de unutmaman harika."); setTimeout(()=>nextStage(nextStg), 2000);
             } else if (cData[id].out) {
                 speak("Çizgilerin dışına çıktın! Lütfen taşırmadan tekrar çiz."); clearCanvas(id);
-            } else { speak("Biraz eksik oldu, lütfen tam üzerinden geçerek tekrar çiz."); clearCanvas(id); }
+            } else { speak("Orta çizgiyi eksik bıraktın veya tamamlayamadın. Lütfen tekrar çiz."); clearCanvas(id); }
         }
 
-        // Hızlı Çizim Saniyesi
-        let speedTimer;
-        function startSpeedTest() {
-            document.getElementById('startSpeedBtn').style.display = 'none'; speak("3");
-            let display = document.getElementById('timerDisplay');
+        // Hızlı Çizim Yöneticisi (Hem A hem Small için)
+        function startSpeedTest(type) {
+            let btnId = type === 'A' ? 'startSpeedBtnA' : 'startSpeedBtnSmall';
+            let dispId = type === 'A' ? 'timerDisplayA' : 'timerDisplaySmall';
+            let wrapId = type === 'A' ? 'speedWrapperA' : 'speedWrapperSmall';
+            let canvasKey = type === 'A' ? 'speedCanvasA' : 'speedCanvasSmall';
+            let nextStg = type === 'A' ? 7 : 12;
+
+            document.getElementById(btnId).style.display = 'none'; speak("3");
+            let display = document.getElementById(dispId);
             let t = 3; display.innerText = t; 
             
             let count = setInterval(() => {
@@ -472,24 +492,24 @@
                 if(t > 0) { speak(t.toString()); display.innerText = t; } 
                 else {
                     clearInterval(count); display.innerText = "BAŞLA!"; speak("Başla!");
-                    document.getElementById('speedWrapper').style.display = 'block';
-                    clearCanvas('speedCanvas'); 
+                    document.getElementById(wrapId).style.display = 'block';
+                    clearCanvas(canvasKey); 
                     
                     setTimeout(() => {
-                        document.getElementById('speedWrapper').style.display = 'none';
-                        if(cData['speedCanvas'].hits.size === 5 && !cData['speedCanvas'].out) {
-                            addMoney(); display.innerText = "SÜPER!"; speak("İnanılmaz hızlısın! Tebrik ederim.");
-                            setTimeout(()=>nextStage(6), 3000);
+                        document.getElementById(wrapId).style.display = 'none';
+                        if(cData[canvasKey].hits.size === 5 && !cData[canvasKey].out) {
+                            addMoney(); display.innerText = "SÜPER!"; speak("İnanılmaz hızlısın ve eksiksiz çizdin!");
+                            setTimeout(()=>nextStage(nextStg), 3000);
                         } else {
-                            display.innerText = "YETİŞEMEDİN!"; speak("Süren doldu! Ya eksik çizdin ya da taşırdın. Tekrar deneyelim.");
-                            document.getElementById('startSpeedBtn').style.display = 'inline-block';
+                            display.innerText = "SÜRE BİTTİ!"; speak("Yetişemedin veya orta çizgiyi unuttun. Tekrar deneyelim.");
+                            document.getElementById(btnId).style.display = 'inline-block';
                         }
                     }, 3000);
                 }
             }, 1000);
         }
 
-        // --- SÜRÜKLE BIRAK OYUNLARI ---
+        // --- SÜRÜKLE BIRAK SİSTEMİ ---
         function setupDragAndDrop() {
             let items = document.querySelectorAll('.drag-item');
             let activeItem = null; let startX, startY;
@@ -500,8 +520,8 @@
                     item.classList.add('dragging');
                     startX = e.touches ? e.touches[0].clientX : e.clientX;
                     startY = e.touches ? e.touches[0].clientY : e.clientY;
-                    item.dataset.tx = startX; item.dataset.ty = startY; // Başlangıç noktasını kaydet
-                    e.preventDefault(); // Sürüklerken sayfa kaymasın
+                    item.dataset.tx = startX; item.dataset.ty = startY;
+                    e.preventDefault();
                 };
                 item.addEventListener('touchstart', startDrag, {passive:false});
                 item.addEventListener('mousedown', startDrag);
@@ -513,18 +533,15 @@
                 let x = e.touches ? e.touches[0].clientX : e.clientX;
                 let y = e.touches ? e.touches[0].clientY : e.clientY;
                 let dx = x - startX; let dy = y - startY;
-                
                 activeItem.style.transform = `translate(${dx}px, ${dy}px) scale(1.1)`;
                 activeItem.dataset.tx = x; activeItem.dataset.ty = y;
             };
 
             const endDrag = (e) => {
                 if(!activeItem) return;
-                
                 let currentX = parseFloat(activeItem.dataset.tx);
                 let currentY = parseFloat(activeItem.dataset.ty);
                 
-                // Sürüklenen objeyi görünmez yapıp altındaki hedef kutuyu buluyoruz
                 activeItem.style.pointerEvents = 'none';
                 let elemBelow = document.elementFromPoint(currentX, currentY);
                 activeItem.style.pointerEvents = 'auto';
@@ -532,7 +549,6 @@
                 let dropTarget = elemBelow ? elemBelow.closest('.drop-target') : null;
                 
                 if(dropTarget && dropTarget.getAttribute('data-accept') === activeItem.getAttribute('data-val')) {
-                    // DOĞRU!
                     activeItem.style.display = 'none';
                     dropTarget.style.background = 'var(--success)';
                     dropTarget.style.color = 'white';
@@ -542,19 +558,16 @@
 
                     let stage = activeItem.closest('.stage-container').id;
                     if(stage === 'stage4') { speak("Ayıcık çok doydu, aferin!"); setTimeout(()=>nextStage(5), 2500); }
-                    if(stage === 'stage6') { speak("Kardeşler kavuştu!"); setTimeout(()=>nextStage(7), 2500); }
-                    if(stage === 'stage10') { 
+                    if(stage === 'stage7') { speak("Kardeşler kavuştu!"); setTimeout(()=>nextStage(8), 2500); }
+                    if(stage === 'stage12') { 
                         speak("Ayı kelimesini tamamladın, harika!"); 
                         dropTarget.innerText = "a"; dropTarget.style.background="transparent"; dropTarget.style.color="var(--primary)"; 
-                        setTimeout(()=>nextStage(11), 3000); 
+                        setTimeout(()=>nextStage(13), 3000); 
                     }
-
                 } else {
-                    // YANLIŞ!
                     activeItem.style.transform = `translate(0px, 0px) scale(1)`;
                     if(dropTarget) { loseMoney(); speak("Bu doğru harf değil, bir daha dene!"); }
                 }
-                
                 activeItem.classList.remove('dragging');
                 activeItem = null;
             };
@@ -562,7 +575,6 @@
             window.addEventListener('touchmove', moveDrag, {passive:false}); window.addEventListener('touchend', endDrag);
             window.addEventListener('mousemove', moveDrag); window.addEventListener('mouseup', endDrag);
         }
-
     </script>
 </body>
 </html>
