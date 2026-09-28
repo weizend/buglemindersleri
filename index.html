@@ -22,9 +22,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: pan-y; /* Sadece dikey kaydırmaya izin ver, sürükleme oyunlarını bozmasın */
+            -webkit-tap-highlight-color: transparent; /* Mobildeki mavi tıklama efektini kaldırır */
         }
 
         body {
@@ -35,7 +33,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
+            user-select: none; /* Metin seçimini engeller */
         }
 
         /* EBEVEYN KONTROLÜ & KUMBARA */
@@ -51,11 +49,11 @@
         .parental-btn {
             background: rgba(0,0,0,0.1); border: none; color: #747d8c;
             padding: 10px 15px; border-radius: 20px; cursor: pointer;
-            font-weight: bold;
+            font-weight: bold; font-size: 1.1rem;
         }
         .bank-container {
             background: var(--success); color: white; padding: 10px 20px;
-            border-radius: 30px; font-weight: 900; font-size: 1.2rem;
+            border-radius: 30px; font-weight: 900; font-size: 1.3rem;
             display: flex; align-items: center; gap: 10px;
             box-shadow: 0 5px 15px rgba(46, 213, 115, 0.4);
             transition: transform 0.2s;
@@ -73,7 +71,7 @@
             background: #f1f2f6; color: var(--dark); font-size: 1.3rem; font-weight: 900;
             padding: 8px 20px; border-radius: 15px; cursor: pointer; transition: 0.2s;
         }
-        .letter-chip.active { background: var(--primary); color: white; transform: scale(1.1); }
+        .letter-chip.active { background: var(--primary); color: white; transform: scale(1.1); border: 2px solid #ff7f50; }
 
         /* ANA OYUN ALANI */
         .game-area {
@@ -118,16 +116,16 @@
         .canvas-wrapper {
             position: relative; width: 300px; height: 300px; margin: 0 auto;
             border: 4px dashed #ced6e0; border-radius: 20px; background: #f8f9fa;
-            touch-action: none; overflow: hidden;
+            touch-action: none; overflow: hidden; /* Sadece canvas bölgesinde ekran kaymasını engelle */
         }
         .canvas-bg {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
             font-size: 12rem; font-weight: 900; color: rgba(0,0,0,0.06); pointer-events: none;
         }
-        canvas { position: absolute; top: 0; left: 0; cursor: crosshair; }
+        canvas { position: absolute; top: 0; left: 0; cursor: crosshair; touch-action: none; }
 
         /* SÜRÜKLE BIRAK BÖLÜMÜ */
-        .drag-stage { display: flex; flex-direction: column; align-items: center; gap: 30px; }
+        .drag-stage { display: flex; flex-direction: column; align-items: center; gap: 30px; touch-action: none; }
         .drop-target {
             font-size: 6rem; width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;
             border: 4px dashed #ced6e0; border-radius: 20px; background: #f8f9fa;
@@ -141,9 +139,9 @@
         .drag-item {
             width: 80px; height: 80px; background: var(--primary); color: white; font-size: 3rem; font-weight: 900;
             border-radius: 20px; display: flex; align-items: center; justify-content: center;
-            cursor: grab; box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4); touch-action: none; position: relative; z-index: 10;
+            cursor: grab; box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4); position: relative; z-index: 10; touch-action: none;
         }
-        .drag-item.dragging { opacity: 0.8; transform: scale(1.1); z-index: 100; cursor: grabbing; }
+        .drag-item.dragging { opacity: 0.9; transform: scale(1.1); z-index: 100; }
 
         /* HATA TOAST */
         .toast {
@@ -196,7 +194,7 @@
 
         <!-- STAGE 4: Ayıcığı Besle (Sürükle) -->
         <div id="stage4" class="stage-container">
-            <h2>🐻 Ayıcığın karnı çok acıkmış! Aşağıdaki harflerden Büyük A harfini ayıcığa yedir!</h2>
+            <h2>🐻 Ayıcığın karnı çok acıkmış! Aşağıdaki harflerden Büyük A harfini tutup ayıcığa yedir!</h2>
             <div class="drag-stage">
                 <div class="drop-target" data-accept="A">🐻</div>
                 <div class="drag-items-container">
@@ -218,7 +216,7 @@
             <button class="btn" id="startSpeedBtn" onclick="startSpeedTest()">Başla!</button>
         </div>
 
-        <!-- STAGE 6: Vedalaşma (Küçük a ile Büyük A Kavuşuyor) -->
+        <!-- STAGE 6: Vedalaşma -->
         <div id="stage6" class="stage-container">
             <h2>Büyük A harfi bize veda ediyor. Lütfen vedalaşması için küçük a kardeşini yanına sürükle.</h2>
             <div class="drag-stage">
@@ -241,7 +239,7 @@
 
         <!-- STAGE 8: Küçük a Çiz -->
         <div id="stage8" class="stage-container">
-            <h2>Hadi parmağınla yuvarlak küçük a harfini çizelim!</h2>
+            <h2>Hadi parmağınla küçük a harfini çizelim!</h2>
             <div class="canvas-wrapper">
                 <div class="canvas-bg" style="font-size: 14rem; top: 45%;">a</div>
                 <canvas id="drawSmallA" width="300" height="300"></canvas>
@@ -250,7 +248,7 @@
             <button class="btn" onclick="checkCanvas('drawSmallA', 9)">Kontrol Et</button>
         </div>
 
-        <!-- STAGE 9: Küçük a Bul (Balon Patlatma Mantığı) -->
+        <!-- STAGE 9: Küçük a Bul (Balon Patlatma) -->
         <div id="stage9" class="stage-container">
             <h2>Ekrandaki 3 tane küçük a harfini bul ve tıkla!</h2>
             <div class="grid-options" id="smallAGrid">
@@ -298,32 +296,68 @@
         let audioUnlocked = false;
 
         window.onload = () => { updateBank(); buildLetterBar(); setupCanvases(); setupDragAndDrop(); }
+        
+        // Cihaz kilitli sesleri açmak için ilk etkileşimi bekle
         document.body.addEventListener('touchstart', unlockAudio, {once:true});
         document.body.addEventListener('click', unlockAudio, {once:true});
 
         function unlockAudio() { if(!audioUnlocked) { speechSynthesis.speak(new SpeechSynthesisUtterance('')); audioUnlocked = true; } }
-        function speak(text) { window.speechSynthesis.cancel(); let msg = new SpeechSynthesisUtterance(text); msg.lang = 'tr-TR'; msg.rate = 0.9; window.speechSynthesis.speak(msg); }
+        
+        function speak(text) { 
+            window.speechSynthesis.cancel(); 
+            let msg = new SpeechSynthesisUtterance(text); 
+            msg.lang = 'tr-TR'; msg.rate = 0.9; 
+            window.speechSynthesis.speak(msg); 
+        }
+        
         function playSound(type) {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator(); const gain = ctx.createGain();
             osc.connect(gain); gain.connect(ctx.destination);
-            if(type === 'success') { osc.type = 'sine'; osc.frequency.setValueAtTime(600, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime+0.1); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3); }
-            else if (type === 'wrong') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, ctx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime+0.2); gain.gain.setValueAtTime(0.1, ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3); }
+            if(type === 'success') { 
+                osc.type = 'sine'; osc.frequency.setValueAtTime(600, ctx.currentTime); 
+                osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime+0.1); 
+                gain.gain.setValueAtTime(0.1, ctx.currentTime); 
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3); 
+            }
+            else if (type === 'wrong') { 
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(200, ctx.currentTime); 
+                osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime+0.2); 
+                gain.gain.setValueAtTime(0.1, ctx.currentTime); 
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime+0.3); 
+            }
             osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.3);
         }
 
         // --- PARA VE MENÜ ---
         function updateBank() { document.getElementById('balanceText').innerText = balance + " TL"; localStorage.setItem('buglem_balance', balance); }
-        function addMoney() { balance+=10; updateBank(); playSound('success'); document.getElementById('bankBox').style.transform = 'scale(1.2)'; setTimeout(()=>document.getElementById('bankBox').style.transform = 'scale(1)', 200); }
+        function addMoney() { 
+            balance+=10; updateBank(); playSound('success'); 
+            let box = document.getElementById('bankBox');
+            box.style.transform = 'scale(1.2)'; 
+            setTimeout(()=> box.style.transform = 'scale(1)', 200); 
+        }
         function loseMoney() { balance-=5; updateBank(); playSound('wrong'); showToast("-5 TL! Yanlış cevap."); }
-        function parentalControl() { let p = prompt("Sıfırlama Şifresi:"); if(p==="1234"){ localStorage.setItem('buglem_balance',0); alert("Sıfırlandı."); location.reload(); } }
-        function showToast(msg) { let t = document.getElementById('toast'); t.innerText = msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2000); }
+        
+        function parentalControl() { 
+            let p = prompt("Sıfırlama Şifresi:"); 
+            if(p==="1234"){ localStorage.setItem('buglem_balance',0); alert("Sıfırlandı."); location.reload(); } 
+            else if(p){ alert("Yanlış Şifre"); }
+        }
+        
+        function showToast(msg) { 
+            let t = document.getElementById('toast'); 
+            t.innerText = msg; t.classList.add('show'); 
+            setTimeout(()=>t.classList.remove('show'), 2000); 
+        }
 
         function buildLetterBar() {
             const bar = document.getElementById('lettersBar');
             alphabet.forEach(l => {
-                let div = document.createElement('div'); div.className = 'letter-chip' + (l==='A'?' active':''); div.innerText = l;
-                div.onclick = () => { if(l!=='A') speak(l + " harfi yakında!"); }; bar.appendChild(div);
+                let div = document.createElement('div'); 
+                div.className = 'letter-chip' + (l==='A'?' active':''); div.innerText = l;
+                div.onclick = () => { if(l!=='A') speak(l + " harfi yakında eklenecek!"); }; 
+                bar.appendChild(div);
             });
         }
 
@@ -346,7 +380,7 @@
             }, 500);
         }
 
-        // --- DİNLEME (AŞAMA 1 ve 7) ---
+        // --- DİNLEME OYUNLARI ---
         let count1 = 0; let count7 = 0;
         function playListenSound(word, stageNum) {
             speak(word);
@@ -367,7 +401,7 @@
 
         let foundSmallA = 0;
         function findMultipleA(el, isCorrect) {
-            if(el.style.background === 'var(--success)') return; // Zaten bulunmuş
+            if(el.style.background === 'var(--success)') return; // Bulunanlara tekrar tıklanmasın
             if(isCorrect) {
                 el.style.background = 'var(--success)'; el.style.color = 'white';
                 playSound('success'); foundSmallA++;
@@ -378,12 +412,13 @@
             } else { loseMoney(); speak("Bu küçük a değil, tekrar dene."); }
         }
 
-        // --- YENİ ÇİZİM SİSTEMİ (TAŞIRMA KONTROLLÜ) ---
+        // --- ÇİZİM SİSTEMİ (Nokta Algılama ve Hata Düzeltme) ---
         let cData = { 'drawBigA': {hits:new Set(), out:false}, 'speedCanvas': {hits:new Set(), out:false}, 'drawSmallA': {hits:new Set(), out:false} };
         let ctxs = {};
         
+        // Algılanması gereken temas noktaları
         const ptsBigA = [{x:150, y:75}, {x:95, y:220}, {x:205, y:220}, {x:120, y:165}, {x:180, y:165}];
-        const ptsSmallA = [{x:135, y:130}, {x:100, y:160}, {x:135, y:190}, {x:180, y:120}, {x:180, y:190}]; // Küçük a'nın temas noktaları
+        const ptsSmallA = [{x:135, y:130}, {x:100, y:160}, {x:135, y:190}, {x:180, y:120}, {x:180, y:190}]; 
 
         function setupCanvases() {
             ['drawBigA', 'speedCanvas', 'drawSmallA'].forEach(id => {
@@ -395,21 +430,26 @@
                     let rect = cvs.getBoundingClientRect();
                     return { x: (e.touches ? e.touches[0].clientX : e.clientX) - rect.left, y: (e.touches ? e.touches[0].clientY : e.clientY) - rect.top };
                 }
+                
                 const draw = (e) => { 
-                    if(!isDrawing) return; e.preventDefault(); let p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); 
+                    if(!isDrawing) return; 
+                    e.preventDefault(); // Sadece çizim yaparken kaydırmayı durdur (Mobildeki BUG BURADAYDI, sadece çizimde engellendi)
+                    let p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); 
                     
                     let targetPts = id === 'drawSmallA' ? ptsSmallA : ptsBigA;
                     targetPts.forEach((pt, i) => { if(Math.hypot(p.x-pt.x, p.y-pt.y) < 40) cData[id].hits.add(i); });
                     
                     if ((p.x<50 && p.y<60) || (p.x>250 && p.y<60) || (p.x<30 && p.y>250) || (p.x>270 && p.y>250)) { cData[id].out = true; }
                 }
+                
                 const start = (e) => { e.preventDefault(); isDrawing=true; ctx.beginPath(); let p = getPos(e); ctx.moveTo(p.x, p.y); }
-                const stop = (e) => { e.preventDefault(); isDrawing=false; }
+                const stop = () => { isDrawing=false; } // window'daki preventDefault KALDIRILDI, tıklamalar düzeldi!
 
                 cvs.addEventListener('mousedown', start); cvs.addEventListener('mousemove', draw); window.addEventListener('mouseup', stop);
                 cvs.addEventListener('touchstart', start, {passive:false}); cvs.addEventListener('touchmove', draw, {passive:false}); window.addEventListener('touchend', stop);
             });
         }
+        
         function clearCanvas(id) { ctxs[id].clearRect(0,0,300,300); cData[id].hits.clear(); cData[id].out=false; }
         
         function checkCanvas(id, nextStg) {
@@ -420,6 +460,7 @@
             } else { speak("Biraz eksik oldu, lütfen tam üzerinden geçerek tekrar çiz."); clearCanvas(id); }
         }
 
+        // Hızlı Çizim Saniyesi
         let speedTimer;
         function startSpeedTest() {
             document.getElementById('startSpeedBtn').style.display = 'none'; speak("3");
@@ -432,7 +473,7 @@
                 else {
                     clearInterval(count); display.innerText = "BAŞLA!"; speak("Başla!");
                     document.getElementById('speedWrapper').style.display = 'block';
-                    clearCanvas('speedCanvas'); // SÜRE BAŞLARKEN TAMAMEN SIFIRLA!
+                    clearCanvas('speedCanvas'); 
                     
                     setTimeout(() => {
                         document.getElementById('speedWrapper').style.display = 'none';
@@ -448,10 +489,10 @@
             }, 1000);
         }
 
-        // --- SÜRÜKLE BIRAK OYUNLARI (Tüm Sahneler İçin Ortak Mimari) ---
+        // --- SÜRÜKLE BIRAK OYUNLARI ---
         function setupDragAndDrop() {
             let items = document.querySelectorAll('.drag-item');
-            let activeItem = null; let startX, startY; let initialTransform = '';
+            let activeItem = null; let startX, startY;
 
             items.forEach(item => {
                 const startDrag = (e) => {
@@ -459,9 +500,8 @@
                     item.classList.add('dragging');
                     startX = e.touches ? e.touches[0].clientX : e.clientX;
                     startY = e.touches ? e.touches[0].clientY : e.clientY;
-                    item.style.transform = 'translate(0px, 0px) scale(1.1)';
-                    item.dataset.tx = 0; item.dataset.ty = 0;
-                    e.preventDefault();
+                    item.dataset.tx = startX; item.dataset.ty = startY; // Başlangıç noktasını kaydet
+                    e.preventDefault(); // Sürüklerken sayfa kaymasın
                 };
                 item.addEventListener('touchstart', startDrag, {passive:false});
                 item.addEventListener('mousedown', startDrag);
@@ -473,35 +513,41 @@
                 let x = e.touches ? e.touches[0].clientX : e.clientX;
                 let y = e.touches ? e.touches[0].clientY : e.clientY;
                 let dx = x - startX; let dy = y - startY;
+                
                 activeItem.style.transform = `translate(${dx}px, ${dy}px) scale(1.1)`;
                 activeItem.dataset.tx = x; activeItem.dataset.ty = y;
             };
 
             const endDrag = (e) => {
                 if(!activeItem) return;
+                
                 let currentX = parseFloat(activeItem.dataset.tx);
                 let currentY = parseFloat(activeItem.dataset.ty);
                 
-                activeItem.style.visibility = 'hidden'; // Hedefi bulmak için geçici gizle
+                // Sürüklenen objeyi görünmez yapıp altındaki hedef kutuyu buluyoruz
+                activeItem.style.pointerEvents = 'none';
                 let elemBelow = document.elementFromPoint(currentX, currentY);
-                activeItem.style.visibility = 'visible';
+                activeItem.style.pointerEvents = 'auto';
                 
                 let dropTarget = elemBelow ? elemBelow.closest('.drop-target') : null;
                 
                 if(dropTarget && dropTarget.getAttribute('data-accept') === activeItem.getAttribute('data-val')) {
                     // DOĞRU!
-                    activeItem.style.display = 'none'; // Kaybolsun
+                    activeItem.style.display = 'none';
                     dropTarget.style.background = 'var(--success)';
                     dropTarget.style.color = 'white';
                     dropTarget.innerText = "⭐";
                     addMoney();
                     playSound('success');
 
-                    // Hangi sahnede olduğunu bul ve ilerle
                     let stage = activeItem.closest('.stage-container').id;
                     if(stage === 'stage4') { speak("Ayıcık çok doydu, aferin!"); setTimeout(()=>nextStage(5), 2500); }
                     if(stage === 'stage6') { speak("Kardeşler kavuştu!"); setTimeout(()=>nextStage(7), 2500); }
-                    if(stage === 'stage10') { speak("Ayı kelimesini tamamladın, harika!"); dropTarget.innerText = "a"; dropTarget.style.background="transparent"; dropTarget.style.color="var(--primary)"; setTimeout(()=>nextStage(11), 3000); }
+                    if(stage === 'stage10') { 
+                        speak("Ayı kelimesini tamamladın, harika!"); 
+                        dropTarget.innerText = "a"; dropTarget.style.background="transparent"; dropTarget.style.color="var(--primary)"; 
+                        setTimeout(()=>nextStage(11), 3000); 
+                    }
 
                 } else {
                     // YANLIŞ!
