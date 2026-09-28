@@ -22,7 +22,7 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            user-select: none; /* Metin seçimi engellendi */
+            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -34,7 +34,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Kaydırmayı engelle (Uygulama hissi) */
+            overflow: hidden;
         }
 
         /* EBEVEYN KONTROLÜ */
@@ -163,7 +163,7 @@
             border-radius: 20px;
             background: #f8f9fa;
             overflow: hidden;
-            touch-action: none; /* Mobilde sayfayı kaydırmayı önler */
+            touch-action: none;
         }
         .canvas-bg {
             position: absolute;
@@ -283,25 +283,25 @@
     <!-- ANA OYUN ALANI -->
     <div class="game-area">
 
-        <!-- 1. AŞAMA: 10 Kere Dinleme -->
+        <!-- 1. AŞAMA -->
         <div id="stage1" class="stage-container active">
             <h2 id="s1-title">Büyük A harfini öğreniyoruz!<br>Önce sesini 10 defa dinleyelim.</h2>
             <button class="listen-btn" onclick="playLetterSound()">A</button>
             <div class="counter" id="listenCounter">0 / 10</div>
         </div>
 
-        <!-- 2. AŞAMA: Harfi Gerçekten Çizme -->
+        <!-- 2. AŞAMA: ÇİZİM -->
         <div id="stage2" class="stage-container">
-            <h2>Şimdi parmağınla A harfini çiz!</h2>
+            <h2>Şimdi parmağınla A harfini çiz! (Çizgilerin dışına taşırma)</h2>
             <div class="canvas-wrapper">
                 <div class="canvas-bg">A</div>
                 <canvas id="drawCanvas" width="300" height="300"></canvas>
             </div>
-            <button class="btn" style="background:#ff7f50;" onclick="clearCanvas()">Temizle</button>
+            <button class="btn" style="background:#ff7f50;" onclick="clearCanvas('drawCanvas')">Temizle</button>
             <button class="btn" onclick="checkDrawing('normal')">Kontrol Et</button>
         </div>
 
-        <!-- 3. AŞAMA: Harfi Bul -->
+        <!-- 3. AŞAMA: BUL -->
         <div id="stage3" class="stage-container">
             <h2>Hangisi Büyük A harfi?</h2>
             <div class="grid-options">
@@ -311,7 +311,7 @@
             </div>
         </div>
 
-        <!-- 4. AŞAMA: İçinde A olanı bul -->
+        <!-- 4. AŞAMA: KELİME BUL -->
         <div id="stage4" class="stage-container">
             <h2>İçinde "A" harfi olan hangisi?</h2>
             <div class="grid-options">
@@ -321,19 +321,18 @@
             </div>
         </div>
 
-        <!-- 5. AŞAMA: Şaşırtmacalı Çizim (Ayıcık) -->
+        <!-- 5. AŞAMA: ŞAŞIRTMA ÇİZİM -->
         <div id="stage5" class="stage-container">
             <h2>🐻 Ayıcığın karnı çok acıkmış! Ona hemen bir A harfi çiz. (Dikkat et!)</h2>
             <div class="canvas-wrapper">
-                <!-- Şaşırtmaca B Harfi -->
                 <div class="canvas-bg trick">B</div>
                 <canvas id="trickCanvas" width="300" height="300"></canvas>
             </div>
-            <button class="btn" style="background:#ff7f50;" onclick="clearTrickCanvas()">Temizle</button>
+            <button class="btn" style="background:#ff7f50;" onclick="clearCanvas('trickCanvas')">Temizle</button>
             <button class="btn" onclick="checkDrawing('trick')">Yedir</button>
         </div>
 
-        <!-- 6. AŞAMA: Hızlı Çizim (Süreli) -->
+        <!-- 6. AŞAMA: HIZLI ÇİZİM -->
         <div id="stage6" class="stage-container">
             <h2>Evet, şimdi A harfini ne kadar hızlı çizebildiğine bakalım! 3 Saniyen var!</h2>
             <div id="timerDisplay" style="font-size: 3rem; color: var(--primary); font-weight: 900;">3</div>
@@ -344,7 +343,7 @@
             <button class="btn" id="startSpeedBtn" onclick="startSpeedTest()">Başla!</button>
         </div>
 
-        <!-- 7. AŞAMA: Vedalaşma (Sürükle Bırak) -->
+        <!-- 7. AŞAMA: SÜRÜKLE BIRAK -->
         <div id="stage7" class="stage-container">
             <h2>Büyük A harfi bize veda ediyor. Lütfen vedalaşması için kardeşini yanına sürükler misin?</h2>
             <div class="drag-area" id="dragArea">
@@ -365,15 +364,8 @@
         let balance = parseInt(localStorage.getItem('buglem_balance')) || 0;
         let audioUnlocked = false;
         let currentStage = 1;
-
-        // AŞAMA 1 DEĞİŞKENLERİ
         let listenCount = 0;
 
-        // ÇİZİM KONTROL DEĞİŞKENLERİ (Grid Hitbox Mantığı)
-        // 300x300 canvas'ı 3x3 sanal ızgaraya bölüyoruz. Çizim yaparken fare/parmak hangi bölgelerden geçti kaydediyoruz.
-        let hitRegions = new Set();
-        
-        // --- BAŞLANGIÇ AYARLARI ---
         window.onload = () => {
             updateBank();
             buildLetterBar();
@@ -381,7 +373,7 @@
             setupDragAndDrop();
         }
 
-        // SES KİLİDİNİ AÇMA (İlk dokunuşta zorunlu)
+        // SES KİLİDİNİ AÇMA
         document.body.addEventListener('touchstart', unlockAudio, {once:true});
         document.body.addEventListener('click', unlockAudio, {once:true});
 
@@ -402,7 +394,6 @@
         }
 
         function playSound(type) {
-            // Basit web audio beep sesleri
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -441,7 +432,6 @@
             showToast("-5 TL! Yanlış cevap.");
         }
 
-        // --- EBEVEYN KONTROLÜ ---
         function parentalControl() {
             let pass = prompt("Sistemi sıfırlamak için Ebeveyn Şifresini girin:");
             if(pass === "1234") {
@@ -453,18 +443,13 @@
             }
         }
 
-        // --- HARF MENÜSÜ ---
         function buildLetterBar() {
             const bar = document.getElementById('lettersBar');
             alphabet.forEach(l => {
                 let div = document.createElement('div');
                 div.className = 'letter-chip' + (l==='A' ? ' active' : '');
                 div.innerText = l;
-                div.onclick = () => {
-                    if(l !== 'A') {
-                        speak(l + " harfi çok yakında eklenecek! Şimdilik A harfini bitirelim.");
-                    }
-                };
+                div.onclick = () => { if(l !== 'A') speak(l + " harfi yakında eklenecek!"); };
                 bar.appendChild(div);
             });
         }
@@ -473,9 +458,8 @@
             document.querySelectorAll('.stage-container').forEach(el => el.classList.remove('active'));
             document.getElementById('stage' + target).classList.add('active');
             
-            // Yeni aşama seslendirmeleri
             setTimeout(() => {
-                if(target === 2) speak("Şimdi parmağınla A harfini çiz!");
+                if(target === 2) speak("Şimdi parmağınla A harfini çiz! Taşırmamaya dikkat et.");
                 if(target === 3) speak("Hangisi Büyük A harfi?");
                 if(target === 4) speak("İçinde A harfi olan resim hangisi?");
                 if(target === 5) speak("Ayıcığın karnı çok acıkmış! Ona hemen bir A harfi çiz, ama dikkat et şaşırtmaca var!");
@@ -491,7 +475,6 @@
             setTimeout(() => t.classList.remove('show'), 2000);
         }
 
-        // --- STAGE 1: DİNLE ---
         function playLetterSound() {
             speak("A");
             listenCount++;
@@ -503,9 +486,33 @@
             }
         }
 
-        // --- STAGE 2, 5, 6: ÇİZİM SİSTEMİ (Gerçekten yazdığına emin olma) ---
+        // --- YENİ GELİŞMİŞ ÇİZİM SİSTEMİ (5 NOKTA & TAŞIRMA KONTROLÜ) ---
         let canvases = ['drawCanvas', 'trickCanvas', 'speedCanvas'];
         let contexts = {};
+        
+        // Her canvas için kendi hit verilerini tutacağımız sözlük
+        let canvasData = {
+            'drawCanvas': { hitsA: new Set(), hitsB: new Set(), outOfBounds: false },
+            'trickCanvas': { hitsA: new Set(), hitsB: new Set(), outOfBounds: false },
+            'speedCanvas': { hitsA: new Set(), hitsB: new Set(), outOfBounds: false }
+        };
+
+        // A Harfi için 5 zorunlu geçiş noktası (x, y) (300x300 tuvale göre ortalanmış)
+        const pointsA = [
+            {x: 150, y: 75},   // Tepe noktası
+            {x: 95,  y: 220},  // Sol alt bacak
+            {x: 205, y: 220},  // Sağ alt bacak
+            {x: 120, y: 165},  // Orta Çizgi Sol
+            {x: 180, y: 165}   // Orta Çizgi Sağ
+        ];
+
+        // Şaşırtmaca B Harfi noktaları (Eğer B'nin sağ göbeklerine çizdiyse tespit için)
+        const pointsB = [
+            {x: 120, y: 80},   // Sol dik çizgi
+            {x: 120, y: 220},  
+            {x: 180, y: 100},  // Üst göbek
+            {x: 180, y: 190}   // Alt göbek
+        ];
         
         function setupCanvases() {
             canvases.forEach(id => {
@@ -522,17 +529,37 @@
                     let rect = cvs.getBoundingClientRect();
                     let x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
                     let y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-                    
-                    // Sanal 3x3 ızgara hesaplaması (Hangi bölgeden geçti)
-                    let gridX = Math.floor(x / 100);
-                    let gridY = Math.floor(y / 100);
-                    hitRegions.add(`${gridX},${gridY}`); // Örn: "1,0" (Üst orta)
-                    
                     return {x, y};
                 }
 
+                const draw = (e) => { 
+                    if(!isDrawing) return; 
+                    e.preventDefault(); 
+                    let p = getPos(e); 
+                    ctx.lineTo(p.x, p.y); 
+                    ctx.stroke(); 
+                    
+                    // NOKTA KONTROLLERİ (50px tolerans yarıçapı ile çok rahat algılar)
+                    pointsA.forEach((pt, idx) => {
+                        if(Math.hypot(p.x - pt.x, p.y - pt.y) < 50) {
+                            canvasData[id].hitsA.add(idx);
+                        }
+                    });
+
+                    pointsB.forEach((pt, idx) => {
+                        if(Math.hypot(p.x - pt.x, p.y - pt.y) < 50) {
+                            canvasData[id].hitsB.add(idx);
+                        }
+                    });
+
+                    // TAŞIRMA KONTROLÜ (Şablonun uzağındaki köşeler yasak bölge)
+                    // Üst köşeler veya aşırı sağ/sol alt köşelere çizerse "dışına taşırdı" sayılır.
+                    if ( (p.x < 50 && p.y < 60) || (p.x > 250 && p.y < 60) || (p.x < 30 && p.y > 250) || (p.x > 270 && p.y > 250) ) {
+                        canvasData[id].outOfBounds = true;
+                    }
+                }
+
                 const start = (e) => { e.preventDefault(); isDrawing = true; ctx.beginPath(); let p = getPos(e); ctx.moveTo(p.x, p.y); }
-                const draw = (e) => { if(!isDrawing) return; e.preventDefault(); let p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
                 const stop = (e) => { e.preventDefault(); isDrawing = false; }
 
                 cvs.addEventListener('mousedown', start); cvs.addEventListener('mousemove', draw); cvs.addEventListener('mouseup', stop);
@@ -540,47 +567,56 @@
             });
         }
 
-        function clearCanvas() { contexts['drawCanvas'].clearRect(0,0,300,300); hitRegions.clear(); }
-        function clearTrickCanvas() { contexts['trickCanvas'].clearRect(0,0,300,300); hitRegions.clear(); }
-        function clearSpeedCanvas() { contexts['speedCanvas'].clearRect(0,0,300,300); hitRegions.clear(); }
+        // Seçili tuvali ve içindeki nokta başarı kayıtlarını sıfırlar
+        function clearCanvas(id) { 
+            contexts[id].clearRect(0,0,300,300); 
+            canvasData[id].hitsA.clear();
+            canvasData[id].hitsB.clear();
+            canvasData[id].outOfBounds = false;
+        }
 
         function checkDrawing(type) {
-            // A Harfi için geçilmesi GEREKEN kritik noktalar: (Üst orta, sol alt, sağ alt, orta)
-            let requiredA = ["1,0", "0,2", "2,2", "1,1"];
-            // B Harfi sağdaki döngü noktaları (Şaşırtmacaya kanıp B çizerse buralardan geçer)
-            let trickB = ["2,0", "2,1"]; 
-
-            let hasA = requiredA.every(r => hitRegions.has(r));
-            let hasB = trickB.some(r => hitRegions.has(r));
+            let id = type === 'trick' ? 'trickCanvas' : 'drawCanvas';
+            let data = canvasData[id];
+            
+            // Başarılı sayılması için 5 noktanın hepsinden geçmesi ve dışarı taşmaması lazım
+            let hasA = (data.hitsA.size === 5) && !data.outOfBounds;
+            
+            // Eğer B harfinin göbeklerine çizdiyse
+            let hasB = (data.hitsB.size >= 3) && !data.outOfBounds;
 
             if(type === 'normal') {
                 if(hasA) {
                     addMoney();
                     speak("Mükemmel yazdın! On lira daha kazandın.");
                     setTimeout(() => nextStage(3), 2000);
+                } else if(data.outOfBounds) {
+                    speak("Çizgilerin dışına çıktın! Lütfen taşırmadan tekrar çiz.");
+                    clearCanvas(id);
                 } else {
                     speak("Sanki tam olmadı gibi, lütfen çizgilerin üzerinden daha dikkatli geç.");
-                    clearCanvas();
+                    clearCanvas(id);
                 }
             } 
             else if (type === 'trick') {
                 if(hasB && !hasA) {
-                    // B harfini çizdi
                     loseMoney();
                     speak("Gülerek söylüyorum, seni şaşırtmayı başardım! Lütfen tekrar A harfi çiz.");
-                    clearTrickCanvas();
+                    clearCanvas(id);
                 } else if (hasA) {
                     addMoney();
                     speak("Harikasın, beni şaşırtamadın! Ayıcık çok mutlu oldu.");
                     setTimeout(() => nextStage(6), 3000);
+                } else if(data.outOfBounds) {
+                    speak("Çizgilerin dışına çıktın! Lütfen taşırmadan tekrar çiz.");
+                    clearCanvas(id);
                 } else {
                     speak("Tam anlayamadım, tekrar dener misin?");
-                    clearTrickCanvas();
+                    clearCanvas(id);
                 }
             }
         }
 
-        // --- STAGE 3 & 4: BULMA ---
         function checkSelection(letter, isCorrect) {
             if(isCorrect) {
                 addMoney();
@@ -603,16 +639,14 @@
             }
         }
 
-        // --- STAGE 6: HIZLI ÇİZİM (SÜRE) ---
         let speedTimer;
-        let timeLeft = 3;
         function startSpeedTest() {
             document.getElementById('startSpeedBtn').style.display = 'none';
             speak("3");
             
             let display = document.getElementById('timerDisplay');
-            timeLeft = 3; display.innerText = timeLeft;
-            hitRegions.clear(); clearSpeedCanvas();
+            let timeLeft = 3; display.innerText = timeLeft;
+            clearCanvas('speedCanvas');
 
             let countdown = setInterval(() => {
                 timeLeft--;
@@ -625,18 +659,18 @@
                     speak("Başla!");
                     document.getElementById('speedWrapper').style.display = 'block';
                     
-                    // 3 saniye süre ver
                     setTimeout(() => {
                         document.getElementById('speedWrapper').style.display = 'none';
-                        let requiredA = ["1,0", "0,2", "2,2", "1,1"];
-                        if(requiredA.every(r => hitRegions.has(r))) {
+                        let data = canvasData['speedCanvas'];
+                        // 3 Saniye kuralında da 5 noktaya değmesini bekliyoruz
+                        if(data.hitsA.size === 5 && !data.outOfBounds) {
                             addMoney();
                             display.innerText = "SÜPER!";
                             speak("İnanılmaz hızlısın! Tebrik ederim.");
                             setTimeout(() => nextStage(7), 3000);
                         } else {
                             display.innerText = "YETİŞEMEDİN!";
-                            speak("Süren doldu! 3 saniyeden uzun sürdü. Tekrar deneyelim.");
+                            speak("Süren doldu! Ya eksik çizdin ya da taşırdın. Tekrar deneyelim.");
                             document.getElementById('startSpeedBtn').style.display = 'inline-block';
                         }
                     }, 3000);
@@ -644,31 +678,22 @@
             }, 1000);
         }
 
-        // --- STAGE 7: SÜRÜKLE BIRAK (Dokunmatik Uyumlu) ---
         function setupDragAndDrop() {
             const item = document.getElementById('dragItem');
             const target = document.getElementById('dragTarget');
             const area = document.getElementById('dragArea');
             let isDragging = false;
-            let startX, startY;
 
-            const touchStart = (e) => {
-                isDragging = true;
-                item.style.transition = 'none';
-                e.preventDefault();
-            };
-
+            const touchStart = (e) => { isDragging = true; item.style.transition = 'none'; e.preventDefault(); };
             const touchMove = (e) => {
                 if(!isDragging) return;
                 e.preventDefault();
                 let x = e.touches ? e.touches[0].clientX : e.clientX;
                 let y = e.touches ? e.touches[0].clientY : e.clientY;
-                
                 let areaRect = area.getBoundingClientRect();
                 item.style.left = (x - areaRect.left - 30) + 'px';
                 item.style.top = (y - areaRect.top - 50) + 'px';
             };
-
             const touchEnd = (e) => {
                 if(!isDragging) return;
                 isDragging = false;
@@ -677,30 +702,21 @@
                 let itemRect = item.getBoundingClientRect();
                 let targetRect = target.getBoundingClientRect();
                 
-                // Çakışma kontrolü
                 if(itemRect.right > targetRect.left + 50 && itemRect.left < targetRect.right) {
-                    // Başarılı!
                     item.style.left = (targetRect.left - area.getBoundingClientRect().left - 10) + 'px';
                     item.style.top = '50px';
                     addMoney();
                     speak("Harika! Küçük a harfi ile Büyük A harfi kavuştu. Birinci bölümü başarıyla tamamladın!");
                     
-                    // Sonrası için mesaj
-                    setTimeout(() => {
-                        alert("BÖLÜM TAMAMLANDI! (Sistem küçük a serüveni ile devam edecek şekilde tasarlanmıştır.)");
-                    }, 4000);
+                    setTimeout(() => { alert("BÖLÜM TAMAMLANDI!"); }, 4000);
                 } else {
-                    // Geri dön
-                    item.style.left = '30px';
-                    item.style.top = 'auto';
-                    playSound('wrong');
+                    item.style.left = '30px'; item.style.top = 'auto'; playSound('wrong');
                 }
             };
 
             item.addEventListener('touchstart', touchStart, {passive:false});
             window.addEventListener('touchmove', touchMove, {passive:false});
             window.addEventListener('touchend', touchEnd);
-
             item.addEventListener('mousedown', touchStart);
             window.addEventListener('mousemove', touchMove);
             window.addEventListener('mouseup', touchEnd);
