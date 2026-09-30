@@ -27,16 +27,12 @@
         .ig-contact { display: inline-block; padding: 8px 15px; background: rgba(227, 27, 27, 0.1); border: 1px solid var(--weizend-red); border-radius: 20px; color: var(--weizend-red); text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: 0.3s; }
         .ig-contact:hover { background: rgba(227, 27, 27, 0.3); }
 
-        /* =========================================
-           YENİ EKLENEN: KULLANICI CÜZDANI (WALLET) TASARIMI 
-           ========================================= */
+        /* KULLANICI CÜZDANI (WALLET) TASARIMI */
         .user-wallet-wrapper { margin-top: 25px; display: flex; justify-content: center; min-height: 80px; align-items: center;}
         
-        /* Giriş Yap Butonu */
         .login-btn-large { background: transparent; border: 2px solid var(--weizend-red); color: var(--weizend-white); padding: 12px 30px; border-radius: 30px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 0 15px rgba(227, 27, 27, 0.2); display: flex; align-items: center; gap: 10px; }
         .login-btn-large:hover { background: var(--weizend-red); box-shadow: 0 0 25px rgba(227, 27, 27, 0.5); transform: translateY(-2px); }
         
-        /* Cüzdan Kartı */
         .wallet-card { background: linear-gradient(145deg, #111 0%, #0a0a0a 100%); border: 1px solid var(--weizend-red); border-radius: 15px; padding: 15px 25px; display: none; align-items: center; gap: 20px; box-shadow: 0 5px 25px rgba(227, 27, 27, 0.15); min-width: 300px; justify-content: space-between; transition: 0.3s; }
         .wallet-card:hover { border-color: #ff3333; box-shadow: 0 5px 30px rgba(227, 27, 27, 0.3); }
         .wallet-left { display: flex; align-items: center; gap: 15px; }
@@ -46,18 +42,19 @@
         .w-balance { font-size: 1.1rem; color: var(--text-muted); font-weight: 600; margin-top: 5px; display: flex; align-items: center; gap: 6px; }
         .w-balance-amount { color: var(--weizend-red); font-weight: bold; font-size: 1.2rem; }
         
-        /* Çıkış İkonu */
+        .refresh-btn { background: none; border: none; cursor: pointer; font-size: 1.1rem; color: var(--text-muted); transition: 0.3s; padding: 0; display: flex; align-items: center; justify-content: center; }
+        .refresh-btn:hover { color: var(--weizend-white); transform: rotate(180deg); }
+
         .logout-icon { background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-muted); width: 40px; height: 40px; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
         .logout-icon:hover { background: var(--weizend-red); color: white; border-color: var(--weizend-red); }
-        /* ========================================= */
-        
+
         .category-filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
         .filter-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--weizend-white); padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: 600; }
         .filter-btn.active, .filter-btn:hover { background: var(--weizend-red); border-color: var(--weizend-red); }
         .filter-btn.tukenenler-btn { color: var(--weizend-red); border-color: var(--weizend-red); background: rgba(227, 27, 27, 0.1); }
         .filter-btn.tukenenler-btn.active, .filter-btn.tukenenler-btn:hover { background: var(--weizend-red); color: var(--weizend-white); }
 
-        /* Ürün Grid ve Kartlar (Önceki kodlarının aynısı) */
+        /* Ürün Grid ve Kartlar */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
         .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; transition: 0.3s; display: flex; flex-direction: column; }
         .card:hover { border-color: var(--weizend-red); transform: translateY(-5px); box-shadow: 0 5px 20px rgba(227, 27, 27, 0.15); }
@@ -103,8 +100,10 @@
         .details-content ul { margin: 0; padding-left: 20px; }
         .details-content li { margin-bottom: 6px; }
 
+        /* MODAL TASARIMLARI */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
         .modal-content { background: var(--card-bg); width: 100%; max-width: 900px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden;}
+        
         .modal-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; background: var(--card-bg); }
         .modal-header h3 { margin: 0; font-size: 1.2rem; }
         .close-icon { background: none; border: none; color: var(--weizend-white); font-size: 1.5rem; cursor: pointer; transition: 0.2s; line-height: 1; }
@@ -113,6 +112,7 @@
         .modal-body { padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .main-slider { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; overflow: hidden; cursor: zoom-in;}
         .main-slider img { width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; transition: transform 0.15s ease-out; transform-origin: center; }
+        
         .zoom-info { position: absolute; bottom: 10px; background: rgba(0,0,0,0.7); padding: 5px 15px; border-radius: 15px; font-size: 0.8rem; color: var(--text-muted); pointer-events: none; z-index: 5;}
 
         .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.8); color: white; border: 1px solid var(--weizend-red); width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; z-index: 5; }
@@ -135,12 +135,345 @@
 <body>
 
     <script>
-        // ÜRÜN LİSTEN BURADA YER ALACAK (Kod kalabalığı olmasın diye yukarıdaki listeni aynen bırakıyorum)
+        // TÜM ÜRÜN TASLAKLARI
         const URUNLER = [
-            // Buraya kendi güncel 14 ürün listeni aynen koy kanka. (Mevcut kodundaki array ile aynı)
-            { durum: "on", stok: 1, kategori: "Fiziksel Ürün", ad: "Siyah Bez Şapka", puan: "155.000 Puan", komut: "!alsapka", gorseller: ["https://i.hizliresim.com/scvyurdk.jpg"], ozellikler: `<ul><li>Renk: Siyah</li></ul>` },
-            // ... (Diğer ürünlerin) ...
+            {
+                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Siyah Bez Şapka",
+                puan: "155.000 Puan", komut: "!alsapka",
+                gorseller: ["https://i.hizliresim.com/scvyurdk.jpg"],
+                ozellikler: `
+                    <ul>
+                        <li>Renk: Siyah</li>
+                        <li>Standart ebat ölçüye sahip</li>
+                        <li>Pamuklu kumaşıyla rahat kullanım</li>
+                        <li>Nefes alan ve terletmeyen dokudadır</li>
+                        <li>Siperlik kısmı deformasyona karşı dirençlidir</li>
+                        <li>Estetik, spor ve şık görünüme sahiptir</li>
+                        <li>Arka kısımda cırtlı ayar bölgesi bulunur</li>
+                        <li>Kafa ölçünüze göre kolayca ayarlayabilirsiniz</li>
+                        <li>Gündelik kullanım ve spor faaliyetleriniz için idealdir</li>
+                        <li>30°C’de tersten, elde yıkayınız ve asarak kurutunuz</li>
+                        <li>Ekonomik fiyatıyla promosyon ürün olarak tercih edilebilir</li>
+                    </ul>`
+            },
+            {
+                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Mouse Pad",
+                puan: "100.000 Puan", komut: "!almousepad",
+                gorseller: ["https://i.hizliresim.com/beb4m3ta.jpg"],
+                ozellikler: `
+                    <ul>
+                        <li>175x210 mm ebatlar</li>
+                        <li>2 mm kalınlık</li>
+                        <li>Polyester dayanıklılık kaplaması</li>
+                        <li>Kaydırmaz hammadde özelliklerine sahiptir</li>
+                        <li>Sağlığa zararlı kimyasalların dağıtımı yapıdadır</li>
+                    </ul>`
+            },
+            {
+                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Yastık Kılıfı",
+                puan: "125.000 Puan", komut: "!alyastıkklıfı",
+                gorseller: ["https://i.hizliresim.com/3xvtef5k.jpg"],
+                ozellikler: `
+                    <ul>
+                        <li>Renk: Beyaz</li>
+                        <li>Ebat: 38x38 cm</li>
+                        <li>Saten kumaşa sahiptir</li>
+                        <li>İçten gizli dikiş formu bulunur</li>
+                        <li>Fermuarlı yapısıyla kolay kullanım sunar</li>
+                        <li>Sağlığa zararsız, sertifikalı, özel mürekkep kullanılır</li>
+                        <li>30°C kısa programda, tersten, ağartıcı kullanmadan yıkayabilirsiniz</li>
+                        <li>Ürün, kurutma makinesine ve kuru temizlemeye uygun değildir</li>
+                        <li>Eğer ütüleme yapılacaksa tersten ve düşük ısıda yapılmalıdır</li>
+                        <li>Ürün sadece kılıf olarak gelmektedir, iç kısmı yoktur</li>
+                    </ul>`
+            },
+            {
+                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Siyah Erkek Tişört",
+                puan: "280.000 Puan", komut: "!altshirt",
+                gorseller: ["https://i.hizliresim.com/v3dcbfps.jpg", "https://i.hizliresim.com/4qjxy0gw.jpg", "https://i.hizliresim.com/e12ap6ck.jpg"],
+                ozellikler: `
+                    <ul>
+                        <li>Beden kesimlerinden dolayı bir beden büyük almanız tavsiye edilir</li>
+                        <li>Beden tablosuna dikkat ediniz</li>
+                        <li>Renk: Siyah</li>
+                        <li>%100 pamuklu kumaş yapısı</li>
+                        <li>Estetik, spor ve şık bir duruşa sahiptir</li>
+                        <li>Hava alan ve terletmeyen kumaş dokusu</li>
+                        <li>Kolay kırışmayan esnek kumaş yapısı bulunur</li>
+                        <li>Sağlığa zarar vermeyen özel mürekkep kullanılır</li>
+                        <li>30°C’de kısa programda ve tersten yıkanmalıdır</li>
+                        <li>Kuru temizlemeye ve kurutma makinesine uygun değildir</li>
+                        <li>Düşük ısıda ve tersten ütüleme yapılmalıdır</li>
+                    </ul>`
+            },
+            {
+                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Kahverengi Peluş Ayıcık",
+                puan: "190.000 Puan", komut: "!alayıcık",
+                gorseller: ["https://i.hizliresim.com/jvm31sgk.jpg"],
+                ozellikler: `
+                    <ul>
+                        <li>Renk: Kahverengi</li>
+                        <li>22x12x20 cm boyutlarda</li>
+                        <li>Sağlığa zararsız peluş kumaş</li>
+                        <li>Kaliteli elyaf dolgu malzemesi</li>
+                        <li>Sempatik ve tatlı bir hediyelik ürün</li>
+                        <li>Baskı yapılan alan ılık suda ve elde yıkanmalıdır</li>
+                    </ul>`
+            },
+            {
+                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Kapüşonlu Kanguru Cepli Siyah Sweatshirt",
+                puan: "405.000 Puan", komut: "!alsweatshirt",
+                gorseller: ["https://i.hizliresim.com/zuhelzqa.png", "https://i.hizliresim.com/jcbegwjq.png", "https://i.hizliresim.com/lvkogmqn.jpg"],
+                ozellikler: `<ul>
+                        <li>Renk: Siyah</li>
+                        <li>Uzun kollu dan kapüşonlu formda</li>
+                        <li>Kanguru cepli şık tasarımıyla ön plana çıkar</li>
+                        <li>Şardonlu kumaşıyla sıcak tutan yapıdadır</li>
+                        <li>Polyester katkılı pamuklu kumaş yapısı</li>
+                        <li>Kolay kırışmayan esnek kumaş yapısı bulunur</li>
+                        <li>Hava alan ve terletmeyen dokuya sahiptir</li>
+                        <li>Unisex ürünüdür, erkek ve kadınlar kullanabilir</li>
+                        <li>Her yaştan bireyin kullanımına uygundur</li>
+                        <li>Estetik, spor ve şık bir duruşa sahiptir</li>
+                        <li>S, M, L, XL olmak üzere dört farklı bedeni bulunur</li>
+                        <li>Sağlığa zarar vermeyen özel mürekkep kullanılır</li>
+                        <li>30°C’de kısa programda ve tersten yıkanmalıdır</li>
+                        <li>Kuru temizlemeye ve kurutma makinesine uygun değildir</li>
+                        <li>Düşük ısıda ve tersten ütüleme yapınız</li>
+                        <li>Hediyelik ürün veya promosyon olarak da tercih edilebilir</li>
+                    </ul>`
+            },
+            {
+                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Siyah Powerbank",
+                puan: "255.000 Puan", komut: "!alpowerbank",
+                gorseller: ["https://i.hizliresim.com/twgj1q8q.jpg"],
+                ozellikler: `
+                    <ul>
+                        <li>Siyah renktedir</li>
+                        <li>70x140x14 mm boyutlara sahiptir</li>
+                        <li>Uzun ömürlü lityum polimer batarya tipi</li>
+                        <li>Darbeye dirençli mat ABS plastik kasa tasarımı</li>
+                        <li>5V-2A mikro USB giriş bağlantı noktasına sahiptir</li>
+                        <li>2 adet USB-A çıkış portu ve 1 adet Type-C giriş portu bulunur</li>
+                        <li>Aynı anda iki cihazı birden şarj edebilmesiyle ön plana çıkmaktadır</li>
+                        <li>10.000 mAh pil kapasitesine sahip oldukça işlevsel bir güç bankasıdır</li>
+                        <li>4 adet LED ışığı sayesinde batarya durumunu kolayca görebilirsiniz</li>
+                        <li>Uçak yolculuğu güvenliği için gerekli seyahat sertifikası bulunur</li>
+                        <li>Ergonomik, estetik, dekoratif ve kompakt tasarımı ile fazla yer işgal etmez</li>
+                        <li>Kısa devre koruması ve aşırı akım koruması ile güvenli kullanım sunar</li>
+                        <li>Uluslararası RoHS, CE, FCC sertifikalarına sahip, nitelikli bir güç bankasıdır</li>
+                        <li>Ürünle birlikte 20 cm uzunlukta USB-Type C şarj kablosu gelmektedir</li>
+                        <li>Ev, ofis, iş yeri, seyahat, kamp ve açık alan etkinliklerinde tercih edilebilir</li>
+                    </ul>`
+            },
+            {
+                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Siyah Masa Saati – Ahşap Standlı",
+                puan: "165.000 Puan", komut: "!alsaat",
+                gorseller: ["https://i.hizliresim.com/ddzlvrx3.jpg"],
+                ozellikler: `
+                    <ul>
+                        <li>20x10 cm</li>
+                        <li>Şık siyah masa saati tasarımı</li>
+                        <li>Ahşap masa standı</li>
+                        <li>Dekoratif ve kullanışlı tasarım</li>
+                        <li>Ev ve ofis kullanımına uygun</li>
+                        <li>Sevgiliye ve sevdiklerinize özel hediye alternatifi</li>
+                    </ul>`
+            },
+            {
+                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Keten Kalemlik / Makyaj Çantası",
+                puan: "120.000 Puan", komut: "!alketenkalemlik",
+                gorseller: ["https://i.hizliresim.com/0pjcynbp.jpg"],
+                ozellikler: `
+                    <ul>
+                        <li>Renk: Bej</li>
+                        <li>Ebat: 7x6x20 cm</li>
+                        <li>Baskı alanı: 7x12 cm</li>
+                        <li>Tek gözlü kullanım</li>
+                        <li>Bozulmaya dirençli fermuar</li>
+                        <li>Paslanmaz metal fermuar sapları</li>
+                        <li>Fermuar üzerinde şık kumaş detaylar</li>
+                        <li>Nefes alabilen ham keten kumaş</li>
+                        <li>Deformasyona dirençli yapıda</li>
+                        <li>Kullanışlı geniş iç hacim</li>
+                        <li>Non-toxic, astarsız kumaş yapısı</li>
+                        <li>Fonksiyonel kullanım özellikleri</li>
+                        <li>Kalıcı süblimasyon baskı tekniği</li>
+                    </ul>`
+            },
+            {
+                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Porselen Bella Beyaz Kupa Bardak",
+                puan: "145.000 Puan", komut: "!alkupabardak",
+                tukenmeZamani: "2024-05-15",
+                gorseller: ["https://i.hizliresim.com/54xh3kbw.jpg", "https://i.hizliresim.com/jz5rodes.jpg", "https://i.hizliresim.com/bx5uveba.jpg"],
+                ozellikler: `
+                    <ul>
+                    <li>8 cm bardak ağız çapı</li>
+                        <li>9,5 cm yüksekliğe sahiptir</li>
+                        <li>3,5 cm kulp parmak açıklığı</li>
+                        <li>Yaklaşık 325 ml iç hacim sunar</li>
+                        <li>7.5x20 cm baskı alanı bulunur</li>
+                        <li>Estetik ve dekoratif görünüme sahiptir</li>
+                        <li>Beyaz renkte yüksek kalite seramik malzeme</li>
+                        <li>Sağlığa zararlı kimyasallar içermeyen yapıdadır</li>
+                        <li>Çamaşır makinesinde yıkamaya uygun değildir</li>
+                        <li>30°C ılık su ve elde yıkamanız daha uzun süreler dayanan baskılar sağlar</li>
+                        <li>CMYK süblimasyon baskı sayesinde uzun yıllar renklerini kaybetmez</li>
+                    </ul>`
+            },
+            {
+                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Paslanmaz Çelik Siyah Termos 500Ml",
+                puan: "305.000 Puan", komut: "!altermos",
+                tukenmeZamani: "2024-05-15",
+                gorseller: ["https://i.hizliresim.com/bsjhkxee.jpg"],
+                ozellikler: `
+                    <ul>
+                        <li>Mat siyah renkte dış yüzey</li>
+                        <li>19,5 cm yükseklğe sahiptir</li>
+                        <li>8 cm ağız çapı bulunur</li>
+                        <li>7 cm çapta taban genişliği sunar</li>
+                        <li>Tabana doğru daralan formdadır</li>
+                        <li>500 ml geniş iç hacmiyle işlevseldir</li>
+                        <li>Ürünün iç yüzeyi SUS 304 paslanmaz çeliktir</li>
+                        <li>Ürünün dış yüzeyi SUS 201 paslanmaz çeliktir</li>
+                        <li>Sıcak ve soğuk içecekleriniz için ısı yalıtımı sağlar</li>
+                        <li>İçeceklerinizin ısısını yaklaşık 3-4 saat muhafaza eder</li>
+                        <li>Pratik aç-kapa ağızlık tasarımıyla rahat kullanım sağlar</li>
+                        <li>Ergonomik, estetik ve dekoratif bir görünüm sunar</li>
+                        <li>Kapak yapısı sızdırmaz nitelikte silikon contaya sahiptir</li>
+                        <li>Ağızlık kısmı tamamen sızdırmaz değildir, dik taşımanız önerilir</li>
+                        <li>Bireysel, hediyelik ve promosyon amaçlı kullanımlara uygundur</li>
+                        <li>Sağlığa zararlı BPA, fitalat ve azo boyar madde içermez</li>
+                        <li>Ürün bulaşık makinesinde yıkamaya uygun değildir</li>
+                        <li>Elde ve düşük sıcaklıkta yıkanmalıdır</li>
+                    </ul>`
+            },
+            {
+                durum: "off", stok: 1, kategori: "Fiziksel Ürün",
+                ad: "Porselen Bella Beyaz Kupa Bardak",
+                puan: "135.000 Puan", komut: "!alkupabardak",
+                tukenmeZamani: "2024-05-15",
+                gorseller: ["https://i.hizliresim.com/54xh3kbw.jpg", "https://i.hizliresim.com/jz5rodes.jpg", "https://i.hizliresim.com/bx5uveba.jpg"],
+                ozellikler: `
+                    <ul>
+                    <li>Renk: Beyaz</li>
+                        <li>8 cm bardak ağız çapı</li>
+                        <li>9,5 cm yüksekliğe sahiptir</li>
+                        <li>3,5 cm kulp parmak açıklığı</li>
+                        <li>Yaklaşık 325 ml iç hacim sunar</li>
+                        <li>7.5x20 cm baskı alanı bulunur</li>
+                        <li>Estetik ve dekoratif görünüme sahiptir</li>
+                        <li>Beyaz renkte yüksek kalite seramik malzeme</li>
+                        <li>Sağlığa zararlı kimyasallar içermeyen yapıdadır</li>
+                        <li>Çamaşır makinesinde yıkamaya uygun değildir</li>
+                        <li>30°C ılık su ve elde yıkamanız daha uzun süreler dayanan baskılar sağlar</li>
+                        <li>CMYK süblimasyon baskı sayesinde uzun yıllar renklerini kaybetmez</li>
+                    </ul>`
+            },
+            
+            // --- VALORANT ---
+            {
+                durum: "on", stok: 2, kategori: "Valorant",
+                ad: "375 VP KODU Valorant Points",
+                puan: "50.000 Puan", komut: "!alvalorant375vp",
+                gorseller: ["https://i.hizliresim.com/npqe9gqv.png"],
+                ozellikler: `<ul><li>Riot Games - Valorant TR sunucularında geçerlidir.</li></ul>`
+            },
+            { durum: "on", stok: 2, kategori: "Valorant",
+             ad: "825 VP KODU Valorant Points",
+             puan: "105.000 Puan", komut: "!alvalorant825vp",
+             gorseller: ["https://i.hizliresim.com/wn2mxmkr.png"],
+             ozellikler: `<ul><li>Riot Games - Valorant TR sunucularında geçerlidir.</li></ul>`},
+            
+            { durum: "on", stok: 1, kategori: "Valorant",
+             ad: "1.700 VP KODU Valorant Points",
+             puan: "210.000 Puan", komut: "!alvalorant1700vp",
+             gorseller: ["https://i.hizliresim.com/8u85rolc.png"],
+             ozellikler: `<ul><li>Riot Games - Valorant TR sunucularında geçerlidir.</li></ul>`},
+            
+            // --- STEAM ---
+            {
+                durum: "on", stok: 3, kategori: "Steam",
+                ad: "5 USD Steam Cüzdan Kodu",
+                puan: "115.000 Puan", komut: "!alsteam5usd",
+                gorseller: ["https://i.hizliresim.com/tbbn5il5.png"],
+                ozellikler: `<ul><li>Steam TR hesaplarında geçerlidir.</li></ul>`
+            },
+            {
+                durum: "on", stok: 1, kategori: "Steam",
+                ad: "20 USD Steam Cüzdan Kodu",
+                puan: "460.000 Puan", komut: "!alsteam20usd",
+                tukenmeZamani: "2023-10-01",
+                gorseller: ["https://i.hizliresim.com/u9j3b2lc.jpg"],
+                ozellikler: `<ul><li>Anında teslim.</li></ul>`
+            },
+            { durum: "on", stok: 2, kategori: "Steam",
+             ad: "10 USD Steam Cüzdan Kodu",
+             puan: "230.000 Puan", komut: "!alsteam10usd",
+             gorseller: ["https://i.hizliresim.com/6ibndvmu.png"],
+             ozellikler: `<ul><li>Anında teslim.</li></ul>` },
+            
+            // --- TURNUVA ---
+            {
+                durum: "on", stok: 0, kategori: "Turnuva",
+                ad: "1 VS 1 Valorant Turnuva Katılım Bileti",
+                puan: "ÜCRETSİZ", komut: "!alturnuva1vs1",
+                tukenmeZamani: "2024-05-15",
+                gorseller: ["https://i.hizliresim.com/joby9cul.png"],
+                ozellikler: `<ul><li>Sıradaki turnuvaya katılım hakkı sağlar.</li><li>Discord ve İnstagram üzerinden duyuru yapılır.</li></ul>`},
+            {
+                durum: "on", stok: 0, kategori: "Turnuva",
+                ad: "2 VS 2 Valorant Turnuva Katılım Bileti",
+                puan: "200 TL", komut: "!alturnuva2vs2",
+                tukenmeZamani: "2024-06-15",
+                gorseller: ["https://i.hizliresim.com/9asvvsvl.png"],
+                ozellikler: `<ul><li>Sıradaki turnuvaya katılım hakkı sağlar.</li><li>Discord ve İnstagram üzerinden duyuru yapılır.</li></ul>`
+            },
+            
+            // ---ÇEKİLİŞ---
+            {
+                durum: "on", stok: "Sınırsız", kategori: "Şanslar",
+                ad: "Kart Oyunu",
+                puan: "10.000 Puan", komut: "!alkartoyunu",
+                tukenmeZamani: "2024-05-15",
+                gorseller: ["https://i.hizliresim.com/uynn5ttt.jpg"],
+                ozellikler: `<ul>
+                    <li>Kick canlı yayınlarımızdaki kart oyununa katılım hakkı sağlar.</li>
+                    <li>Kick sohbetimize <b>!alkartoyunu</b> yazdığın anda ekranda 4 adet kapalı kart belirir.</li>
+                    <li>Seçmek istediğin kartın üzerinde ki numarayı sohbete yazıp kartı açabilirsin.</li>
+                    <li>Seçtiğin kartın içinden ödül çıkarsa TAMAM ve DEVAM ekranı gelir seçim yapman istenir.</li>
+                    <li>Sohbete TAMAM yazarsan kazandığın ödül senin olur DEVAM yazarsan tekrar kart oyununa girersin bu sefer 3 kart olur ve ödül daha yüksek olur.</li>
+                    <li>İkinci kez kazandığın zaman son kez seçim yapman istenir TAMAM veya DEVAM yazarsın.</li>
+                    <li>Devam yazarsan bu sefer ekranda 2 kart olur ve 1 tanesinde büyük ödül olur. Unutma büyük risk büyük ödül kazandırır.</li>
+                    <li>Kazandığında ödülünü teslim alabilmek için İnstagram <a href="https://instagram.com/weizendtv" target="_blank" style="color:var(--weizend-red); font-weight:bold; text-decoration:none;">@weizendtv</a> adresinden bizimle iletişime geçmelisin!</li>
+                </ul>`
+            },
+            {
+                durum: "on", stok: "Sınırsız", kategori: "Şanslar",
+                ad: "Bar Çekiliş Bileti",
+                puan: "10.000 Puan", komut: "!albilet",
+                tukenmeZamani: "2024-05-15",
+                gorseller: ["https://i.hizliresim.com/guvmcwq4.jpg"],
+                ozellikler: `<ul>
+                    <li>Kick canlı yayınlarımızdaki BAR çekilişlerine katılım hakkı sağlar.</li>
+                    <li>Dilediğin kadar bilet alabilirsin, tüm biletlerin envanterine eklenir.</li>
+                    <li>Sahip olduğun biletleri kontrol etmek için Kick sohbetimize <b>!envanter</b> yazabilirsin.</li>
+                    <li>Çekilişi kazandığında ödülünü teslim alabilmek için İnstagram <a href="https://instagram.com/weizendtv" target="_blank" style="color:var(--weizend-red); font-weight:bold; text-decoration:none;">@weizendtv</a> adresinden bizimle iletişime geçmelisin!</li>
+                </ul>`
+            }
         ];
+        
         URUNLER.forEach((urun, index) => urun.orijinalId = index);
     </script>
 
@@ -150,28 +483,26 @@
             <h1>WEİZEND MARKET</h1>
             <p style="color: var(--text-muted);">Yayını izleyerek kazandığın puanlarla ödülleri kap!</p>
             
+            <!-- Butonlar -->
             <div class="header-buttons">
                 <a href="https://weizend.github.io/weizendbilgi/" class="ig-contact">❓ Puan Nasıl Kazanılır?</a>
                 <a href="https://instagram.com/weizendtv" target="_blank" class="ig-contact">📸 İletişim: @weizendtv</a>
             </div>
 
-            <!-- ==================================================== -->
-            <!-- YENİ EKLENEN BÖLÜM: KULLANICI GİRİŞ & CÜZDAN ALANI -->
-            <!-- ==================================================== -->
+            <!-- KULLANICI GİRİŞ & CÜZDAN ALANI -->
             <div class="user-wallet-wrapper">
-                <!-- Giriş Yapmamışsa Görünecek Buton -->
                 <button id="loginBtn" class="login-btn-large" onclick="askUsername()">
                     <span style="font-size: 1.2rem;">🔴</span> Kick Adınla Giriş Yap / Puanını Gör
                 </button>
 
-                <!-- Giriş Yapmışsa Görünecek Cüzdan -->
                 <div id="walletCard" class="wallet-card">
                     <div class="wallet-left">
                         <img src="" id="walletAvatar" class="wallet-avatar" alt="Kullanıcı Avatarı">
                         <div class="wallet-info">
                             <h3 class="w-username" id="walletUsername">Kullanıcı</h3>
                             <div class="w-balance">
-                                🪙 Bakiye: <span class="w-balance-amount" id="walletPoints">Yükleniyor...</span>
+                                🪙 Bakiye: <span class="w-balance-amount" id="walletPoints">Sorgulanıyor...</span>
+                                <button class="refresh-btn" onclick="refreshPoints()" title="Puanı Yenile">🔄</button>
                             </div>
                         </div>
                     </div>
@@ -180,55 +511,83 @@
                     </button>
                 </div>
             </div>
-            <!-- ==================================================== -->
         </header>
 
+        <!-- KATEGORİ BUTONLARI -->
         <div class="category-filters" id="filters"></div>
+
         <div class="grid" id="urunGrid"></div>
     </div>
 
-    <!-- Modallarının (Galeri ve Yönlendirme) divleri burada kalıyor... -->
-    <!-- ... -->
+    <!-- MODAL 1: GÖRSEL BÜYÜTME GALERİSİ -->
+    <div id="imageModal" class="modal-overlay" onclick="disariTiklaKapat(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tasarım Önizleme</h3>
+                <button class="close-icon" onclick="modaliKapat()">✖</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="main-slider" id="modalSlider">
+                    <button class="nav-btn prev-btn" id="prevBtn" onclick="oncekiResim(event)">❮</button>
+                    <img id="modalMainImg" src="" alt="Önizleme">
+                    <button class="nav-btn next-btn" id="nextBtn" onclick="sonrakiResim(event)">❯</button>
+                    <div class="zoom-info">Fare tekerleği ile yakınlaştır</div>
+                </div>
+                <div class="thumbnail-list" id="modalThumbnails"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: KICK SOHBET YÖNLENDİRME PENCERESİ -->
+    <div id="redirectModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px;">
+            <div class="modal-header">
+                <h3>Sipariş Onayı</h3>
+                <button class="close-icon" onclick="yonlendirmeyiIptalEt()">✖</button>
+            </div>
+            <div class="redirect-modal-body">
+                <p style="color: #fff; margin: 0; font-size: 1.05rem;">Komut kopyalandı, Kick sohbete yönlendiriliyorsunuz:</p>
+                <div class="redirect-command-box" id="modalCommandText">!komut</div>
+                <div class="redirect-timer" id="timerText">5 saniye içinde yönlendirileceksiniz...</div>
+                <button class="cancel-btn" onclick="yonlendirmeyiIptalEt()">İptal Et</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // KATEGORİ, MODAL VE KART FONKSİYONLARIN BURADA...
-        // (Eski yazdığımız grid.innerHTML, filtrele vs. fonksiyonlarını buraya aynen koy kanka)
+        const grid = document.getElementById('urunGrid');
+        let aktifKategori = 'Tümü';
+        let aktifGorselListesi = [];
+        let aktifResimIndex = 0;
+        let redirectTimer = null;
+        let zoomLevel = 1;
+        let currentUsername = "";
 
-        /* ==================================================== */
-        /* YENİ EKLENEN JAVASCRIPT: KULLANICI & PUAN SİSTEMİ  */
-        /* ==================================================== */
-
-        // Sayfa ilk yüklendiğinde kullanıcı kontrolü yap
+        // --- KULLANICI CÜZDAN & PUAN (API) İŞLEMLERİ ---
         document.addEventListener("DOMContentLoaded", () => {
             checkUser();
         });
 
         function checkUser() {
-            // 1. Önce URL'de ?user=isim var mı diye bakar (Chat'ten linke tıklayanlar için)
             const urlParams = new URLSearchParams(window.location.search);
             let username = urlParams.get('user');
 
-            // 2. URL'de yoksa, tarayıcı hafızasına (LocalStorage) bakar
             if (!username) {
                 username = localStorage.getItem('weizend_kick_user');
             } else {
-                // Eğer URL'den geldiyse, bunu hafızaya kaydet
                 localStorage.setItem('weizend_kick_user', username);
-                // URL'deki ?user kısmını adres çubuğundan temizle (Şık durması için)
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
 
-            // 3. Kullanıcı bulunduysa arayüzü güncelle
             if (username && username.trim() !== "") {
                 showWallet(username.trim());
             } else {
-                // Bulunamadıysa giriş butonunu göster
                 document.getElementById('loginBtn').style.display = 'flex';
                 document.getElementById('walletCard').style.display = 'none';
             }
         }
 
-        // Giriş butonuna basınca çalışır
         function askUsername() {
             const username = prompt("Lütfen Kick Kullanıcı Adınızı Giriniz:");
             if (username && username.trim() !== "") {
@@ -237,51 +596,330 @@
             }
         }
 
-        // Çıkış ikonuna basınca çalışır
         function logoutUser() {
             localStorage.removeItem('weizend_kick_user');
             document.getElementById('walletCard').style.display = 'none';
             document.getElementById('loginBtn').style.display = 'flex';
         }
 
-        // Cüzdan kartını ekranda gösterir
         function showWallet(username) {
+            currentUsername = username;
             document.getElementById('loginBtn').style.display = 'none';
             document.getElementById('walletCard').style.display = 'flex';
             
-            // İsim ve Avatarı ayarla (Ui-Avatars servisi ile harf logolu şık bir avatar çeker)
             document.getElementById('walletUsername').innerText = username;
             document.getElementById('walletAvatar').src = `https://ui-avatars.com/api/?name=${username}&background=e31b1b&color=fff&bold=true&size=128`;
             
-            // Puan çekme işlemini başlat
             fetchUserPoints(username);
         }
 
-        // BotRix API'sinden Puanı Çekme Fonksiyonu
-        async function fetchUserPoints(username) {
-            const pointsDisplay = document.getElementById('walletPoints');
-            pointsDisplay.innerText = "Yükleniyor...";
-
-            try {
-                // NOT: İleride gerçek API linkini bulduğunda buradaki kodu kullanacaksın:
-                /*
-                const response = await fetch(`https://botrix.live/api/v1/points?user=${username}`);
-                const data = await response.json();
-                pointsDisplay.innerText = data.points.toLocaleString('tr-TR');
-                */
-
-                // ŞİMDİLİK: Gerçek API bağlanana kadar tasarımın patlamaması için sahte bir puan simülasyonu ekledim.
-                // 1 saniye bekleyip ekrana sanki BotRix'ten çekmiş gibi şık bir bakiye yansıtacak.
-                setTimeout(() => {
-                    const mockPoints = Math.floor(Math.random() * 150000) + 10000; 
-                    pointsDisplay.innerText = mockPoints.toLocaleString('tr-TR');
-                }, 800);
-
-            } catch (error) {
-                console.error("Puan çekilirken hata oluştu:", error);
-                pointsDisplay.innerText = "Hata!";
+        function refreshPoints() {
+            if(currentUsername) {
+                fetchUserPoints(currentUsername);
             }
         }
+
+        async function fetchUserPoints(username) {
+            const pointsDisplay = document.getElementById('walletPoints');
+            pointsDisplay.innerText = "Sorgulanıyor...";
+            pointsDisplay.style.color = "var(--text-muted)";
+
+            try {
+                // Dex'in verdiği resmi ve açık API adresi
+                const apiUrl = `https://botrix.live/api/public/leaderboard?platform=kick&user=weizend&search=${encodeURIComponent(username.trim())}`;
+                
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error("BotRix sunucusuna ulaşılamadı.");
+                }
+
+                const data = await response.json();
+                
+                let realPoints = 0;
+                
+                if (Array.isArray(data) && data.length > 0) {
+                    realPoints = data[0].points || 0;
+                } else if (data && data.points !== undefined) {
+                    realPoints = data.points;
+                } else if (data && data.data && data.data.length > 0) {
+                    realPoints = data.data[0].points || 0;
+                }
+
+                pointsDisplay.innerText = realPoints.toLocaleString('tr-TR');
+                pointsDisplay.style.color = "var(--weizend-red)";
+
+            } catch (error) {
+                console.error("API Bağlantı Hatası:", error);
+                pointsDisplay.innerText = "Bağlantı Hatası";
+                pointsDisplay.style.color = "#ff4444";
+            }
+        }
+
+        // --- MARKET GRID VE KATEGORİ İŞLEMLERİ ---
+        function kategorileriOlustur() {
+            const filterContainer = document.getElementById('filters');
+            filterContainer.innerHTML = `<button class="filter-btn ${aktifKategori === 'Tümü' ? 'active' : ''}" onclick="filtrele('Tümü')">Tümü</button>`;
+
+            const benzersizKategoriler = [...new Set(URUNLER.filter(u => u.durum === "on").map(u => u.kategori))];
+
+            benzersizKategoriler.forEach(kat => {
+                const aktifClass = aktifKategori === kat ? 'active' : '';
+                filterContainer.innerHTML += `<button class="filter-btn ${aktifClass}" onclick="filtrele('${kat}')">${kat}</button>`;
+            });
+
+            const tukendiClass = aktifKategori === 'Tükendi' ? 'active' : '';
+            filterContainer.innerHTML += `<button class="filter-btn tukenenler-btn ${tukendiClass}" onclick="filtrele('Tükendi')">Tükendi</button>`;
+        }
+
+        function stokDurumu(stokDegeri) {
+            if (stokDegeri === "Sınırsız") return 999999; 
+            return parseInt(stokDegeri) || 0;
+        }
+
+        function urunleriYukle(filtreKategori) {
+            aktifKategori = filtreKategori;
+            kategorileriOlustur();
+            grid.innerHTML = ''; 
+            
+            let gosterilecekUrunler = URUNLER.filter(urun => urun.durum === "on");
+
+            if (filtreKategori === 'Tükendi') {
+                gosterilecekUrunler = gosterilecekUrunler.filter(urun => stokDurumu(urun.stok) <= 0);
+                gosterilecekUrunler.sort((a, b) => {
+                    let tarihA = a.tukenmeZamani ? new Date(a.tukenmeZamani).getTime() : 0;
+                    let tarihB = b.tukenmeZamani ? new Date(b.tukenmeZamani).getTime() : 0;
+                    return tarihB - tarihA;
+                });
+            } else {
+                if (filtreKategori !== 'Tümü') {
+                    gosterilecekUrunler = gosterilecekUrunler.filter(urun => urun.kategori === filtreKategori);
+                }
+                gosterilecekUrunler.sort((a, b) => {
+                    let stokA = stokDurumu(a.stok) > 0 ? 1 : 0;
+                    let stokB = stokDurumu(b.stok) > 0 ? 1 : 0;
+                    
+                    if (stokA !== stokB) {
+                        return stokB - stokA; 
+                    } else if (stokA === 0 && stokB === 0) {
+                        let tarihA = a.tukenmeZamani ? new Date(a.tukenmeZamani).getTime() : 0;
+                        let tarihB = b.tukenmeZamani ? new Date(b.tukenmeZamani).getTime() : 0;
+                        return tarihB - tarihA;
+                    } else {
+                        let puanA = parseInt(a.puan.replace(/[^0-9]/g, '')) || 0;
+                        let puanB = parseInt(b.puan.replace(/[^0-9]/g, '')) || 0;
+                        return puanA - puanB;
+                    }
+                });
+            }
+            
+            gosterilecekUrunler.forEach(urun => {
+                const ilkGorsel = urun.gorseller[0];
+                const tukendiMi = stokDurumu(urun.stok) <= 0;
+
+                let thumbnailsHTML = '';
+                if (urun.gorseller.length > 1) {
+                    thumbnailsHTML = '<div class="card-thumbnails">';
+                    urun.gorseller.forEach((url, i) => {
+                        const aktifClass = i === 0 ? 'active' : '';
+                        thumbnailsHTML += `<img src="${url}" class="card-thumb ${aktifClass}" onclick="kartIciResimDegistir(event, this, ${urun.orijinalId}, ${i}, '${url}')">`;
+                    });
+                    thumbnailsHTML += '</div>';
+                }
+
+                let stokAlaniHTML = `
+                    <div class="stock-wrapper">
+                        <span class="stock-badge">Stok: ${urun.stok}</span>
+                        ${urun.stok === 'Sınırsız' ? '' : '<div class="stock-info-text">İşlem onaylandıktan sonra stok bilgisi güncellenmektedir.</div>'}
+                    </div>
+                `;
+                
+                let tukendiOverlayHTML = '';
+                if (tukendiMi) {
+                    stokAlaniHTML = `
+                        <div class="stock-wrapper">
+                            <span class="stock-badge" style="background:var(--weizend-red);">Tükendi</span>
+                            <div class="stock-info-text">İşlem onaylandıktan sonra stok bilgisi güncellenmektedir.</div>
+                        </div>
+                    `;
+                    tukendiOverlayHTML = `<div class="out-of-stock-overlay"><div class="out-of-stock-text">TÜKENDİ</div></div>`;
+                }
+
+                let teslimatKutusuHTML = '';
+                if (urun.kategori === 'Fiziksel Ürün') {
+                    const yazi = `Ürünü Kick sohbetimizden <b><span style="color:var(--weizend-red);">${urun.komut}</span></b> yazıp aldıktan sonra İnstagram <b><a href="https://instagram.com/weizendtv" target="_blank" style="color:var(--weizend-red);">@weizendtv</a></b> adresine mesaj atarak teslimat işlemlerini halledebilirsiniz.<br><br><b>🚚 Ne Zaman Kargolanır?</b><br>En geç 5 iş gününde kargoda. Tüm ürünlerde kargo ücreti bize aittir.`;
+                    teslimatKutusuHTML = `<details><summary>Teslimat ve Kargo Bilgileri</summary><div class="details-content">${yazi}</div></details>`;
+                } 
+                else if (urun.kategori === 'Valorant' || urun.kategori === 'Steam') {
+                    const yazi = `Ürünü Kick sohbetimizden <b><span style="color:var(--weizend-red);">${urun.komut}</span></b> yazıp aldıktan sonra Discord üzerinden yetkililere mesaj atarak veya İnstagram <b><a href="https://instagram.com/weizendtv" target="_blank" style="color:var(--weizend-red);">@weizendtv</a></b> adresine ulaşarak kodunuzu anında teslim alabilirsiniz.`;
+                    teslimatKutusuHTML = `<details><summary>Teslimat Bilgileri</summary><div class="details-content">${yazi}</div></details>`;
+                }
+
+                const komutClass = tukendiMi ? "command disabled" : "command";
+                const actionBtnClass = tukendiMi ? "action-btn disabled" : "action-btn";
+                const actionBtnText = tukendiMi ? "TÜKENDİ" : "İşlem Yap";
+                const actionBtnClick = tukendiMi ? "" : `onclick="islemYapBaslat('${urun.komut}')"`;
+
+                const kartClass = tukendiMi ? "card out-of-stock" : "card";
+
+                const kart = `
+                    <div class="${kartClass}">
+                        <div class="img-container" data-current-index="0" onclick="modaliAc(${urun.orijinalId}, this.dataset.currentIndex)">
+                            <span class="category-badge">${urun.kategori}</span>
+                            ${tukendiOverlayHTML}
+                            <img class="main-card-img" src="${ilkGorsel}" alt="${urun.ad}">
+                            <div class="zoom-hint">🔍 Büyüt</div>
+                        </div>
+                        
+                        ${thumbnailsHTML}
+
+                        <h3 class="product-title">${urun.ad}</h3>
+                        
+                        ${stokAlaniHTML}
+
+                        <div class="price-command">
+                            <span class="price">${urun.puan}</span>
+                            <span class="${komutClass}">${tukendiMi ? 'TÜKENDİ' : urun.komut}</span>
+                        </div>
+
+                        <button class="${actionBtnClass}" ${actionBtnClick}>${actionBtnText}</button>
+
+                        <details>
+                            <summary>Detaylar</summary>
+                            <div class="details-content">${urun.ozellikler}</div>
+                        </details>
+                        
+                        ${teslimatKutusuHTML}
+                    </div>
+                `;
+                grid.innerHTML += kart;
+            });
+        }
+
+        function islemYapBaslat(komut) {
+            navigator.clipboard.writeText(komut).catch(() => {});
+            document.getElementById('modalCommandText').innerText = komut;
+            document.getElementById('redirectModal').style.display = 'flex';
+
+            let kalanSaniye = 5;
+            document.getElementById('timerText').innerText = `${kalanSaniye} saniye içinde yönlendirileceksiniz...`;
+
+            if(redirectTimer) clearInterval(redirectTimer);
+
+            redirectTimer = setInterval(() => {
+                kalanSaniye--;
+                if (kalanSaniye > 0) {
+                    document.getElementById('timerText').innerText = `${kalanSaniye} saniye içinde yönlendirileceksiniz...`;
+                } else {
+                    clearInterval(redirectTimer);
+                    window.location.href = "https://kick.com/weizend/chat";
+                }
+            }, 1000);
+        }
+
+        function yonlendirmeyiIptalEt() {
+            if(redirectTimer) clearInterval(redirectTimer);
+            document.getElementById('redirectModal').style.display = 'none';
+        }
+
+        function kartIciResimDegistir(event, thumbElement, urunId, resimIndex, url) {
+            event.stopPropagation(); 
+            const card = thumbElement.closest('.card');
+            const mainImg = card.querySelector('.main-card-img');
+            const imgContainer = card.querySelector('.img-container');
+
+            mainImg.src = url;
+            imgContainer.dataset.currentIndex = resimIndex;
+
+            card.querySelectorAll('.card-thumb').forEach(t => t.classList.remove('active'));
+            thumbElement.classList.add('active');
+        }
+
+        function zoomSifirla() {
+            zoomLevel = 1;
+            document.getElementById('modalMainImg').style.transform = `scale(1)`;
+        }
+
+        document.getElementById('modalSlider').addEventListener('wheel', function(e) {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomLevel += 0.2; 
+            } else {
+                zoomLevel -= 0.2; 
+            }
+            zoomLevel = Math.min(Math.max(1, zoomLevel), 4);
+            document.getElementById('modalMainImg').style.transform = `scale(${zoomLevel})`;
+        });
+
+        function modaliAc(urunId, baslangicIndex) {
+            const urun = URUNLER.find(u => u.orijinalId === urunId);
+            if(!urun) return;
+
+            aktifGorselListesi = urun.gorseller;
+            aktifResimIndex = parseInt(baslangicIndex);
+            
+            document.getElementById('modalTitle').innerText = urun.ad;
+            
+            document.getElementById('prevBtn').style.display = aktifGorselListesi.length > 1 ? 'flex' : 'none';
+            document.getElementById('nextBtn').style.display = aktifGorselListesi.length > 1 ? 'flex' : 'none';
+
+            zoomSifirla();
+            galeriyiGuncelle();
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+
+        function modaliKapat() {
+            zoomSifirla(); 
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        function disariTiklaKapat(event) {
+            if (event.target.id === 'imageModal') {
+                modaliKapat();
+            }
+        }
+
+        function oncekiResim(event) {
+            event.stopPropagation(); 
+            aktifResimIndex--;
+            if(aktifResimIndex < 0) aktifResimIndex = aktifGorselListesi.length - 1;
+            zoomSifirla();
+            galeriyiGuncelle();
+        }
+
+        function sonrakiResim(event) {
+            event.stopPropagation(); 
+            aktifResimIndex++;
+            if(aktifResimIndex >= aktifGorselListesi.length) aktifResimIndex = 0;
+            zoomSifirla();
+            galeriyiGuncelle();
+        }
+
+        function modalResmeAtla(index) {
+            aktifResimIndex = index;
+            zoomSifirla();
+            galeriyiGuncelle();
+        }
+
+        function galeriyiGuncelle() {
+            document.getElementById('modalMainImg').src = aktifGorselListesi[aktifResimIndex];
+            
+            const thumbContainer = document.getElementById('modalThumbnails');
+            thumbContainer.innerHTML = '';
+            
+            if(aktifGorselListesi.length > 1) {
+                aktifGorselListesi.forEach((gorselUrl, i) => {
+                    const aktifClass = i === aktifResimIndex ? 'active' : '';
+                    thumbContainer.innerHTML += `<img src="${gorselUrl}" class="modal-thumb ${aktifClass}" onclick="modalResmeAtla(${i})">`;
+                });
+            }
+        }
+
+        function filtrele(kategori) {
+            urunleriYukle(kategori);
+        }
+
+        // Başlangıç
+        urunleriYukle('Tümü');
     </script>
 </body>
 </html>
