@@ -521,7 +521,7 @@
                 <a href="https://instagram.com/weizendtv" target="_blank" class="ig-contact">📸 İletişim: @weizendtv</a>
             </div>
 
-            <!-- BOTRIX !MARKET ÜZERİNDEN OTOMATİK KULLANICI KARTI -->
+            <!-- BOTRIX !BANKA İLE AKTİFLEŞEN KULLANICI KARTI -->
             <div class="user-wallet-wrapper">
                 <div id="walletCard" class="wallet-card">
                     <div class="wallet-left">
@@ -559,7 +559,7 @@
                 <div id="bankActivation" style="display:none;">
                     <div id="accountNameHint" class="account-name-hint"></div>
                     <button class="access-command" onclick="copyBankAndRedirect()" title="!banka komutunu kopyala ve Kick sohbete git">📋 !banka</button>
-                    <p class="access-help">Yukarıdaki <b>!banka</b> alanına dokun. Komut kopyalanır ve 5 saniye sonra Kick sohbetine yönlendirilirsin. Sohbete <b>!banka</b> yazdıktan sonra bu sayfayı yenile.</p>
+                    <p class="access-help">Yukarıdaki <b>!banka</b> alanına dokun. Komut kopyalanır ve Kick sohbeti anında yeni sekmede açılır. Sohbete <b>!banka</b> yazdıktan sonra bu sayfa hesabını otomatik kontrol eder ve marketi açar.</p>
                     <div class="access-form">
                         <button class="access-btn secondary" onclick="checkSavedAccount()">🔄 Sayfayı / Hesabı Yenile</button>
                         <button class="access-btn secondary" onclick="changeUsername()">Kullanıcı Adını Değiştir</button>
@@ -627,6 +627,10 @@
         const MARKET_WORKER = 'https://weizend-botrix.weizendtv.workers.dev';
         const KICK_CHAT_URL = 'https://kick.com/weizend/chat';
         const USER_STORAGE_KEY = 'weizend_market_username';
+        const PROFILE_CACHE_KEY = 'weizend_market_profile';
+        const WAITING_ACTIVATION_KEY = 'weizend_market_waiting_activation';
+        let activationPollTimer = null;
+        let accountCheckInFlight = false;
 
         document.addEventListener("DOMContentLoaded", () => {
             initializeMarketAccount();
@@ -680,7 +684,7 @@
             document.getElementById('accessText').innerHTML = 'Kick sohbete <b>!banka</b> yazın ve sayfayı yenileyin.';
             document.getElementById('usernameForm').style.display = 'none';
             document.getElementById('bankActivation').style.display = 'block';
-            document.getElementById('accountNameHint').innerHTML = `Kontrol edilen Kick hesabı: <b>@${escapeHtml(username)}</b>`;
+            document.getElementById('accountNameHint').innerHTML = `Kontrol edilen Kick hesabı: <b>${escapeHtml(username)}</b>`;
         }
 
         function showAccount(profile) {
@@ -720,7 +724,16 @@
             }
 
             document.getElementById('kickUsernameInput').value = savedUsername;
-            await checkAccount(savedUsername);
+
+            // Daha önce doğrulanmış kullanıcıyı cihazda hatırla ve marketi anında göster.
+            try {
+                const cached = JSON.parse(localStorage.getItem(PROFILE_CACHE_KEY) || 'null');
+                if (cached && normalizeUsername(cached.username).toLowerCase() === savedUsername.toLowerCase()) {
+                    showAccount(cached);
+                }
+            } catch (_) {}
+
+            await checkAccount(savedUsername, { silent: document.getElementById('marketContent').style.display === 'block' });
         }
 
         async function saveAndCheckUsername() {
@@ -746,15 +759,21 @@
             await checkAccount(username);
         }
 
-        async function checkAccount(username) {
-            showAccessBase();
-            document.getElementById('accessTitle').innerText = '🔄 Hesap Kontrol Ediliyor';
-            document.getElementById('accessText').innerText = `@${username} için BotRix hesabı kontrol ediliyor...`;
-            document.getElementById('usernameForm').style.display = 'none';
-            document.getElementById('bankActivation').style.display = 'none';
+        async function checkAccount(username, options = {}) {
+            if (accountCheckInFlight) return false;
+            accountCheckInFlight = true;
+            const silent = options.silent === true;
+
+            if (!silent) {
+                showAccessBase();
+                document.getElementById('accessTitle').innerText = '🔄 Hesap Kontrol Ediliyor';
+                document.getElementById('accessText').innerText = `${username} için BotRix hesabı kontrol ediliyor...`;
+                document.getElementById('usernameForm').style.display = 'none';
+                document.getElementById('bankActivation').style.display = 'none';
+            }
 
             try {
-                const response = await fetch(`${MARKET_WORKER}/profile?user=${encodeURIComponent(username)}`, {
+                const response = await fetch(`${MARKET_WORKER}/profile?user=${encodeURIComponent(username)}&_=${Date.now()}`, {
                     method: 'GET',
                     headers: { 'Accept': 'application/json' },
                     cache: 'no-store'
@@ -770,30 +789,78 @@
                 console.log('Weizend Market profil cevabı:', data);
 
                 if (response.status === 404 || data?.registered === false) {
-                    showBankActivation(username);
-                    return;
+                    if (!silent || document.getElementById('marketContent').style.display !== 'block') {
+                        showBankActivation(username);
+                    }
+                    return false;
                 }
 
                 if (!response.ok || !data || data.success !== true || data.registered !== true) {
                     throw new Error(data?.error || `HTTP ${response.status}`);
                 }
 
+                localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(data));
+                localStorage.removeItem(WAITING_ACTIVATION_KEY);
+                stopActivationPolling();
                 showAccount(data);
+                return true;
             } catch (error) {
                 console.error('WEIZEND MARKET HESAP HATASI:', error);
-                showUsernameForm('⚠️ Hesap servisine şu an ulaşılamadı. Biraz sonra tekrar deneyebilirsin.');
+                if (!silent && document.getElementById('marketContent').style.display !== 'block') {
+                    showUsernameForm('⚠️ Hesap servisine şu an ulaşılamadı. Biraz sonra tekrar deneyebilirsin.');
+                }
+                return false;
+            } finally {
+                accountCheckInFlight = false;
             }
         }
 
         function changeUsername() {
             localStorage.removeItem(USER_STORAGE_KEY);
+            localStorage.removeItem(PROFILE_CACHE_KEY);
+            localStorage.removeItem(WAITING_ACTIVATION_KEY);
+            stopActivationPolling();
             currentUsername = '';
             showUsernameForm('Farklı bir Kick hesabı için kullanıcı adını yaz.');
             setTimeout(() => document.getElementById('kickUsernameInput').focus(), 50);
         }
 
+        function stopActivationPolling() {
+            if (activationPollTimer) {
+                clearInterval(activationPollTimer);
+                activationPollTimer = null;
+            }
+        }
+
+        function startActivationPolling(username) {
+            stopActivationPolling();
+            const normalized = normalizeUsername(username);
+            if (!normalized) return;
+
+            localStorage.setItem(WAITING_ACTIVATION_KEY, normalized);
+            const stopAt = Date.now() + (2 * 60 * 1000);
+
+            activationPollTimer = setInterval(async () => {
+                if (Date.now() > stopAt) {
+                    stopActivationPolling();
+                    return;
+                }
+                const success = await checkAccount(normalized, { silent: true });
+                if (success) stopActivationPolling();
+            }, 2000);
+        }
+
         async function copyBankAndRedirect() {
             const command = '!banka';
+            const username = normalizeUsername(localStorage.getItem(USER_STORAGE_KEY));
+
+            // Kullanıcı tıkladığı anda Kick sohbetini YENİ SEKMEDE aç.
+            // Popup engelleyiciler için bunu await kullanmadan önce yapıyoruz.
+            const kickTab = window.open(KICK_CHAT_URL, '_blank');
+            if (kickTab) {
+                try { kickTab.opener = null; } catch (_) {}
+            }
+
             try {
                 await navigator.clipboard.writeText(command);
             } catch (_) {
@@ -808,20 +875,38 @@
             }
 
             const toast = document.getElementById('copyToast');
-            toast.innerText = '✅ !banka kopyalandı · 5 saniye sonra Kick sohbetine gidiyorsun';
+            toast.innerText = kickTab
+                ? '✅ !banka kopyalandı · Kick sohbeti yeni sekmede açıldı'
+                : '✅ !banka kopyalandı · Açılır pencere engellendiyse Kick sohbetini manuel aç';
             toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4500);
 
-            let remaining = 5;
-            const interval = setInterval(() => {
-                remaining--;
-                if (remaining > 0) {
-                    toast.innerText = `✅ !banka kopyalandı · ${remaining} saniye sonra Kick sohbetine gidiyorsun`;
-                } else {
-                    clearInterval(interval);
-                    window.location.href = KICK_CHAT_URL;
-                }
-            }, 1000);
+            document.getElementById('accessText').innerHTML = 'Kick sohbetine <b>!banka</b> yaz. Bu sayfa hesabını otomatik kontrol ediyor; kayıt geldiği anda market kendiliğinden açılacak.';
+
+            if (username) {
+                startActivationPolling(username);
+            }
         }
+
+        // Kullanıcı Kick sekmesinden market sekmesine döndüğünde anında tekrar kontrol et.
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                const username = normalizeUsername(localStorage.getItem(USER_STORAGE_KEY));
+                const waiting = normalizeUsername(localStorage.getItem(WAITING_ACTIVATION_KEY));
+                if (username && waiting && username.toLowerCase() === waiting.toLowerCase()) {
+                    checkAccount(username, { silent: true });
+                    startActivationPolling(username);
+                }
+            }
+        });
+
+        window.addEventListener('focus', () => {
+            const username = normalizeUsername(localStorage.getItem(USER_STORAGE_KEY));
+            const waiting = normalizeUsername(localStorage.getItem(WAITING_ACTIVATION_KEY));
+            if (username && waiting && username.toLowerCase() === waiting.toLowerCase()) {
+                checkAccount(username, { silent: true });
+            }
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' && document.activeElement?.id === 'kickUsernameInput') {
