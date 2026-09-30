@@ -619,49 +619,77 @@
             }
         }
 
-        // KÖPRÜ (PROXY) ÜZERİNDEN BOTRİX'E BAĞLANAN SORUNSUZ SİSTEM
+        // BOTRIX PUBLIC API - DOĞRUDAN PUAN SORGULAMA
         async function fetchUserPoints(username) {
             const pointsDisplay = document.getElementById('walletPoints');
             pointsDisplay.innerText = "Sorgulanıyor...";
             pointsDisplay.style.color = "var(--text-muted)";
 
             try {
-                // Dex'in verdiği resmi BotRix API Adresi
-                const targetUrl = `https://botrix.live/api/public/leaderboard?platform=kick&user=weizend&search=${encodeURIComponent(username.trim())}`;
-                
-                // Tarayıcı CORS engeline takılmamak için yasal AllOrigins köprüsünü kullanıyoruz
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-                
-                const response = await fetch(proxyUrl);
+                const cleanUsername = username.trim();
+                const apiUrl = `https://botrix.live/api/public/leaderboard?platform=kick&user=weizend&search=${encodeURIComponent(cleanUsername)}`;
+
+                const response = await fetch(apiUrl, {
+                    method: "GET",
+                    headers: { "Accept": "application/json" },
+                    cache: "no-store"
+                });
+
                 if (!response.ok) {
-                    throw new Error("Köprü sunucusuna ulaşılamadı.");
+                    throw new Error(`BotRix HTTP ${response.status}`);
                 }
 
-                const proxyData = await response.json();
-                
-                // Eğer BotRix'ten veri dönmezse
-                if (!proxyData.contents) {
-                     throw new Error("BotRix'ten veri alınamadı.");
+                const data = await response.json();
+                console.log("BotRix cevabı:", data);
+
+                let userData = null;
+                const findUser = (list) => {
+                    if (!Array.isArray(list)) return null;
+                    const exact = list.find(item => {
+                        const name = item.username ?? item.user ?? item.name ?? item.displayName ?? item.display_name ?? "";
+                        return String(name).toLowerCase() === cleanUsername.toLowerCase();
+                    });
+                    return exact || (list.length === 1 ? list[0] : null);
+                };
+
+                if (Array.isArray(data)) {
+                    userData = findUser(data);
+                } else if (data && Array.isArray(data.data)) {
+                    userData = findUser(data.data);
+                } else if (data && Array.isArray(data.users)) {
+                    userData = findUser(data.users);
+                } else if (data && Array.isArray(data.rows)) {
+                    userData = findUser(data.rows);
+                } else if (data && typeof data === "object") {
+                    userData = data;
                 }
 
-                // Köprüden gelen string veriyi JSON'a çeviriyoruz
-                const data = JSON.parse(proxyData.contents);
-                
-                let realPoints = 0;
-                
-                if (Array.isArray(data) && data.length > 0) {
-                    realPoints = data[0].points || 0;
-                } else if (data && data.points !== undefined) {
-                    realPoints = data.points;
-                } else if (data && data.data && data.data.length > 0) {
-                    realPoints = data.data[0].points || 0;
+                if (!userData) {
+                    pointsDisplay.innerText = "Kullanıcı bulunamadı";
+                    pointsDisplay.style.color = "#ff4444";
+                    return;
                 }
 
-                pointsDisplay.innerText = realPoints.toLocaleString('tr-TR');
+                const points = userData.points ?? userData.point ?? userData.balance ?? userData.loyaltyPoints ?? userData.loyalty_points;
+
+                if (points === undefined || points === null) {
+                    console.error("Puan alanı bulunamadı:", userData);
+                    throw new Error("BotRix cevabında puan alanı bulunamadı.");
+                }
+
+                const numericPoints = typeof points === "number"
+                    ? points
+                    : Number(String(points).replace(/[^\d.-]/g, ''));
+
+                if (Number.isNaN(numericPoints)) {
+                    throw new Error("Geçersiz puan değeri.");
+                }
+
+                pointsDisplay.innerText = numericPoints.toLocaleString('tr-TR');
                 pointsDisplay.style.color = "var(--weizend-red)";
 
             } catch (error) {
-                console.error("API Bağlantı Hatası:", error);
+                console.error("BotRix API Hatası:", error);
                 pointsDisplay.innerText = "Hata! Yenile 🔄";
                 pointsDisplay.style.color = "#ff4444";
             }
