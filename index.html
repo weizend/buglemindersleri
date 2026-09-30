@@ -619,21 +619,33 @@
             }
         }
 
+        // KÖPRÜ (PROXY) ÜZERİNDEN BOTRİX'E BAĞLANAN SORUNSUZ SİSTEM
         async function fetchUserPoints(username) {
             const pointsDisplay = document.getElementById('walletPoints');
             pointsDisplay.innerText = "Sorgulanıyor...";
             pointsDisplay.style.color = "var(--text-muted)";
 
             try {
-                // Dex'in verdiği resmi ve açık API adresi
-                const apiUrl = `https://botrix.live/api/public/leaderboard?platform=kick&user=weizend&search=${encodeURIComponent(username.trim())}`;
+                // Dex'in verdiği resmi BotRix API Adresi
+                const targetUrl = `https://botrix.live/api/public/leaderboard?platform=kick&user=weizend&search=${encodeURIComponent(username.trim())}`;
                 
-                const response = await fetch(apiUrl);
+                // Tarayıcı CORS engeline takılmamak için yasal AllOrigins köprüsünü kullanıyoruz
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+                
+                const response = await fetch(proxyUrl);
                 if (!response.ok) {
-                    throw new Error("BotRix sunucusuna ulaşılamadı.");
+                    throw new Error("Köprü sunucusuna ulaşılamadı.");
                 }
 
-                const data = await response.json();
+                const proxyData = await response.json();
+                
+                // Eğer BotRix'ten veri dönmezse
+                if (!proxyData.contents) {
+                     throw new Error("BotRix'ten veri alınamadı.");
+                }
+
+                // Köprüden gelen string veriyi JSON'a çeviriyoruz
+                const data = JSON.parse(proxyData.contents);
                 
                 let realPoints = 0;
                 
@@ -650,7 +662,7 @@
 
             } catch (error) {
                 console.error("API Bağlantı Hatası:", error);
-                pointsDisplay.innerText = "Bağlantı Hatası";
+                pointsDisplay.innerText = "Hata! Yenile 🔄";
                 pointsDisplay.style.color = "#ff4444";
             }
         }
