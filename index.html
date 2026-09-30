@@ -1,159 +1,287 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Buğlem'in Harf Okulu 🌟</title>
-<style>
-:root{--p:#ff4757;--b:#1e90ff;--y:#ffa502;--g:#2ed573;--d:#2f3542;--bg:#f4f7fb;--card:#fff}*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans",sans-serif;background:radial-gradient(#dfe4ea 1.5px,transparent 1.5px) 0 0/28px 28px,var(--bg);color:var(--d);min-height:100vh;user-select:none}.top{position:sticky;top:0;z-index:30;background:#ffffffed;backdrop-filter:blur(10px);padding:10px 12px;box-shadow:0 3px 16px #0001}.row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}.pill{border:0;border-radius:18px;padding:10px 14px;font-weight:900;background:#eef2f7;color:var(--d)}.money{background:var(--g);color:#fff}.progress{height:10px;background:#e8edf3;border-radius:20px;overflow:hidden;margin-top:9px}.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--b),var(--g));transition:.35s}.groups{display:flex;gap:8px;overflow:auto;padding:10px 0 3px;scrollbar-width:none}.groups::-webkit-scrollbar{display:none}.group{flex:0 0 auto;border:0;border-radius:15px;padding:8px 12px;font-weight:900;background:#f1f2f6}.group.active{background:var(--b);color:#fff}.letters{display:flex;gap:7px;overflow:auto;padding:8px 0 2px;scrollbar-width:none}.letter{min-width:45px;height:45px;border:0;border-radius:14px;background:#eef2f7;font-size:21px;font-weight:900}.letter.active{background:var(--p);color:#fff;transform:scale(1.07)}.letter.locked{opacity:.42}.app{max-width:760px;margin:auto;padding:14px}.card{background:var(--card);border-radius:28px;padding:20px;box-shadow:0 14px 40px #22304a18;text-align:center;min-height:470px;position:relative;overflow:hidden}.badge{display:inline-block;background:#eef5ff;color:var(--b);font-weight:900;padding:8px 13px;border-radius:16px}.title{font-size:clamp(21px,5vw,31px);margin:12px 0 5px}.sub{color:#667085;font-weight:700;line-height:1.45}.heroLetter{font-size:clamp(110px,32vw,210px);line-height:1;font-weight:900;color:var(--p);text-shadow:5px 5px 0 #ffd166;margin:18px}.btn{border:0;border-radius:17px;padding:14px 20px;font-size:17px;font-weight:900;background:var(--b);color:white;box-shadow:0 5px 0 #0b69c7;margin:7px;cursor:pointer}.btn:active{transform:translateY(4px);box-shadow:none}.btn.orange{background:var(--y);box-shadow:0 5px 0 #c77d00}.btn.green{background:var(--g);box-shadow:0 5px 0 #1aa95a}.btn.red{background:var(--p);box-shadow:0 5px 0 #c92f3d}.options{display:grid;grid-template-columns:repeat(3,minmax(75px,1fr));gap:12px;margin:20px auto;max-width:500px}.opt{min-height:92px;border:4px solid #dfe4ea;background:#f8fafc;border-radius:20px;font-size:42px;font-weight:900;color:var(--d)}.opt.good{background:#dff9e8;border-color:var(--g)}.opt.bad{animation:shake .3s;background:#ffe7e9;border-color:var(--p)}@keyframes shake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}.traceWrap{width:min(86vw,340px);height:340px;margin:15px auto;position:relative;border:4px dashed #ccd5df;border-radius:24px;background:#fbfcfe;overflow:hidden;touch-action:none}.ghost{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:230px;font-weight:900;color:#0000000d;pointer-events:none}.traceWrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}.guide{width:min(90vw,430px);height:300px;margin:12px auto;background:#fbfcfe;border-radius:24px;border:3px solid #e5e9ef}.guide text{font-weight:900;fill:#0000000b}.guide path{fill:none;stroke:var(--p);stroke-width:13;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1000;stroke-dashoffset:1000;animation:write 1.1s ease forwards}.guide .dot{fill:var(--b)}@keyframes write{to{stroke-dashoffset:0}}.stars{font-size:30px;letter-spacing:5px;color:#ffc107}.mini{font-size:14px;color:#778;font-weight:700}.toast{position:fixed;left:50%;bottom:-100px;transform:translateX(-50%);z-index:99;padding:13px 20px;border-radius:30px;background:var(--d);color:#fff;font-weight:900;transition:.25s;max-width:90vw;text-align:center}.toast.show{bottom:25px}.confetti{position:fixed;inset:0;pointer-events:none;z-index:80}.memory{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;max-width:430px;margin:18px auto}.mem{height:70px;border:0;border-radius:15px;background:#eaf1fa;font-size:28px;font-weight:900}.soundOrb{width:150px;height:150px;border-radius:50%;border:0;background:linear-gradient(145deg,#ff6b81,var(--p));color:#fff;font-size:72px;font-weight:900;box-shadow:0 12px 25px #ff475744}.handA{font-family:Arial,sans-serif!important;font-weight:900}.schoolA{display:inline-block;width:.78em;height:.82em;vertical-align:-.08em}.schoolA path{fill:currentColor}.schoolA.inlineA{width:.82em;height:.88em;vertical-align:-.12em}.backBar{max-width:760px;margin:0 auto 18px;padding:0 14px;text-align:left}.backBtn{border:0;border-radius:16px;padding:12px 18px;font-size:16px;font-weight:900;background:#667085;color:#fff;box-shadow:0 4px 0 #475467;cursor:pointer}.backBtn:active{transform:translateY(3px);box-shadow:none}.dragFloat{position:fixed!important;z-index:9999!important;pointer-events:none!important;margin:0!important;transform:translate(-50%,-50%) scale(1.08);box-shadow:0 12px 28px #0003}.dragChip.dragSource{opacity:.25}.dropZone{min-height:110px;border:4px dashed #aab7c4;border-radius:24px;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;background:#f8fafc;margin:16px auto;max-width:260px}.dragChip{display:inline-flex;align-items:center;justify-content:center;width:78px;height:78px;border:3px solid #dfe4ea;border-radius:20px;background:white;font-size:38px;font-weight:900;margin:6px;touch-action:none}.pathRow{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap;margin:18px 0}.pathNode{width:62px;height:62px;border:3px solid #dfe4ea;border-radius:50%;background:#fff;font-size:28px;font-weight:900}.pathNode.done{background:#dff9e8;border-color:var(--g)}.sortBins{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px auto;max-width:500px}.sortBin{min-height:130px;border:4px dashed #ccd5df;border-radius:22px;padding:10px;font-weight:900}.paintGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;max-width:500px;margin:15px auto}.paintCell{aspect-ratio:1;border:2px solid #dfe4ea;border-radius:14px;background:#fff;font-size:27px;font-weight:900}.paintCell.paint{background:#dff9e8;border-color:var(--g)}.footerNote{font-size:12px;color:#98a2b3;margin-top:12px}.modal{display:none;position:fixed;inset:0;background:#0008;z-index:100;align-items:center;justify-content:center;padding:15px}.modal.open{display:flex}.modalBox{background:white;border-radius:25px;padding:22px;max-width:460px;width:100%;text-align:left}.modalBox h3{margin-top:0}.switch{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee}.bigFinish{background:linear-gradient(135deg,#ffa502,#ff6b81);color:#fff}.bigFinish .title,.bigFinish .sub{color:#fff}@media(max-width:480px){.card{padding:15px;min-height:500px}.options{gap:8px}.opt{min-height:80px}.traceWrap{height:300px}.heroLetter{margin:12px}.top{padding:8px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weizend Market</title>
+    <style>
+        /* WEIZEND RENK PALETİ VE TASARIM AYARLARI */
+        :root {
+            --bg-color: #050505; 
+            --card-bg: #111111; 
+            --border-color: #2a2a2a; 
+            --weizend-red: #e31b1b; 
+            --weizend-white: #ffffff;
+            --text-muted: #a0a0a0;
+        }
 
-<style>
-.gameGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:520px;margin:18px auto}
-.tile{min-height:72px;border:3px solid #dfe4ea;border-radius:18px;background:#f8fafc;font-size:30px;font-weight:900}
-.tile.hit{background:#dff9e8;border-color:var(--g)}.tile.wrong{background:#ffe7e9;border-color:var(--p)}
-.meter{height:14px;background:#e9eef5;border-radius:20px;overflow:hidden;max-width:430px;margin:12px auto}.meter i{display:block;height:100%;background:var(--g);width:0;transition:.2s}
-.balloonField{height:300px;position:relative;border:3px dashed #dfe4ea;border-radius:22px;overflow:hidden;background:#f9fbfd;margin:14px auto;max-width:520px}
-.balloon{position:absolute;width:64px;height:78px;border:0;border-radius:50% 50% 45% 45%;font-size:28px;font-weight:900;background:#ffd166;animation:floatUp 5s linear forwards}
-@keyframes floatUp{from{transform:translateY(310px)}to{transform:translateY(-100px)}}
-.rain{position:absolute;top:-60px;font-size:34px;font-weight:900;animation:rainDown 4s linear forwards}
-@keyframes rainDown{to{transform:translateY(360px)}}
-.strokeBtn{min-width:70px;min-height:70px;border:3px solid #dfe4ea;border-radius:18px;background:#fff;font-size:25px;font-weight:900;margin:6px}
-.door{min-height:140px;font-size:42px;background:linear-gradient(#9dd4ff,#fff);border:5px solid #6c8fb3;border-radius:24px}
-.sequence{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px}.seqSlot{width:62px;height:62px;border:3px dashed #ccd5df;border-radius:15px;display:grid;place-items:center;font-size:28px;font-weight:900}
-.traceHint{position:absolute;left:8px;top:8px;background:#1e90ff;color:#fff;border-radius:14px;padding:6px 9px;font-weight:900;z-index:5}
-.traceStatus{font-weight:900;color:#667085;margin:7px}.pulse{animation:pulse .7s infinite alternate}@keyframes pulse{to{transform:scale(1.12)}}
-</style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--weizend-white); margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        
+        /* Header & Kategori */
+        header { text-align: center; padding: 20px 0; border-bottom: 2px solid var(--border-color); margin-bottom: 30px; }
+        .logo-img { width: 120px; border-radius: 50%; box-shadow: 0 0 20px rgba(227, 27, 27, 0.4); margin-bottom: 15px; }
+        header h1 { margin: 0; font-size: 2.2rem; color: var(--weizend-white); text-transform: uppercase; letter-spacing: 2px; }
+        .header-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
+        
+        .ig-contact { display: inline-block; padding: 8px 15px; background: rgba(227, 27, 27, 0.1); border: 1px solid var(--weizend-red); border-radius: 20px; color: var(--weizend-red); text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: 0.3s; }
+        .ig-contact:hover { background: rgba(227, 27, 27, 0.3); }
+
+        /* =========================================
+           YENİ EKLENEN: KULLANICI CÜZDANI (WALLET) TASARIMI 
+           ========================================= */
+        .user-wallet-wrapper { margin-top: 25px; display: flex; justify-content: center; min-height: 80px; align-items: center;}
+        
+        /* Giriş Yap Butonu */
+        .login-btn-large { background: transparent; border: 2px solid var(--weizend-red); color: var(--weizend-white); padding: 12px 30px; border-radius: 30px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 0 15px rgba(227, 27, 27, 0.2); display: flex; align-items: center; gap: 10px; }
+        .login-btn-large:hover { background: var(--weizend-red); box-shadow: 0 0 25px rgba(227, 27, 27, 0.5); transform: translateY(-2px); }
+        
+        /* Cüzdan Kartı */
+        .wallet-card { background: linear-gradient(145deg, #111 0%, #0a0a0a 100%); border: 1px solid var(--weizend-red); border-radius: 15px; padding: 15px 25px; display: none; align-items: center; gap: 20px; box-shadow: 0 5px 25px rgba(227, 27, 27, 0.15); min-width: 300px; justify-content: space-between; transition: 0.3s; }
+        .wallet-card:hover { border-color: #ff3333; box-shadow: 0 5px 30px rgba(227, 27, 27, 0.3); }
+        .wallet-left { display: flex; align-items: center; gap: 15px; }
+        .wallet-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--weizend-red); padding: 2px; object-fit: cover; background: #000; }
+        .wallet-info { display: flex; flex-direction: column; text-align: left; }
+        .w-username { font-size: 1.25rem; font-weight: bold; color: var(--weizend-white); margin: 0; letter-spacing: 1px; }
+        .w-balance { font-size: 1.1rem; color: var(--text-muted); font-weight: 600; margin-top: 5px; display: flex; align-items: center; gap: 6px; }
+        .w-balance-amount { color: var(--weizend-red); font-weight: bold; font-size: 1.2rem; }
+        
+        /* Çıkış İkonu */
+        .logout-icon { background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); color: var(--text-muted); width: 40px; height: 40px; border-radius: 10px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        .logout-icon:hover { background: var(--weizend-red); color: white; border-color: var(--weizend-red); }
+        /* ========================================= */
+        
+        .category-filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .filter-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--weizend-white); padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: 600; }
+        .filter-btn.active, .filter-btn:hover { background: var(--weizend-red); border-color: var(--weizend-red); }
+        .filter-btn.tukenenler-btn { color: var(--weizend-red); border-color: var(--weizend-red); background: rgba(227, 27, 27, 0.1); }
+        .filter-btn.tukenenler-btn.active, .filter-btn.tukenenler-btn:hover { background: var(--weizend-red); color: var(--weizend-white); }
+
+        /* Ürün Grid ve Kartlar (Önceki kodlarının aynısı) */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; transition: 0.3s; display: flex; flex-direction: column; }
+        .card:hover { border-color: var(--weizend-red); transform: translateY(-5px); box-shadow: 0 5px 20px rgba(227, 27, 27, 0.15); }
+        .card.out-of-stock { opacity: 0.75; }
+        
+        .img-container { width: 100%; height: 280px; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; position: relative; border: 1px solid var(--border-color); cursor: pointer; }
+        .img-container img { width: 100%; height: 100%; object-fit: contain; transition: 0.3s; }
+        .img-container:hover img { transform: scale(1.03); }
+        .category-badge { position: absolute; top: 10px; right: 10px; background: var(--weizend-red); color: white; padding: 4px 10px; font-size: 0.75rem; font-weight: bold; border-radius: 4px; z-index: 2; }
+        
+        .stock-wrapper { margin-bottom: 15px; }
+        .stock-badge { display: inline-block; background: rgba(0,0,0,0.8); border: 1px solid var(--weizend-red); color: var(--weizend-white); padding: 4px 10px; font-size: 0.8rem; font-weight: bold; border-radius: 4px; }
+        .stock-info-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-style: italic; }
+
+        .out-of-stock-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 3; }
+        .out-of-stock-text { background: var(--weizend-red); color: white; padding: 8px 20px; font-weight: bold; border-radius: 6px; font-size: 1.1rem; letter-spacing: 1px; transform: rotate(-5deg); }
+
+        .zoom-hint { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); border: 1px solid var(--weizend-red); color: white; padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; opacity: 0; transition: 0.3s; pointer-events: none; }
+        .img-container:hover .zoom-hint { opacity: 1; }
+
+        .card-thumbnails { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .card-thumbnails::-webkit-scrollbar { display: none; }
+        .card-thumb { width: 55px; height: 55px; object-fit: contain; border-radius: 6px; border: 2px solid #222; cursor: pointer; opacity: 0.5; transition: 0.2s; background: #000; flex-shrink: 0; }
+        .card-thumb:hover { opacity: 1; }
+        .card-thumb.active { border-color: var(--weizend-red); opacity: 1; }
+
+        .product-title { margin: 0 0 10px 0; font-size: 1.3rem; min-height: 55px;}
+        .price-command { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .price { color: var(--weizend-red); font-weight: bold; font-size: 1.1rem; }
+        .command { background: #000; border: 1px dashed var(--weizend-red); padding: 5px 10px; border-radius: 4px; color: var(--weizend-red); font-family: monospace; }
+        .command.disabled { border-color: #555; color: #772ce8; text-decoration: line-through; }
+
+        .action-btn { width: 100%; background: var(--weizend-red); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s; margin-top: auto; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(227, 27, 27, 0.3); }
+        .action-btn:hover:not(.disabled) { background: #c21414; transform: translateY(-2px); }
+        .action-btn.disabled { background: #333; color: #777; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        details { background: #1a1a1a; border-radius: 6px; margin-bottom: 8px; overflow: hidden; border: 1px solid var(--border-color); }
+        summary { padding: 12px 15px; cursor: pointer; font-weight: 600; color: var(--weizend-white); outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+        summary::-webkit-details-marker { display: none; }
+        summary::after { content: '+'; color: var(--weizend-red); font-weight: bold; font-size: 1.2rem; }
+        details[open] summary::after { content: '-'; }
+        .details-content { padding: 15px; background: var(--card-bg); font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; border-top: 1px solid var(--border-color); }
+        .details-content ul { margin: 0; padding-left: 20px; }
+        .details-content li { margin-bottom: 6px; }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: var(--card-bg); width: 100%; max-width: 900px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden;}
+        .modal-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; background: var(--card-bg); }
+        .modal-header h3 { margin: 0; font-size: 1.2rem; }
+        .close-icon { background: none; border: none; color: var(--weizend-white); font-size: 1.5rem; cursor: pointer; transition: 0.2s; line-height: 1; }
+        .close-icon:hover { color: var(--weizend-red); }
+
+        .modal-body { padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .main-slider { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; overflow: hidden; cursor: zoom-in;}
+        .main-slider img { width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; transition: transform 0.15s ease-out; transform-origin: center; }
+        .zoom-info { position: absolute; bottom: 10px; background: rgba(0,0,0,0.7); padding: 5px 15px; border-radius: 15px; font-size: 0.8rem; color: var(--text-muted); pointer-events: none; z-index: 5;}
+
+        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.8); color: white; border: 1px solid var(--weizend-red); width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; z-index: 5; }
+        .nav-btn:hover { background: var(--weizend-red); }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+
+        .thumbnail-list { display: flex; gap: 10px; justify-content: center; overflow-x: auto; padding-bottom: 5px; width: 100%; z-index: 10; background: var(--card-bg); }
+        .modal-thumb { width: 70px; height: 70px; object-fit: contain; border: 2px solid #222; border-radius: 6px; cursor: pointer; transition: 0.2s; opacity: 0.5; background: #000; }
+        .modal-thumb:hover { opacity: 1; }
+        .modal-thumb.active { border-color: var(--weizend-red); opacity: 1; }
+
+        .redirect-modal-body { padding: 30px; text-align: center; }
+        .redirect-command-box { background: #000; border: 2px dashed var(--weizend-red); padding: 15px; border-radius: 8px; font-size: 1.4rem; color: var(--weizend-red); font-family: monospace; margin: 20px 0; font-weight: bold; }
+        .redirect-timer { color: var(--weizend-white); font-size: 1rem; margin-top: 15px; }
+        .cancel-btn { background: #222; color: var(--text-muted); border: 1px solid var(--border-color); padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 20px; width: 100%; }
+        .cancel-btn:hover { background: #333; color: white; }
+    </style>
 </head>
 <body>
-<div class="top"><div class="row between"><button class="pill" onclick="openSettings()">⚙️ Ayarlar</button><div class="pill" id="where">1. Grup • A</div><div class="pill money">🐷 <span id="money">0</span> TL</div></div><div class="progress"><i id="progressBar"></i></div><div class="groups" id="groups"></div><div class="letters" id="letters"></div></div>
-<main class="app"><section class="card" id="card"></section></main><div class="backBar"><button class="backBtn" id="backBtn" onclick="previousLevel()">← Önceki Bölüme Dön</button></div><div class="toast" id="toast"></div><canvas class="confetti" id="confetti"></canvas>
-<div class="modal" id="settings"><div class="modalBox"><h3>👨‍👩‍👧 Ebeveyn Ayarları</h3><div class="switch"><b>Eğitici seslendirme</b><input id="voiceToggle" type="checkbox" checked onchange="saveSettings()"></div><div class="switch"><b>Yanlışta puan düşsün</b><input id="penaltyToggle" type="checkbox" checked onchange="saveSettings()"></div><p class="mini">İlerleme ve kazanılan TL bu cihazda saklanır.</p><button class="btn" onclick="closeSettings()">Kapat</button><button class="btn red" onclick="resetAll()">İlerlemeyi Sıfırla</button></div></div>
-<script>
-const GROUPS=[['A','N','E','T','İ','L'],['O','K','U','R','I','M'],['Ü','S','Ö','Y','D','Z'],['Ç','B','G','C','Ş'],['P','H','V','Ğ','F','J']];
-const ALL=GROUPS.flat();
-const lowerOf=x=>({'I':'ı','İ':'i','Ğ':'ğ','Ü':'ü','Ö':'ö','Ş':'ş','Ç':'ç'}[x]||x.toLowerCase());
-const state=JSON.parse(localStorage.getItem('buglem_harf_v5')||'null')||{letter:0,case:'upper',level:1,money:0,unlocked:0};
-let voiceOn=localStorage.getItem('buglem_voice')!=='0',penalty=localStorage.getItem('buglem_penalty')!=='0';
-const $=s=>document.querySelector(s), card=$('#card');
-function save(){localStorage.setItem('buglem_harf_v5',JSON.stringify(state))} function saveSettings(){voiceOn=$('#voiceToggle').checked;penalty=$('#penaltyToggle').checked;localStorage.setItem('buglem_voice',voiceOn?'1':'0');localStorage.setItem('buglem_penalty',penalty?'1':'0')}
-function speak(t){if(!voiceOn||!('speechSynthesis'in window))return;speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t),vs=speechSynthesis.getVoices(),tr=vs.filter(v=>v.lang&&v.lang.toLowerCase().startsWith('tr'));u.voice=tr.find(v=>/female|emel|seda|filiz|google|microsoft/i.test(v.name))||tr[0]||null;u.lang='tr-TR';u.rate=.88;u.pitch=1.18;speechSynthesis.speak(u)}
-function sound(ok=true){try{let a=new AudioContext(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=ok?760:180;g.gain.value=.06;o.start();o.stop(a.currentTime+.16)}catch(e){}}
-function toast(t){let e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1800)}
-function reward(){state.money+=10;sound(1);save();updateTop()} function wrong(t='Tekrar deneyelim!'){if(penalty)state.money=Math.max(0,state.money-2);sound(0);save();updateTop();toast(t);speak('Aaa, olmadı. Bir daha deneyelim Buğlem.')}
-function currentUpper(){return ALL[state.letter]} function current(){return state.case==='upper'?currentUpper():lowerOf(currentUpper())}
-function letterClass(v=current()){return v==='a'?'handA':''}
-function schoolASvg(cls='schoolA'){return `<svg class="${cls}" viewBox="0 0 100 100" aria-label="küçük a" role="img"><path d="M72 51 C72 31 60 19 43 19 C23 19 12 33 12 51 C12 71 26 83 43 83 C60 83 72 71 72 51 Z" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path d="M79 18 L79 84" fill="none" stroke="currentColor" stroke-width="15" stroke-linecap="round"/></svg>`}
-function letterHTML(v=current()){return v==='a'?schoolASvg():v}
-function letterTextHTML(v=current()){return letterHTML(v)}
-function displayHTML(v){return v==='a'?schoolASvg('schoolA inlineA'):v}
-function decorateSchoolAs(root=document){root.querySelectorAll('button,.tile,.opt,.mem,.dragChip,.pathNode,.seqSlot').forEach(el=>{if(el.childElementCount===0&&el.textContent.trim()==='a')el.innerHTML=displayHTML('a')})}
-function previousLevel(){if(state.level>1){state.level--;render();speak('Bir önceki bölüme döndük.')}else if(state.case==='lower'){state.case='upper';state.level=25;render();speak('Büyük harfin son bölümüne döndük.')}else if(state.letter>0){state.letter--;state.case='lower';state.level=25;render();speak('Bir önceki harfin son bölümüne döndük.')}}
-function updateBackButton(){let b=$('#backBtn');if(b)b.style.display=(state.letter===0&&state.case==='upper'&&state.level===1)?'none':'inline-block'}
-function groupIndex(i=state.letter){let n=i;for(let g=0;g<GROUPS.length;g++){if(n<GROUPS[g].length)return g;n-=GROUPS[g].length}return 4}
-function buildNav(){let gs=$('#groups');gs.innerHTML='';GROUPS.forEach((g,i)=>{let b=document.createElement('button');b.className='group '+(i===groupIndex()?'active':'');b.textContent=(i+1)+'. Grup: '+g.join(' ');b.onclick=()=>{let first=GROUPS.slice(0,i).flat().length;if(first<=state.unlocked){state.letter=first;state.case='upper';state.level=1;render() }else speak('Önce önceki harfleri tamamlayalım.');};gs.appendChild(b)});let ls=$('#letters');ls.innerHTML='';ALL.forEach((l,i)=>{let b=document.createElement('button');b.className='letter '+(i===state.letter?'active':'')+(i>state.unlocked?' locked':'');b.textContent=l;b.onclick=()=>{if(i<=state.unlocked){state.letter=i;state.case='upper';state.level=1;render()}else speak(l+' harfi henüz kilitli. Önce sırayla ilerleyelim.');};ls.appendChild(b)});setTimeout(()=>$('.letter.active')?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'}),50)}
-function updateTop(){let g=groupIndex()+1;$('#where').textContent=g+'. Grup • '+currentUpper()+' • '+(state.case==='upper'?'Büyük':'Küçük')+' • '+state.level+'/25';$('#money').textContent=state.money;let total=ALL.length*50,done=state.letter*50+(state.case==='lower'?25:0)+(state.level-1);$('#progressBar').style.width=(done/total*100)+'%';buildNav()}
 
-const titles=[
-'Sesi Keşfet','Kalemin Yolunu İzle','Noktaları Sırayla Birleştir','Harf Dedektifi','Ses Kutuları',
-'Büyük-Küçük Kardeşler','Hafıza Kartları','Eksik Halkayı Bul','Hızlı Gözler','Harf Balonları',
-'Ses Ritmi','Çizgi Sırası Bulmacası','Gizli Yol Çizimi','Harf Yağmuru','İkiz Avı',
-'Harf Treni','Gölge Dedektifi','Ses Merdiveni','Fener Avı','Doğru Kapı',
-'Yardımcısız Yaz','Refleks Oyunu','Usta Kalem','5 Görevlik Sınav','Harf Ustası Finali'
-];
-function intro(){let c=current(),kind=state.case==='upper'?'büyük':'küçük';return `<span class="badge">${state.level}. Bölüm / 25</span><h1 class="title">${titles[state.level-1]}</h1><p class="sub">${kind} <b>${c}</b> harfi • Her bölüm farklı bir oyun</p>`}
-function announce(){speak(`${state.level}. bölüm. ${titles[state.level-1]}. ${state.case==='upper'?'Büyük':'Küçük'} ${current()} harfi.`)}
-function render(){save();updateTop();window._gameToken=(window._gameToken||0)+1;let l=state.level;
- const games=[listenGame,directionGame,strictTraceGame,detectiveGame,soundBoxesGame,casePairGame,memoryGame,missingRingGame,speedEyesGame,balloonGame,rhythmGame,strokeOrderGame,hiddenTraceGame,letterRainGame,twinHuntGame,trainGame,shadowGame,soundStairsGame,spotlightGame,doorGame,freeStrictGame,reactionGame,masterTraceGame,examGame,bossGame];
- games[l-1]();updateBackButton();setTimeout(()=>{decorateSchoolAs(card);announce()},50)}
-function distractors(n=5){let c=current(),pool=ALL.map(x=>state.case==='upper'?x:lowerOf(x)).filter(x=>x!==c);return pool.sort(()=>Math.random()-.5).slice(0,n)}
-function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
-function good(msg='Harika Buğlem!'){reward();speak(msg);setTimeout(completeLevel,650)}
-function choose(el,val){if(val===current()){el.classList.add('good');good('Tebrikler Buğlem, doğru harfi buldun!')}else{el.classList.add('bad');wrong();setTimeout(()=>el.classList.remove('bad'),400)}}
-function listenGame(){let c=current();window._listen=0;card.innerHTML=intro()+`<button class="soundOrb pulse" onclick="listenTap()">${c}</button><p class="sub">Harfe <b>5 kez</b> dokun. Her dokunuşta sesini dinle.</p><div class="meter"><i id="listenMeter"></i></div><div id="listenCount" class="stars">☆☆☆☆☆</div>`}
-function listenTap(){window._listen++;speak(current());$('#listenMeter').style.width=(window._listen*20)+'%';$('#listenCount').textContent='★'.repeat(window._listen)+'☆'.repeat(5-window._listen);if(window._listen>=5)good(`${current()} sesini çok güzel dinledin.`)}
-function guidePaths(ch){let U=ch.toUpperCase();const M={A:['M85 245 L160 45','M160 45 L235 245','M115 165 L205 165'],N:['M90 245 L90 55','M90 55 L230 245','M230 245 L230 55'],E:['M225 55 L90 55 L90 245','M90 150 L200 150','M90 245 L225 245'],T:['M75 55 L245 55','M160 55 L160 245'],İ:['M160 55 L160 245','M160 22 L161 22'],I:['M160 55 L160 245'],L:['M95 55 L95 245 L230 245'],O:['M160 50 C70 50 70 250 160 250 C250 250 250 50 160 50'],K:['M95 50 L95 250','M230 50 L95 155 L235 250'],U:['M90 50 L90 190 C90 270 230 270 230 190 L230 50'],R:['M90 250 L90 50 L175 50 C245 50 245 150 175 150 L90 150','M165 150 L240 250'],M:['M70 250 L70 50 L160 165 L250 50 L250 250'],Ü:['M90 60 L90 190 C90 270 230 270 230 190 L230 60','M125 28 L126 28','M195 28 L196 28'],S:['M230 70 C190 35 95 45 95 105 C95 155 225 140 225 205 C225 265 120 270 80 230'],Ö:['M160 60 C75 60 75 250 160 250 C245 250 245 60 160 60','M125 28 L126 28','M195 28 L196 28'],Y:['M75 55 L160 155 L245 55','M160 155 L160 250'],D:['M90 250 L90 50 L160 50 C260 50 260 250 160 250 Z'],Z:['M80 55 L240 55 L80 245 L240 245'],Ç:['M235 80 C190 35 85 55 85 150 C85 245 190 265 235 220','M150 260 L140 285'],B:['M90 250 L90 50 L175 50 C240 50 240 145 175 145 L90 145','M175 145 C250 145 250 250 175 250 L90 250'],G:['M235 85 C190 35 80 55 80 150 C80 245 190 270 235 215 L235 165 L175 165'],C:['M235 80 C190 35 85 55 85 150 C85 245 190 265 235 220'],Ş:['M230 70 C190 35 95 45 95 105 C95 155 225 140 225 205 C225 265 120 270 80 230','M155 265 L145 290'],P:['M90 250 L90 50 L175 50 C250 50 250 155 175 155 L90 155'],H:['M90 50 L90 250','M230 50 L230 250','M90 150 L230 150'],V:['M75 50 L160 250 L245 50'],Ğ:['M235 85 C190 35 80 55 80 150 C80 245 190 270 235 215 L235 165 L175 165','M125 20 Q160 45 195 20'],F:['M90 250 L90 50 L230 50','M90 145 L200 145'],J:['M220 50 L220 200 C220 270 95 270 95 195']};
-if(state.case==='upper')return M[U]||M.A;
-const low={a:['M210 170 C210 125 185 100 150 100 C105 100 82 132 82 174 C82 218 112 245 150 245 C187 245 210 218 210 170 Z','M220 92 L220 246'],n:['M90 240 L90 110','M90 160 C120 95 210 95 210 170 L210 240'],e:['M85 170 L220 170 C220 90 95 85 85 170 C80 250 190 260 225 215'],t:['M160 55 L160 210 C160 250 205 250 220 225','M110 120 L210 120'],i:['M155 120 L155 240','M155 75 L156 75'],ı:['M155 120 L155 240'],l:['M155 55 L155 240'],o:['M160 105 C75 105 75 245 160 245 C245 245 245 105 160 105'],k:['M100 55 L100 240','M215 110 L100 180 L220 240'],u:['M90 110 L90 195 C90 255 190 260 215 205','M215 110 L215 240'],r:['M105 240 L105 115','M105 160 C130 110 180 105 210 125'],m:['M70 240 L70 115','M70 160 C95 105 145 105 155 160 L155 240','M155 160 C180 105 230 105 235 165 L235 240'],ü:['M90 110 L90 195 C90 255 190 260 215 205','M215 110 L215 240','M125 75 L126 75','M190 75 L191 75'],s:['M215 125 C180 95 105 100 105 145 C105 185 215 165 215 210 C215 255 135 255 100 225'],ö:['M160 105 C75 105 75 245 160 245 C245 245 245 105 160 105','M125 75 L126 75','M195 75 L196 75'],y:['M85 110 L155 235','M230 110 L145 285'],d:['M210 55 L210 240','M210 130 C180 95 90 100 90 175 C90 250 180 255 210 215'],z:['M95 115 L220 115 L95 240 L225 240'],ç:['M225 130 C190 95 95 100 95 175 C95 250 190 255 225 220','M165 255 L155 282'],b:['M95 55 L95 240','M95 145 C130 95 220 105 220 175 C220 250 130 255 95 215'],g:['M210 120 C180 95 90 100 90 175 C90 245 180 250 210 210','M210 115 L210 240 C210 290 120 295 95 265'],c:['M225 130 C190 95 95 100 95 175 C95 250 190 255 225 220'],ş:['M215 125 C180 95 105 100 105 145 C105 185 215 165 215 210 C215 255 135 255 100 225','M165 255 L155 282'],p:['M95 290 L95 115','M95 140 C130 95 220 105 220 175 C220 245 130 255 95 215'],h:['M95 55 L95 240','M95 165 C120 105 215 105 215 175 L215 240'],v:['M85 115 L160 240 L235 115'],ğ:['M210 120 C180 95 90 100 90 175 C90 245 180 250 210 210','M210 115 L210 240 C210 290 120 295 95 265','M125 70 Q160 95 195 70'],f:['M200 65 C145 35 120 80 120 125 L120 240','M80 125 L190 125'],j:['M165 115 L165 245 C165 285 120 290 95 270','M165 75 L166 75']};return low[ch]||low.a}
+    <script>
+        // ÜRÜN LİSTEN BURADA YER ALACAK (Kod kalabalığı olmasın diye yukarıdaki listeni aynen bırakıyorum)
+        const URUNLER = [
+            // Buraya kendi güncel 14 ürün listeni aynen koy kanka. (Mevcut kodundaki array ile aynı)
+            { durum: "on", stok: 1, kategori: "Fiziksel Ürün", ad: "Siyah Bez Şapka", puan: "155.000 Puan", komut: "!alsapka", gorseller: ["https://i.hizliresim.com/scvyurdk.jpg"], ozellikler: `<ul><li>Renk: Siyah</li></ul>` },
+            // ... (Diğer ürünlerin) ...
+        ];
+        URUNLER.forEach((urun, index) => urun.orijinalId = index);
+    </script>
 
-function directionGame(){let c=current(),ps=guidePaths(c),ghost=c==='a'?`<path d="M210 170 C210 125 185 100 150 100 C105 100 82 132 82 174 C82 218 112 245 150 245 C187 245 210 218 210 170 Z M220 92 L220 246" style="fill:none;stroke:#0000000b;stroke-width:30;stroke-linecap:round;stroke-linejoin:round;animation:none"/>`:`<text x="160" y="245" text-anchor="middle" font-size="240">${c}</text>`,svg=`<svg class="guide" viewBox="0 0 320 310">${ghost}`;ps.forEach((d,i)=>{svg+=`<path d="${d}" style="animation-delay:${i*1.1}s"/><circle class="dot" r="8"><animateMotion dur="1.1s" begin="${i*1.1}s" fill="freeze" path="${d}"/></circle>`});svg+='</svg>';card.innerHTML=intro()+svg+`<p class="sub">Mavi kalemi izle. Her çizgi kendi <b>başlangıç noktasından</b> başlayıp okuma sırasıyla bitiyor.</p><button class="btn green" onclick="good('Yazım yönünü dikkatle izledin, harika!')">Yolu Öğrendim ✓</button><button class="btn orange" onclick="directionGame();speak('Bir kez daha izleyelim.')">Tekrar Oynat ↻</button>`}
-let traceState=null;
-function makeTrace(hideGhost=false,tolerance=27,master=false){
- let c=current(),paths=guidePaths(c);
- card.innerHTML=intro()+`<div class="traceWrap" id="trace"><span class="traceHint" id="traceHint">1. çizgi: başlangıç noktasına dokun</span><div class="ghost ${letterClass(c)}" style="${hideGhost?'opacity:0':''}">${letterHTML(c)}</div><svg id="traceSvg" viewBox="0 0 320 310" style="position:absolute;inset:15px;width:calc(100% - 30px);height:calc(100% - 30px);pointer-events:none"></svg><canvas id="cv" width="340" height="340"></canvas></div><div class="traceStatus" id="traceStatus">Sıra: 1 / ${paths.length}</div><button class="btn orange" onclick="resetTrace()">Baştan Başla</button>`;
- let svg=$('#traceSvg'); paths.forEach((d,i)=>{let p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',d);p.setAttribute('fill','none');p.setAttribute('stroke',hideGhost?'transparent':'#1e90ff22');p.setAttribute('stroke-width',master?'5':'9');p.dataset.i=i;svg.appendChild(p)});
- let pathEls=[...svg.querySelectorAll('path')], cps=pathEls.map(p=>{let len=p.getTotalLength(),count=Math.max(4,Math.ceil(len/42));return Array.from({length:count+1},(_,i)=>{let q=p.getPointAtLength(len*i/count);return{x:q.x,y:q.y}})});
- traceState={stroke:0,point:0,cps,ctx:null,drawing:false,tolerance,paths:pathEls,master,done:false};
- setupStrictCanvas(); drawStartMarker();
-}
-function canvasPoint(e){let cv=$('#cv'),r=cv.getBoundingClientRect(),p=e;return{x:(p.clientX-r.left)*340/r.width,y:(p.clientY-r.top)*340/r.height}}
-function cpToCanvas(q){return{x:15+q.x*(310/320),y:15+q.y*(310/310)}}
-function near(a,b,t){return Math.hypot(a.x-b.x,a.y-b.y)<=t}
-function drawStartMarker(){/* Kontrol noktaları bilinçli olarak görünmezdir. */}
-function failTrace(msg='Yanlış noktadan başladın. Animasyondaki sırayı takip et.'){wrong(msg);setTimeout(resetTrace,300)}
-function setupStrictCanvas(){let cv=$('#cv'),ctx=cv.getContext('2d');traceState.ctx=ctx;ctx.lineWidth=14;ctx.lineCap='round';ctx.strokeStyle='#ff4757';
- cv.onpointerdown=e=>{e.preventDefault();if(traceState.done)return;let p=canvasPoint(e),need=cpToCanvas(traceState.cps[traceState.stroke][traceState.point]);if(traceState.point!==0||!near(p,need,traceState.tolerance)){failTrace();return}traceState.drawing=true;ctx.beginPath();ctx.moveTo(p.x,p.y);cv.setPointerCapture?.(e.pointerId)};
- cv.onpointermove=e=>{if(!traceState.drawing)return;e.preventDefault();let p=canvasPoint(e);ctx.lineTo(p.x,p.y);ctx.stroke();let arr=traceState.cps[traceState.stroke];let next=arr[traceState.point+1];if(next&&near(p,cpToCanvas(next),traceState.tolerance)){traceState.point++;$('#traceHint').textContent=`${traceState.stroke+1}. çizgi • nokta ${traceState.point+1}/${arr.length}`}};
- cv.onpointerup=e=>{if(!traceState.drawing)return;traceState.drawing=false;let arr=traceState.cps[traceState.stroke];if(traceState.point<arr.length-1){failTrace('Çizgiyi bitiş noktasına kadar götürmelisin.');return}traceState.stroke++;traceState.point=0;if(traceState.stroke>=traceState.cps.length){traceState.done=true;$('#traceHint').textContent='Tüm çizgiler doğru sırada! ✓';$('#traceStatus').textContent='Mükemmel yazım!';good('Muhteşem Buğlem! Harfi başlangıç ve bitiş yönlerine uyarak yazdın.')}else{$('#traceStatus').textContent=`Sıra: ${traceState.stroke+1} / ${traceState.cps.length}`;$('#traceHint').textContent=`${traceState.stroke+1}. çizgi: başlangıç noktasına dokun`;drawStartMarker()}};
-}
-function resetTrace(){if(!traceState)return;traceState.ctx.clearRect(0,0,340,340);traceState.stroke=0;traceState.point=0;traceState.done=false;$('#traceStatus').textContent=`Sıra: 1 / ${traceState.cps.length}`;$('#traceHint').textContent='1. çizgi: başlangıç noktasına dokun';drawStartMarker()}
-function strictTraceGame(){makeTrace(false,30,false)}
-function detectiveGame(){let arr=shuffle([current(),...distractors(5)]);card.innerHTML=intro()+`<p class="sub">Kalabalığın içindeki <b>${current()}</b> harfini bul.</p><div class="gameGrid">${arr.map(x=>`<button class="tile" onclick="choose(this,'${x}')">${x}</button>`).join('')}</div>`}
-function soundBoxesGame(){let vals=shuffle([current(),...distractors(3)]);window._soundVals=vals;card.innerHTML=intro()+`<p class="sub">Kutuların harfleri gizli. 🔊 düğmelerine bas, <b>${current()}</b> sesini duyduğun kutuyu seç.</p><div class="gameGrid">${vals.map((x,i)=>`<div><button class="tile" onclick="speak(window._soundVals[${i}])">🔊</button><button class="btn green" onclick="soundBoxPick(${i})">Seç</button></div>`).join('')}</div>`}
-function soundBoxPick(i){if(window._soundVals[i]===current())good('Kulağın çok iyi! Doğru sesi buldun.');else wrong('Bu başka bir harfin sesi. Tekrar dinle.')}
-function casePairGame(){let U=currentUpper(),L=lowerOf(U),others=distractors(2).map(x=>state.case==='upper'?lowerOf(x):x.toUpperCase());let target=state.case==='upper'?L:U;let arr=shuffle([target,...others]);card.innerHTML=intro()+`<div class="heroLetter ${letterClass()}">${letterHTML(current())}</div><p class="sub">Bu harfin ${state.case==='upper'?'küçük':'büyük'} kardeşini bul.</p><div class="options">${arr.map(x=>`<button class="opt" onclick="casePick(this,'${x}','${target}')">${x}</button>`).join('')}</div>`}
-function casePick(el,x,t){if(x===t){el.classList.add('good');good('Büyük ve küçük harfi eşleştirdin!')}else wrong()}
-function memoryGame(){let c=current(),d=distractors(3),vals=shuffle([c,c,...d,...d]);window._mem={open:[]};card.innerHTML=intro()+`<p class="sub"><b>${c}</b> çiftini hafızanı kullanarak bul.</p><div class="memory">${vals.map(v=>`<button class="mem" data-v="${v}" onclick="flipMem(this)">❓</button>`).join('')}</div>`}
-function flipMem(el){if(el.disabled||window._mem.open.includes(el)||window._mem.open.length===2)return;el.innerHTML=displayHTML(el.dataset.v);window._mem.open.push(el);if(window._mem.open.length===2){let[a,b]=window._mem.open;if(a.dataset.v===b.dataset.v){a.disabled=b.disabled=true;if(a.dataset.v===current())good('Hafızan süper! Doğru çifti buldun.');else window._mem.open=[]}else setTimeout(()=>{a.textContent=b.textContent='❓';window._mem.open=[]},600)}}
-function missingRingGame(){let c=current(),arr=shuffle([c,...distractors(3)]);window._ringDone=false;card.innerHTML=intro()+`<p class="sub">Eksik halkaya doğru harfi <b>sürükle</b>.</p><div class="sequence"><div class="seqSlot">${c}</div><div class="seqSlot">${c}</div><div class="dropZone" id="ringDrop">?</div><div class="seqSlot">${c}</div></div><div>${arr.map(v=>`<button class="dragChip" draggable="true" data-v="${v}">${v}</button>`).join('')}</div>`;setupSimpleDrag('#ringDrop',v=>{if(v===c)good('Eksik halkayı sürükleyerek tamamladın!');else wrong('Bu harf zincire uymadı.')})}
-function setupSimpleDrag(zoneSel,onDrop){
- let zone=$(zoneSel),active=null,floatEl=null,pid=null;
- const finish=(e,cancel=false)=>{if(!active)return;let x=e.clientX,y=e.clientY,r=zone.getBoundingClientRect(),inside=x>=r.left&&x<=r.right&&y>=r.top&&y<=r.bottom;floatEl?.remove();active.classList.remove('dragSource');try{active.releasePointerCapture?.(pid)}catch(_){}let v=active.dataset.v;active=null;floatEl=null;pid=null;if(!cancel&&inside)onDrop(v)};
- document.querySelectorAll('.dragChip').forEach(el=>{
-   el.draggable=false;
-   el.onpointerdown=e=>{e.preventDefault();active=el;pid=e.pointerId;el.setPointerCapture?.(pid);el.classList.add('dragSource');floatEl=el.cloneNode(true);floatEl.classList.add('dragFloat');document.body.appendChild(floatEl);floatEl.style.left=e.clientX+'px';floatEl.style.top=e.clientY+'px'};
-   el.onpointermove=e=>{if(active!==el||e.pointerId!==pid)return;e.preventDefault();floatEl.style.left=e.clientX+'px';floatEl.style.top=e.clientY+'px';let r=zone.getBoundingClientRect(),inside=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;zone.style.borderColor=inside?'var(--g)':'#aab7c4';zone.style.background=inside?'#eafff1':'#f8fafc'};
-   el.onpointerup=e=>{zone.style.borderColor='#aab7c4';zone.style.background='#f8fafc';finish(e)};
-   el.onpointercancel=e=>{zone.style.borderColor='#aab7c4';zone.style.background='#f8fafc';finish(e,true)};
- });
-}
-function speedEyesGame(){let token=window._gameToken,c=current(),vals=shuffle([c,...distractors(11)]);window._speedTimer=setTimeout(()=>{if(token===window._gameToken){wrong('Süre doldu! Daha hızlı bakalım.');speedEyesGame()}},5000);card.innerHTML=intro()+`<p class="sub">5 saniye içinde <b>${c}</b> harfini yakala!</p><div class="gameGrid">${vals.map(x=>`<button class="tile" onclick="clearTimeout(window._speedTimer);choose(this,'${x}')">${x}</button>`).join('')}</div>`}
-function balloonGame(){let token=window._gameToken;window._balloonHits=0;card.innerHTML=intro()+`<p class="sub">Yukarı uçan balonlardan yalnızca <b>${current()}</b> olan 3 tanesini patlat.</p><div class="balloonField" id="field"></div><div class="stars" id="balloonStars">☆☆☆</div>`;let n=0,iv=setInterval(()=>{if(token!==window._gameToken||n++>14){clearInterval(iv);return}let v=Math.random()<.4?current():distractors(1)[0],b=document.createElement('button');b.className='balloon';b.textContent=v;b.style.left=(5+Math.random()*82)+'%';b.style.animationDuration=(3.5+Math.random()*2)+'s';b.onclick=()=>{if(v===current()){b.remove();window._balloonHits++;$('#balloonStars').textContent='★'.repeat(window._balloonHits)+'☆'.repeat(3-window._balloonHits);if(window._balloonHits===3){clearInterval(iv);good('Üç doğru balonu da yakaladın!')}}else{b.remove();wrong()}};$('#field')?.appendChild(b)},500)}
-function rhythmGame(){let c=current();window._rhythm=[];let pattern=[1,1,0,1];card.innerHTML=intro()+`<p class="sub">Ritmi dinle: ${c} sesi geldiğinde büyük düğmeye dokun. 3 doğru dokunuş yap.</p><button class="soundOrb" onclick="rhythmTap()">${c}</button><button class="btn orange" onclick="playRhythm()">Ritmi Dinle 🔊</button><div class="stars" id="rhythmStars">☆☆☆</div>`;window._rhythmHits=0;window._rhythmActive=false}
-function playRhythm(){let seq=[current(),distractors(1)[0],current(),current()],i=0;window._rhythmActive=false;let iv=setInterval(()=>{if(i>=seq.length){clearInterval(iv);window._rhythmActive=true;return}speak(seq[i++])},800)}
-function rhythmTap(){if(!window._rhythmActive){speak('Önce ritmi dinle.');return}window._rhythmHits++;$('#rhythmStars').textContent='★'.repeat(window._rhythmHits)+'☆'.repeat(3-window._rhythmHits);speak(current());if(window._rhythmHits>=3)good('Sesi ve ritmi birlikte yakaladın!')}
-function strokeOrderGame(){let n=guidePaths(current()).length,nums=shuffle(Array.from({length:n},(_,i)=>i+1));window._strokeNeed=1;card.innerHTML=intro()+`<p class="sub">Animasyondaki çizgi sırasını hatırla. <b>1'den ${n}'e</b> sırayla dokun.</p><div>${nums.map(x=>`<button class="strokeBtn" onclick="strokePick(this,${x},${n})">${x}. çizgi</button>`).join('')}</div>`}
-function strokePick(el,x,n){if(x===window._strokeNeed){el.disabled=true;el.style.background='#dff9e8';window._strokeNeed++;if(x===n)good('Çizgi sırasını doğru hatırladın!')}else{wrong('Çizgi sırası karıştı. 1. çizgiden başlamalısın.');window._strokeNeed=1;document.querySelectorAll('.strokeBtn').forEach(b=>{b.disabled=false;b.style.background=''})}}
-function hiddenTraceGame(){makeTrace(true,31,false)}
-function letterRainGame(){let token=window._gameToken;window._rainHits=0;card.innerHTML=intro()+`<p class="sub">Yağan harflerden <b>${current()}</b> olan 4 tanesini yakala.</p><div class="balloonField" id="field"></div><div class="stars" id="rainStars">☆☆☆☆</div>`;let n=0,iv=setInterval(()=>{if(token!==window._gameToken||n++>22){clearInterval(iv);return}let v=Math.random()<.35?current():distractors(1)[0],e=document.createElement('button');e.className='rain';e.textContent=v;e.style.left=(5+Math.random()*88)+'%';e.style.border='0';e.style.background='transparent';e.onclick=()=>{if(v===current()){e.remove();window._rainHits++;$('#rainStars').textContent='★'.repeat(window._rainHits)+'☆'.repeat(4-window._rainHits);if(window._rainHits===4){clearInterval(iv);good('Harf yağmurunda hepsini yakaladın!')}}else{e.remove();wrong()}};$('#field')?.appendChild(e)},350)}
-function twinHuntGame(){let c=current(),d=distractors(6),vals=shuffle([c,c,c,c,...d,...d.slice(0,5)]);window._paintNeed=4;window._paintHit=0;card.innerHTML=intro()+`<p class="sub">Harf ressamı ol! Yalnızca <b>${c}</b> olan 4 kareyi boya. Yanlış harfe dokunma.</p><div class="paintGrid">${vals.map(v=>`<button class="paintCell" data-v="${v}" onclick="paintPick(this)">${v}</button>`).join('')}</div><div class="stars" id="paintStars">☆☆☆☆</div>`}
-function paintPick(el){if(el.classList.contains('paint'))return;if(el.dataset.v===current()){el.classList.add('paint');window._paintHit++;$('#paintStars').textContent='★'.repeat(window._paintHit)+'☆'.repeat(4-window._paintHit);if(window._paintHit===4)good('Dört doğru harfi boyadın!')}else{el.classList.add('wrong');wrong('Fırça yanlış harfe değdi.')}}
-function trainGame(){let c=current(),vals=[c,...distractors(4),c,c];vals=shuffle(vals);window._pathHits=0;card.innerHTML=intro()+`<p class="sub">Treni raydan çıkarma: soldan sağa yalnız <b>${c}</b> istasyonlarına sırayla dokun.</p><div class="pathRow">${vals.map((v,i)=>`<button class="pathNode" data-i="${i}" data-v="${v}" onclick="pathPick(this)">${v}</button>`).join('<span>➜</span>')}</div><div class="stars" id="pathStars">☆☆☆</div>`}
-function pathPick(el){if(el.classList.contains('done'))return;if(el.dataset.v!==current()){wrong('Bu istasyon hedef harf değil.');return}let targets=[...document.querySelectorAll('.pathNode')].filter(x=>x.dataset.v===current()&&!x.classList.contains('done'));if(targets[0]!==el){wrong('Hedef istasyonlara soldan sağa sırayla gitmelisin.');return}el.classList.add('done');window._pathHits++;$('#pathStars').textContent='★'.repeat(window._pathHits)+'☆'.repeat(3-window._pathHits);if(window._pathHits===3)good('Treni doğru istasyonlardan geçirdin!')}
-function shadowGame(){let c=current(),vals=shuffle([c,...distractors(3)]);card.innerHTML=intro()+`<p class="sub">Ayna odası! Bazı harfler dönmüş. Yalnız <b>düz duran ${c}</b> harfine dokun.</p><div class="options">${vals.map((v,i)=>`<button class="opt" style="transform:${v===c?'none':`rotate(${[90,180,-90][i%3]}deg)`};color:#555" onclick="mirrorPick(this,'${v}',${v===c})">${v}</button>`).join('')}</div>`}
-function mirrorPick(el,v,ok){if(ok&&v===current())good('Aynada doğru duran harfi seçtin!');else wrong('Bu harf dönmüş ya da hedef harf değil.')}
-function soundStairsGame(){let c=current(),seq=shuffle([c,c,c,...distractors(3)]);window._soundSeq=seq;window._soundFound=0;card.innerHTML=intro()+`<p class="sub">Ses merdiveni: Her basamağın 🔊 düğmesine bas. <b>${c}</b> sesini duyduğun 3 basamağa yıldız koy.</p><div>${seq.map((v,i)=>`<button class="strokeBtn" data-i="${i}" onclick="soundStep(this,${i})">🔊 ${i+1}. basamak</button>`).join('')}</div><div class="stars" id="soundStars">☆☆☆</div>`}
-function soundStep(el,i){speak(window._soundSeq[i]);setTimeout(()=>{if(window._soundSeq[i]===current()){if(el.dataset.hit)return;el.dataset.hit='1';el.textContent='⭐ '+(i+1)+'. basamak';window._soundFound++;$('#soundStars').textContent='★'.repeat(window._soundFound)+'☆'.repeat(3-window._soundFound);if(window._soundFound===3)good('Üç doğru sesi de kulağınla buldun!')}else{el.textContent='❌ '+(i+1)+'. basamak';wrong('Bu basamak başka bir harf söylüyor.')}},250)}
-function spotlightGame(){let c=current(),vals=shuffle([c,...distractors(8)]);window._spotReady=false;card.innerHTML=intro()+`<p class="sub">Fener yanarken harflerin yerini izle. Sonra <b>${c}</b> harfinin saklandığı kareye dokun.</p><div class="gameGrid" id="spotGrid">${vals.map(v=>`<button class="tile" data-v="${v}" onclick="spotPick(this)">${v}</button>`).join('')}</div><p class="mini" id="spotMsg">🔦 Fener açık — dikkatlice bak!</p>`;setTimeout(()=>{document.querySelectorAll('#spotGrid .tile').forEach(e=>{e.textContent='✦';e.style.background='#2f3542';e.style.color='white'});window._spotReady=true;$('#spotMsg').textContent='🌙 Fener kapandı — doğru yeri hatırla!'},1800)}
-function spotPick(el){if(!window._spotReady){speak('Önce fener sönene kadar harfleri izle.');return}el.textContent=el.dataset.v;el.style.background='white';el.style.color='var(--d)';if(el.dataset.v===current())good('Fener kapansa da yerini hatırladın!');else{el.classList.add('wrong');wrong('Bu karede başka harf vardı. Tekrar hatırla.')}}
-function doorGame(){let vals=shuffle([current(),...distractors(2)]);card.innerHTML=intro()+`<p class="sub"><b>${current()}</b> harfinin saklandığı doğru kapıyı aç.</p><div class="options">${vals.map(v=>`<button class="opt door" onclick="doorPick(this,'${v}')">🚪</button>`).join('')}</div>`}
-function doorPick(el,v){el.textContent=v;if(v===current())good('Doğru kapıyı açtın!');else wrong('Bu kapının arkasında başka harf var.')}
-function freeStrictGame(){makeTrace(true,25,true);$('#traceHint').textContent='Yardım yok: doğru başlangıcı kendin bul'}
-function reactionGame(){let token=window._gameToken;window._reactScore=0;window._reactRound=0;reactionRound(token)}
-function reactionRound(token){if(token!==window._gameToken)return;if(window._reactRound>=5){if(window._reactScore>=4)good('Refleks görevinde beş turu tamamladın!');else{wrong('Dört doğru gerekiyor. Bir kez daha deneyelim.');setTimeout(reactionGame,600)}return}let target=Math.random()<.55?current():distractors(1)[0];card.innerHTML=intro()+`<p class="sub">Refleks ${window._reactRound+1}/5: Ortadaki harf <b>${current()}</b> ise EVET, değilse HAYIR.</p><div class="heroLetter ${letterClass(target)}">${letterHTML(target)}</div><button class="btn green" onclick="reactAnswer(true,'${target}')">✓ EVET</button><button class="btn red" onclick="reactAnswer(false,'${target}')">✕ HAYIR</button><div class="stars">${'★'.repeat(window._reactScore)}${'☆'.repeat(5-window._reactScore)}</div>`}
-function reactAnswer(yes,v){let right=(v===current());if(yes===right){window._reactScore++;sound(1)}else sound(0);window._reactRound++;setTimeout(()=>reactionRound(window._gameToken),280)}
-function masterTraceGame(){makeTrace(true,19,true);$('#traceHint').textContent='Usta modu: çok hassas çiz'}
-function examGame(){window._exam=0;window._examQ=0;examQuestion()}
-function examQuestion(){if(window._examQ>=5){if(window._exam>=4)good(`Beş görevden ${window._exam} tanesi doğru. Sınavı geçtin!`);else{wrong('Final sınavında en az dört doğru gerekiyor. Tekrar deneyelim.');setTimeout(examGame,600)}return}let c=current(),vals=shuffle([c,...distractors(3)]);card.innerHTML=intro()+`<p class="sub">Görev ${window._examQ+1}/5 • Doğru <b>${c}</b> harfini seç.</p><div class="options">${vals.map(v=>`<button class="opt" onclick="examPick('${v}')">${v}</button>`).join('')}</div><div class="stars">${'★'.repeat(window._exam)}${'☆'.repeat(5-window._exam)}</div>`}
-function examPick(v){if(v===current()){window._exam++;sound(1)}else sound(0);window._examQ++;setTimeout(examQuestion,250)}
-function bossGame(){window._boss=0;bossStep()}
-function bossStep(){let c=current();if(window._boss===0){card.innerHTML=intro()+`<div class="heroLetter">${letterHTML(c)}</div><p class="sub">Final 1/3: Harfin sesini dinle.</p><button class="btn green" onclick="speak('${c}');window._boss=1;setTimeout(bossStep,500)">🔊 Dinle ve Devam Et</button>`}
-else if(window._boss===1){let vals=shuffle([c,...distractors(4)]);card.innerHTML=intro()+`<p class="sub">Final 2/3: Kalabalıkta harfi bul.</p><div class="gameGrid">${vals.map(v=>`<button class="tile" onclick="bossPick('${v}')">${v}</button>`).join('')}</div>`}
-else{makeTrace(true,22,true);let oldGood=window._bossTraceHook;$('#traceHint').textContent='Final 3/3: doğru başlangıç, yön ve bitiş';}}
-function bossPick(v){if(v===current()){window._boss=2;bossStep()}else wrong()}
-function completeLevel(){if(state.level<25){state.level++;render();return}reward();if(state.case==='upper'){state.case='lower';state.level=1;save();celebrate();card.classList.add('bigFinish');card.innerHTML=`<div class="heroLetter">${currentUpper()}</div><h1 class="title">Büyük ${currentUpper()} tamamlandı! 🎉</h1><p class="sub">Şimdi küçük <b>${current()}</b> harfinin 25 farklı oyununa geçiyoruz.</p><button class="btn green" onclick="card.classList.remove('bigFinish');render()">Küçük ${current()} ile Başla</button>`;speak(`Tebrikler Buğlem! Büyük ${currentUpper()} harfini tamamladın. Şimdi küçük ${current()} harfine geçiyoruz.`)}else{let finished=currentUpper();if(state.letter<ALL.length-1){state.letter++;state.unlocked=Math.max(state.unlocked,state.letter);state.case='upper';state.level=1;save();celebrate();card.classList.add('bigFinish');card.innerHTML=`<h1 class="title">${finished} harfi tamam! 🏆</h1><p class="sub">Büyük ve küçük harfte toplam 50 oyun bitti.<br>Sıradaki harf: <b>${currentUpper()}</b></p><button class="btn green" onclick="card.classList.remove('bigFinish');render()">${currentUpper()} Harfine Geç</button>`;speak(`Muhteşemsin Buğlem! ${finished} harfinin elli oyununu bitirdin. Sırada ${currentUpper()} var.`)}else{celebrate();card.classList.add('bigFinish');card.innerHTML=`<h1 class="title">🌟 TÜM HARFLER TAMAMLANDI! 🌟</h1><p class="sub">Buğlem 29 harfin büyük ve küçük formlarındaki <b>1450 oyunu</b> tamamladı!</p><div class="heroLetter">🏆</div><button class="btn green" onclick="resetAll()">Baştan Oyna</button>`;speak('Tebrikler Buğlem! Bütün harfleri tamamladın. Sen artık bir harf ustasısın!')}}updateTop();updateBackButton()}
-function celebrate(){let cv=$('#confetti'),x=cv.getContext('2d');cv.width=innerWidth;cv.height=innerHeight;let ps=Array.from({length:80},()=>({x:Math.random()*cv.width,y:-20-Math.random()*300,v:2+Math.random()*5,s:4+Math.random()*7})),f=0;(function go(){x.clearRect(0,0,cv.width,cv.height);ps.forEach((p,i)=>{p.y+=p.v;x.fillStyle=`hsl(${(i*47)%360} 85% 55%)`;x.fillRect(p.x,p.y,p.s,p.s)});if(f++<100)requestAnimationFrame(go);else x.clearRect(0,0,cv.width,cv.height)})()}
-function openSettings(){$('#settings').classList.add('open');$('#voiceToggle').checked=voiceOn;$('#penaltyToggle').checked=penalty}function closeSettings(){$('#settings').classList.remove('open')}function resetAll(){if(confirm('Tüm ilerleme ve TL sıfırlansın mı?')){localStorage.removeItem('buglem_harf_v5');location.reload()}}
-document.addEventListener('pointerdown',()=>{try{speechSynthesis.resume()}catch(e){}},{once:true});window.addEventListener('load',()=>{updateTop();render()});
-</script>
-</body></html>
+    <div class="container">
+        <header>
+            <img src="https://i.hizliresim.com/fo5evkh4.png" alt="Weizend Logo" class="logo-img">
+            <h1>WEİZEND MARKET</h1>
+            <p style="color: var(--text-muted);">Yayını izleyerek kazandığın puanlarla ödülleri kap!</p>
+            
+            <div class="header-buttons">
+                <a href="https://weizend.github.io/weizendbilgi/" class="ig-contact">❓ Puan Nasıl Kazanılır?</a>
+                <a href="https://instagram.com/weizendtv" target="_blank" class="ig-contact">📸 İletişim: @weizendtv</a>
+            </div>
+
+            <!-- ==================================================== -->
+            <!-- YENİ EKLENEN BÖLÜM: KULLANICI GİRİŞ & CÜZDAN ALANI -->
+            <!-- ==================================================== -->
+            <div class="user-wallet-wrapper">
+                <!-- Giriş Yapmamışsa Görünecek Buton -->
+                <button id="loginBtn" class="login-btn-large" onclick="askUsername()">
+                    <span style="font-size: 1.2rem;">🔴</span> Kick Adınla Giriş Yap / Puanını Gör
+                </button>
+
+                <!-- Giriş Yapmışsa Görünecek Cüzdan -->
+                <div id="walletCard" class="wallet-card">
+                    <div class="wallet-left">
+                        <img src="" id="walletAvatar" class="wallet-avatar" alt="Kullanıcı Avatarı">
+                        <div class="wallet-info">
+                            <h3 class="w-username" id="walletUsername">Kullanıcı</h3>
+                            <div class="w-balance">
+                                🪙 Bakiye: <span class="w-balance-amount" id="walletPoints">Yükleniyor...</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="logout-icon" onclick="logoutUser()" title="Hesabı Değiştir">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- ==================================================== -->
+        </header>
+
+        <div class="category-filters" id="filters"></div>
+        <div class="grid" id="urunGrid"></div>
+    </div>
+
+    <!-- Modallarının (Galeri ve Yönlendirme) divleri burada kalıyor... -->
+    <!-- ... -->
+
+    <script>
+        // KATEGORİ, MODAL VE KART FONKSİYONLARIN BURADA...
+        // (Eski yazdığımız grid.innerHTML, filtrele vs. fonksiyonlarını buraya aynen koy kanka)
+
+        /* ==================================================== */
+        /* YENİ EKLENEN JAVASCRIPT: KULLANICI & PUAN SİSTEMİ  */
+        /* ==================================================== */
+
+        // Sayfa ilk yüklendiğinde kullanıcı kontrolü yap
+        document.addEventListener("DOMContentLoaded", () => {
+            checkUser();
+        });
+
+        function checkUser() {
+            // 1. Önce URL'de ?user=isim var mı diye bakar (Chat'ten linke tıklayanlar için)
+            const urlParams = new URLSearchParams(window.location.search);
+            let username = urlParams.get('user');
+
+            // 2. URL'de yoksa, tarayıcı hafızasına (LocalStorage) bakar
+            if (!username) {
+                username = localStorage.getItem('weizend_kick_user');
+            } else {
+                // Eğer URL'den geldiyse, bunu hafızaya kaydet
+                localStorage.setItem('weizend_kick_user', username);
+                // URL'deki ?user kısmını adres çubuğundan temizle (Şık durması için)
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            // 3. Kullanıcı bulunduysa arayüzü güncelle
+            if (username && username.trim() !== "") {
+                showWallet(username.trim());
+            } else {
+                // Bulunamadıysa giriş butonunu göster
+                document.getElementById('loginBtn').style.display = 'flex';
+                document.getElementById('walletCard').style.display = 'none';
+            }
+        }
+
+        // Giriş butonuna basınca çalışır
+        function askUsername() {
+            const username = prompt("Lütfen Kick Kullanıcı Adınızı Giriniz:");
+            if (username && username.trim() !== "") {
+                localStorage.setItem('weizend_kick_user', username.trim());
+                showWallet(username.trim());
+            }
+        }
+
+        // Çıkış ikonuna basınca çalışır
+        function logoutUser() {
+            localStorage.removeItem('weizend_kick_user');
+            document.getElementById('walletCard').style.display = 'none';
+            document.getElementById('loginBtn').style.display = 'flex';
+        }
+
+        // Cüzdan kartını ekranda gösterir
+        function showWallet(username) {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('walletCard').style.display = 'flex';
+            
+            // İsim ve Avatarı ayarla (Ui-Avatars servisi ile harf logolu şık bir avatar çeker)
+            document.getElementById('walletUsername').innerText = username;
+            document.getElementById('walletAvatar').src = `https://ui-avatars.com/api/?name=${username}&background=e31b1b&color=fff&bold=true&size=128`;
+            
+            // Puan çekme işlemini başlat
+            fetchUserPoints(username);
+        }
+
+        // BotRix API'sinden Puanı Çekme Fonksiyonu
+        async function fetchUserPoints(username) {
+            const pointsDisplay = document.getElementById('walletPoints');
+            pointsDisplay.innerText = "Yükleniyor...";
+
+            try {
+                // NOT: İleride gerçek API linkini bulduğunda buradaki kodu kullanacaksın:
+                /*
+                const response = await fetch(`https://botrix.live/api/v1/points?user=${username}`);
+                const data = await response.json();
+                pointsDisplay.innerText = data.points.toLocaleString('tr-TR');
+                */
+
+                // ŞİMDİLİK: Gerçek API bağlanana kadar tasarımın patlamaması için sahte bir puan simülasyonu ekledim.
+                // 1 saniye bekleyip ekrana sanki BotRix'ten çekmiş gibi şık bir bakiye yansıtacak.
+                setTimeout(() => {
+                    const mockPoints = Math.floor(Math.random() * 150000) + 10000; 
+                    pointsDisplay.innerText = mockPoints.toLocaleString('tr-TR');
+                }, 800);
+
+            } catch (error) {
+                console.error("Puan çekilirken hata oluştu:", error);
+                pointsDisplay.innerText = "Hata!";
+            }
+        }
+    </script>
+</body>
+</html>
