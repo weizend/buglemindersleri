@@ -51,7 +51,19 @@
         .access-card { display: none; max-width: 620px; margin: 24px auto 10px; background: linear-gradient(145deg, #111 0%, #090909 100%); border: 1px solid var(--weizend-red); border-radius: 16px; padding: 22px; text-align: center; box-shadow: 0 8px 30px rgba(227,27,27,0.12); }
         .access-card h3 { margin: 0 0 8px; font-size: 1.25rem; }
         .access-card p { margin: 0; color: var(--text-muted); line-height: 1.6; }
-        .access-command { display: inline-block; margin-top: 12px; background: #000; border: 1px dashed var(--weizend-red); color: var(--weizend-red); padding: 7px 13px; border-radius: 7px; font-family: monospace; font-weight: 700; }
+        .access-form { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+        .access-input { flex: 1; min-width: 220px; max-width: 360px; background: #050505; color: #fff; border: 1px solid #333; border-radius: 10px; padding: 12px 14px; font-size: 1rem; outline: none; }
+        .access-input:focus { border-color: var(--weizend-red); box-shadow: 0 0 0 3px rgba(227,27,27,.12); }
+        .access-btn { background: var(--weizend-red); color: #fff; border: 0; border-radius: 10px; padding: 12px 18px; font-weight: 800; cursor: pointer; transition: .2s; }
+        .access-btn:hover { background: #c21414; transform: translateY(-1px); }
+        .access-btn.secondary { background: #1b1b1b; border: 1px solid #333; color: #ddd; }
+        .access-btn.secondary:hover { background: #252525; }
+        .access-command { display: inline-flex; align-items: center; justify-content: center; gap: 8px; margin-top: 16px; background: #050505; border: 2px dashed var(--weizend-red); color: var(--weizend-red); padding: 12px 22px; border-radius: 10px; font-family: monospace; font-size: 1.05rem; font-weight: 800; cursor: pointer; transition: .2s; user-select: none; }
+        .access-command:hover { background: rgba(227,27,27,.12); transform: translateY(-1px); }
+        .access-help { margin-top: 12px !important; font-size: .85rem; }
+        .account-name-hint { margin-top: 10px; color: #ddd; font-size: .88rem; }
+        .copy-toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(25px); background: #111; border: 1px solid var(--weizend-red); color: #fff; padding: 12px 18px; border-radius: 10px; box-shadow: 0 8px 30px rgba(0,0,0,.45); opacity: 0; pointer-events: none; transition: .25s; z-index: 1200; font-weight: 700; text-align: center; }
+        .copy-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         
         .refresh-btn { background: none; border: none; cursor: pointer; font-size: 1.1rem; color: var(--text-muted); transition: 0.3s; padding: 0; display: flex; align-items: center; justify-content: center; }
         .refresh-btn:hover { color: var(--weizend-white); transform: rotate(180deg); }
@@ -529,16 +541,30 @@
                                     <span class="wallet-stat-value watchtime" id="walletWatchtime">-</span>
                                 </div>
                             </div>
-                            <div class="wallet-source-note">BotRix !market komutundan gelen hesap bilgileri</div>
+                            <div class="wallet-source-note">BotRix hesabından alınan market bilgileri</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div id="accessCard" class="access-card">
-                <h3 id="accessTitle">🔒 Market Girişi</h3>
-                <p id="accessText">Hesabını açmak için Kick sohbetinde <b>!market</b> komutunu kullan.</p>
-                <span class="access-command">!market</span>
+                <h3 id="accessTitle">🔒 Weizend Market</h3>
+                <p id="accessText">Kick kullanıcı adını yazarak hesabını kontrol et.</p>
+
+                <div id="usernameForm" class="access-form">
+                    <input id="kickUsernameInput" class="access-input" type="text" autocomplete="off" maxlength="40" placeholder="Kick kullanıcı adın">
+                    <button class="access-btn" onclick="saveAndCheckUsername()">Hesabımı Kontrol Et</button>
+                </div>
+
+                <div id="bankActivation" style="display:none;">
+                    <div id="accountNameHint" class="account-name-hint"></div>
+                    <button class="access-command" onclick="copyBankAndRedirect()" title="!banka komutunu kopyala ve Kick sohbete git">📋 !banka</button>
+                    <p class="access-help">Yukarıdaki <b>!banka</b> alanına dokun. Komut kopyalanır ve 5 saniye sonra Kick sohbetine yönlendirilirsin. Sohbete <b>!banka</b> yazdıktan sonra bu sayfayı yenile.</p>
+                    <div class="access-form">
+                        <button class="access-btn secondary" onclick="checkSavedAccount()">🔄 Sayfayı / Hesabı Yenile</button>
+                        <button class="access-btn secondary" onclick="changeUsername()">Kullanıcı Adını Değiştir</button>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -549,6 +575,8 @@
             <div class="grid" id="urunGrid"></div>
         </div>
     </div>
+
+    <div id="copyToast" class="copy-toast">✅ !banka kopyalandı</div>
 
     <!-- MODAL 1: GÖRSEL BÜYÜTME GALERİSİ -->
     <div id="imageModal" class="modal-overlay" onclick="disariTiklaKapat(event)">
@@ -595,9 +623,13 @@
         let zoomLevel = 1;
         let currentUsername = "";
 
-        // --- BOTRIX !MARKET OTOMATİK HESAP SİSTEMİ ---
+        // --- BOTRIX !BANKA İLE MARKET HESABI AKTİFLEŞTİRME SİSTEMİ ---
+        const MARKET_WORKER = 'https://weizend-botrix.weizendtv.workers.dev';
+        const KICK_CHAT_URL = 'https://kick.com/weizend/chat';
+        const USER_STORAGE_KEY = 'weizend_market_username';
+
         document.addEventListener("DOMContentLoaded", () => {
-            loadMarketSession();
+            initializeMarketAccount();
         });
 
         function readNumber(value) {
@@ -621,103 +653,181 @@
             return parts.join(' ');
         }
 
-        function showAccessMessage(type = 'direct') {
+        function normalizeUsername(value) {
+            return String(value || '').trim().replace(/^@/, '');
+        }
+
+        function showAccessBase() {
             document.getElementById('walletCard').style.display = 'none';
             document.getElementById('marketContent').style.display = 'none';
             document.getElementById('accessCard').style.display = 'block';
-
-            const title = document.getElementById('accessTitle');
-            const text = document.getElementById('accessText');
-
-            if (type === 'bank') {
-                title.innerText = '🏦 Önce !banka Kullanmalısın';
-                text.innerHTML = 'Kick sohbetinde önce <b>!banka</b> yazıp hesabını aktifleştir, ardından <b>!market</b> komutuyla markete tekrar gir.';
-            } else if (type === 'invalid') {
-                title.innerText = '⚠️ Hesap Bilgisi Alınamadı';
-                text.innerHTML = 'Kick sohbetine dönüp <b>!market</b> komutunu yeniden kullan. Market bağlantısını sohbetten açmalısın.';
-            } else {
-                title.innerText = '🔒 Weizend Market Girişi';
-                text.innerHTML = 'Kendi BotRix hesabınla markete girmek için Kick sohbetinde <b>!market</b> komutunu kullan.';
-            }
         }
 
-        function loadMarketSession() {
-            const params = new URLSearchParams(window.location.search);
+        function showUsernameForm(message = 'Kick kullanıcı adını yazarak hesabını kontrol et.') {
+            showAccessBase();
+            document.getElementById('accessTitle').innerText = '🔒 Weizend Market';
+            document.getElementById('accessText').innerHTML = message;
+            document.getElementById('usernameForm').style.display = 'flex';
+            document.getElementById('bankActivation').style.display = 'none';
 
-            let session = {
-                username: (params.get('user') || '').trim().replace(/^@/, ''),
-                uid: (params.get('uid') || '').trim(),
-                points: params.get('points'),
-                level: params.get('level'),
-                ok: params.get('ok')
-            };
+            const saved = localStorage.getItem(USER_STORAGE_KEY) || '';
+            document.getElementById('kickUsernameInput').value = saved;
+        }
 
-            // Aynı sekmede yenileme yapılırsa bilgileri koru.
-            if (session.username) {
-                sessionStorage.setItem('weizend_market_session', JSON.stringify(session));
-            } else {
-                try {
-                    const saved = JSON.parse(sessionStorage.getItem('weizend_market_session') || 'null');
-                    if (saved && saved.username) session = saved;
-                } catch (_) {}
-            }
+        function showBankActivation(username) {
+            showAccessBase();
+            document.getElementById('accessTitle').innerText = '🏦 Hesabını Aktifleştir';
+            document.getElementById('accessText').innerHTML = 'Kick sohbete <b>!banka</b> yazın ve sayfayı yenileyin.';
+            document.getElementById('usernameForm').style.display = 'none';
+            document.getElementById('bankActivation').style.display = 'block';
+            document.getElementById('accountNameHint').innerHTML = `Kontrol edilen Kick hesabı: <b>@${escapeHtml(username)}</b>`;
+        }
 
-            if (!session.username) {
-                showAccessMessage('direct');
-                return;
-            }
+        function showAccount(profile) {
+            const username = normalizeUsername(profile.username);
+            const points = readNumber(profile.points);
+            const level = readNumber(profile.level);
 
-            if (String(session.ok) !== '1') {
-                showAccessMessage('bank');
-                return;
-            }
-
-            const points = readNumber(session.points);
-            const level = readNumber(session.level);
-
-            if (points === null) {
-                showAccessMessage('invalid');
-                return;
-            }
-
-            currentUsername = session.username;
+            currentUsername = username;
             document.getElementById('accessCard').style.display = 'none';
             document.getElementById('walletCard').style.display = 'flex';
             document.getElementById('marketContent').style.display = 'block';
 
-            document.getElementById('walletUsername').innerText = session.username;
-            document.getElementById('walletAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(session.username)}&background=e31b1b&color=fff&bold=true&size=128`;
-            document.getElementById('walletPoints').innerText = points.toLocaleString('tr-TR') + ' Puan';
+            document.getElementById('walletUsername').innerText = username;
+            document.getElementById('walletAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=e31b1b&color=fff&bold=true&size=128`;
+            document.getElementById('walletPoints').innerText = (points ?? 0).toLocaleString('tr-TR') + ' Puan';
             document.getElementById('walletLevel').innerText = level !== null ? level.toLocaleString('tr-TR') : '-';
-            document.getElementById('walletWatchtime').innerText = 'Sorgulanıyor...';
+            document.getElementById('walletWatchtime').innerText = formatWatchtime(profile.watchtime);
 
-            // İzleme süresi public leaderboard içinde bulunuyorsa ekle.
-            // Bulunamazsa market erişimini bozmaz; puan ve level BotRix !market linkinden gelir.
-            fetchOptionalWatchtime(session.username);
+            // Ürünler ilk kez hesap doğrulandıktan sonra yüklenir.
+            urunleriYukle('Tümü');
         }
 
-        async function fetchOptionalWatchtime(username) {
-            const watchtimeDisplay = document.getElementById('walletWatchtime');
+        function escapeHtml(value) {
+            return String(value)
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;')
+                .replaceAll('"', '&quot;')
+                .replaceAll("'", '&#039;');
+        }
+
+        async function initializeMarketAccount() {
+            const savedUsername = normalizeUsername(localStorage.getItem(USER_STORAGE_KEY));
+            if (!savedUsername) {
+                showUsernameForm();
+                return;
+            }
+
+            document.getElementById('kickUsernameInput').value = savedUsername;
+            await checkAccount(savedUsername);
+        }
+
+        async function saveAndCheckUsername() {
+            const input = document.getElementById('kickUsernameInput');
+            const username = normalizeUsername(input.value);
+
+            if (!username) {
+                showUsernameForm('Lütfen Kick kullanıcı adını yaz.');
+                input.focus();
+                return;
+            }
+
+            localStorage.setItem(USER_STORAGE_KEY, username);
+            await checkAccount(username);
+        }
+
+        async function checkSavedAccount() {
+            const username = normalizeUsername(localStorage.getItem(USER_STORAGE_KEY));
+            if (!username) {
+                showUsernameForm();
+                return;
+            }
+            await checkAccount(username);
+        }
+
+        async function checkAccount(username) {
+            showAccessBase();
+            document.getElementById('accessTitle').innerText = '🔄 Hesap Kontrol Ediliyor';
+            document.getElementById('accessText').innerText = `@${username} için BotRix hesabı kontrol ediliyor...`;
+            document.getElementById('usernameForm').style.display = 'none';
+            document.getElementById('bankActivation').style.display = 'none';
 
             try {
-                const workerUrl = `https://weizend-botrix.weizendtv.workers.dev/?user=${encodeURIComponent(username)}`;
-                const response = await fetch(workerUrl, {
+                const response = await fetch(`${MARKET_WORKER}/profile?user=${encodeURIComponent(username)}`, {
                     method: 'GET',
                     headers: { 'Accept': 'application/json' },
                     cache: 'no-store'
                 });
 
-                const data = await response.json();
-                if (response.ok && data && data.success === true && data.watchtime !== null && data.watchtime !== undefined) {
-                    watchtimeDisplay.innerText = formatWatchtime(data.watchtime);
-                } else {
-                    watchtimeDisplay.innerText = '-';
+                let data = null;
+                try {
+                    data = await response.json();
+                } catch (_) {
+                    throw new Error('Sunucudan geçersiz cevap geldi.');
                 }
+
+                console.log('Weizend Market profil cevabı:', data);
+
+                if (response.status === 404 || data?.registered === false) {
+                    showBankActivation(username);
+                    return;
+                }
+
+                if (!response.ok || !data || data.success !== true || data.registered !== true) {
+                    throw new Error(data?.error || `HTTP ${response.status}`);
+                }
+
+                showAccount(data);
             } catch (error) {
-                console.warn('İzleme süresi alınamadı:', error);
-                watchtimeDisplay.innerText = '-';
+                console.error('WEIZEND MARKET HESAP HATASI:', error);
+                showUsernameForm('⚠️ Hesap servisine şu an ulaşılamadı. Biraz sonra tekrar deneyebilirsin.');
             }
         }
+
+        function changeUsername() {
+            localStorage.removeItem(USER_STORAGE_KEY);
+            currentUsername = '';
+            showUsernameForm('Farklı bir Kick hesabı için kullanıcı adını yaz.');
+            setTimeout(() => document.getElementById('kickUsernameInput').focus(), 50);
+        }
+
+        async function copyBankAndRedirect() {
+            const command = '!banka';
+            try {
+                await navigator.clipboard.writeText(command);
+            } catch (_) {
+                const temp = document.createElement('textarea');
+                temp.value = command;
+                temp.style.position = 'fixed';
+                temp.style.opacity = '0';
+                document.body.appendChild(temp);
+                temp.select();
+                document.execCommand('copy');
+                temp.remove();
+            }
+
+            const toast = document.getElementById('copyToast');
+            toast.innerText = '✅ !banka kopyalandı · 5 saniye sonra Kick sohbetine gidiyorsun';
+            toast.classList.add('show');
+
+            let remaining = 5;
+            const interval = setInterval(() => {
+                remaining--;
+                if (remaining > 0) {
+                    toast.innerText = `✅ !banka kopyalandı · ${remaining} saniye sonra Kick sohbetine gidiyorsun`;
+                } else {
+                    clearInterval(interval);
+                    window.location.href = KICK_CHAT_URL;
+                }
+            }, 1000);
+        }
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && document.activeElement?.id === 'kickUsernameInput') {
+                saveAndCheckUsername();
+            }
+        });
 
         // --- MARKET GRID VE KATEGORİ İŞLEMLERİ ---
         function kategorileriOlustur() {
@@ -982,13 +1092,6 @@
             urunleriYukle(kategori);
         }
 
-        // Ürünler, geçerli !market oturumu açıldığında yüklenir.
-        document.addEventListener('DOMContentLoaded', () => {
-            const marketContent = document.getElementById('marketContent');
-            if (marketContent && marketContent.style.display !== 'none') {
-                urunleriYukle('Tümü');
-            }
-        });
     </script>
 </body>
 </html>
