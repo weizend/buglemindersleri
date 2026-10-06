@@ -1584,7 +1584,7 @@ body.wz-view-tournament .market-search-wrap{display:none!important}
 
 <style id="wz-tournament-v7-overrides">
 /* Tournament simplification */
-body.wz-view-tournament #wzViewName{display:none!important}
+body.wz-view-tournament #wzViewName{display:block!important}
 body.wz-view-tournament .wz-profile-top-copy small{display:none!important}
 body.wz-view-tournament .wz-esports-kicker{color:#ff4d4d!important}
 body.wz-view-tournament .wz-esports-stage{display:block!important}
@@ -1809,6 +1809,33 @@ body.wz-modal-hard-lock .wz-product-info-card{
 }
 </style>
 
+
+<style id="wz-v10-bottom-fix">
+@media(max-width:768px){
+  body{
+    padding-bottom:calc(78px + env(safe-area-inset-bottom))!important;
+  }
+  .wz-mobile-bottom-nav{
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    margin:0!important;
+    gap:0!important;
+    padding:6px 8px calc(6px + env(safe-area-inset-bottom))!important;
+    border-left:0!important;
+    border-right:0!important;
+    border-bottom:0!important;
+    border-radius:18px 18px 0 0!important;
+    background:rgba(7,7,9,.985)!important;
+    box-shadow:0 -8px 32px rgba(0,0,0,.55)!important;
+  }
+  .wz-mobile-nav-btn{
+    border-radius:12px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -1832,7 +1859,7 @@ body.wz-modal-hard-lock .wz-product-info-card{
     </nav>
 
     <button class="wz-profile-top-btn" id="wzProfileTopBtn" type="button" onclick="wzSetView('profile')" aria-label="Profil">
-      <img id="wzTopProfileAvatar" src="https://ui-avatars.com/api/?name=W&background=151515&color=ffffff&bold=true&size=96" alt="">
+      <img id="wzTopProfileAvatar" src="https://i.hizliresim.com/fo5evkh4.png" alt="">
       <span class="wz-profile-top-copy">
         <strong id="wzTopProfileName">Profil</strong>
         <small>Hesabım</small>
@@ -6171,6 +6198,7 @@ return;
         });
 
         function modaliAc(urunId, baslangicIndex) {
+            wzProductGalleryScrollY = window.scrollY || document.documentElement.scrollTop || 0;
             const urun = URUNLER.find(u => u.orijinalId === urunId);
             if(!urun) return;
 
@@ -6190,6 +6218,7 @@ return;
         function modaliKapat() {
             zoomSifirla(); 
             document.getElementById('imageModal').style.display = 'none';
+            requestAnimationFrame(() => window.scrollTo(0, wzProductGalleryScrollY || 0));
         }
 
         function disariTiklaKapat(event) {
@@ -8973,7 +9002,7 @@ return;
     return ['market','tournament','profile'].includes(view)?view:'market';
   }
   function updateTopbar(view){
-    const names={market:'MARKET',tournament:'TURNUVALAR',profile:'PROFİL'};
+    const names={market:'MARKET',tournament:'TURNUVA',profile:'PROFİL'};
     setText('wzViewName',names[view]||'WEIZEND');
     document.getElementById('wzDesktopMarket')?.classList.toggle('active',view==='market');
     document.getElementById('wzDesktopTournament')?.classList.toggle('active',view==='tournament');
@@ -9026,7 +9055,10 @@ return;
 
   function syncProfile(){
     const token=getSessionToken();
-    const authed=!!token && (typeof marketAuthenticated==='undefined' || marketAuthenticated!==false);
+    const cache=getProfileCache()||{};
+    // A valid local session token means we keep the profile shell stable while
+    // the Worker silently revalidates in the background.
+    const authed=!!token;
     const auth=document.getElementById('wzProfileAuthenticated');
     const guest=document.getElementById('wzProfileGuest');
     if(auth) auth.style.display=authed?'block':'none';
@@ -9035,15 +9067,24 @@ return;
     if(!authed){
       setText('wzTopProfileName','Profil');
       const topAv=document.getElementById('wzTopProfileAvatar');
-      if(topAv) topAv.src='https://ui-avatars.com/api/?name=W&background=151515&color=ffffff&bold=true&size=96';
+      if(topAv) topAv.src='https://i.hizliresim.com/fo5evkh4.png';
       return;
     }
 
-    const name=(document.getElementById('walletUsername')?.textContent||'Kullanıcı').trim();
-    const points=(document.getElementById('walletPoints')?.textContent||'-').trim();
-    const level=(document.getElementById('walletLevel')?.textContent||'-').trim();
-    const avatar=document.getElementById('walletAvatar')?.src||`https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=e31b1b&color=fff&bold=true&size=128`;
-    const cache=getProfileCache()||{};
+    const walletName=(document.getElementById('walletUsername')?.textContent||'').trim();
+    const name=(cache.username || walletName || 'Kullanıcı').trim();
+    const cachedPoints=(cache.points !== undefined && cache.points !== null)
+      ? Number(cache.points).toLocaleString('tr-TR') + ' Puan'
+      : '';
+    const cachedLevel=(cache.level !== undefined && cache.level !== null)
+      ? Number(cache.level).toLocaleString('tr-TR')
+      : '';
+    const points=(document.getElementById('walletPoints')?.textContent||cachedPoints||'-').trim();
+    const level=(document.getElementById('walletLevel')?.textContent||cachedLevel||'-').trim();
+    const walletAvatar=document.getElementById('walletAvatar')?.src||'';
+    const avatar=walletAvatar && !walletAvatar.includes('ui-avatars.com/api/?name=Weizend')
+      ? walletAvatar
+      : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=e31b1b&color=fff&bold=true&size=128`;
     const status=String(cache.accountStatus || (typeof currentAccountStatus!=='undefined'?currentAccountStatus:'active') || 'active').toLowerCase();
     const statusText=status==='blocked'?'Kısıtlı':status==='archived'?'Arşivlenmiş':'Aktif';
     let updated='-';
@@ -9082,6 +9123,9 @@ return;
     },100);
   };
 
+  let wzProductGalleryScrollY = 0;
+  let wzProductInfoScrollY = 0;
+
   /* Product Detail / Shipping modal */
   window.wzCloseProductInfo=function(){
     const overlay=document.getElementById('wzProductInfoModal');
@@ -9089,8 +9133,10 @@ return;
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden','true');
     document.body.classList.remove('wz-modal-lock');
+    requestAnimationFrame(()=>window.scrollTo(0,wzProductInfoScrollY||0));
   };
   function openProductInfo(title,html){
+    wzProductInfoScrollY=window.scrollY||document.documentElement.scrollTop||0;
     const overlay=document.getElementById('wzProductInfoModal');
     const body=document.getElementById('wzProductInfoBody');
     if(!overlay||!body) return;
@@ -9502,7 +9548,7 @@ return;
       r.pickemPrize ||
       t.predictionPrize ||
       t.pickemPrize ||
-      'Admin panelinden belirlenecek'
+      'Belirlenmedi'
     );
   }
 
@@ -9711,13 +9757,26 @@ return;
     document.documentElement.classList.add('wz-modal-hard-lock');
     document.body.classList.add('wz-modal-hard-lock');
     document.body.dataset.wzScrollY=String(savedY);
+    document.body.style.position='fixed';
+    document.body.style.top=`-${savedY}px`;
+    document.body.style.left='0';
+    document.body.style.right='0';
+    document.body.style.width='100%';
   }
 
   function unlock(){
     if(!locked) return;
+    const restore=Number(document.body.dataset.wzScrollY||savedY||0);
     locked=false;
     document.documentElement.classList.remove('wz-modal-hard-lock');
     document.body.classList.remove('wz-modal-hard-lock');
+    document.body.style.position='';
+    document.body.style.top='';
+    document.body.style.left='';
+    document.body.style.right='';
+    document.body.style.width='';
+    delete document.body.dataset.wzScrollY;
+    window.scrollTo(0,restore);
   }
 
   function sync(){
