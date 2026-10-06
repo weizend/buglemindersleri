@@ -2075,6 +2075,21 @@ html[data-wz-initial-view="profile"] body:not(.wz-ready) .header-buttons{
 }
 </style>
 
+
+<style id="wz-v19-nav-state">
+@media(max-width:768px){
+  body.wz-view-profile #wzNavMarket,
+  body.wz-view-profile #wzNavTournament{
+    background:transparent!important;
+    color:#81818b!important;
+  }
+  body.wz-view-profile #wzNavMarket:before,
+  body.wz-view-profile #wzNavTournament:before{
+    display:none!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -2109,7 +2124,7 @@ html[data-wz-initial-view="profile"] body:not(.wz-ready) .header-buttons{
 </div>
 
 <nav class="wz-mobile-bottom-nav" id="wzMobileBottomNav" aria-label="Mobil ana menü">
-  <button class="wz-mobile-nav-btn active" id="wzNavMarket" type="button" onclick="wzSetView('market')" aria-label="Market">
+  <button class="wz-mobile-nav-btn" id="wzNavMarket" type="button" onclick="wzSetView('market')" aria-label="Market">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18l-1.5 9h-15z"/><path d="M8 7a4 4 0 0 1 8 0"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
     <span>Market</span>
   </button>
@@ -9477,30 +9492,65 @@ return;
     document.getElementById('wzNavTournament')?.classList.toggle('active',view==='tournament');
   }
 
+  const WZ_SCROLL_KEY_PREFIX='wz_v19_scroll_';
+
   const wzViewScroll = {
-    market: Number(sessionStorage.getItem('wz_scroll_market') || 0),
-    tournament: Number(sessionStorage.getItem('wz_scroll_tournament') || 0),
-    profile: Number(sessionStorage.getItem('wz_scroll_profile') || 0)
+    market: Number(sessionStorage.getItem(WZ_SCROLL_KEY_PREFIX+'market') || 0),
+    tournament: Number(sessionStorage.getItem(WZ_SCROLL_KEY_PREFIX+'tournament') || 0),
+    profile: Number(sessionStorage.getItem(WZ_SCROLL_KEY_PREFIX+'profile') || 0)
   };
 
+  let wzRestoringScroll=false;
+
+  function wzViewIsActuallyVisible(view){
+    return document.body.classList.contains('wz-view-'+view);
+  }
+
   function wzRememberCurrentScroll(){
-    const y=window.scrollY || document.documentElement.scrollTop || 0;
+    if(wzRestoringScroll) return;
+    if(!wzViewIsActuallyVisible(currentView)) return;
+
+    const y=Math.max(0,window.scrollY || document.documentElement.scrollTop || 0);
     wzViewScroll[currentView]=y;
-    try{ sessionStorage.setItem(`wz_scroll_${currentView}`,String(y)); }catch(_){}
+
+    try{
+      sessionStorage.setItem(WZ_SCROLL_KEY_PREFIX+currentView,String(y));
+    }catch(_){}
   }
 
   function wzRestoreViewScroll(view){
-    const y=Number(wzViewScroll[view] || 0);
+    let y=Math.max(0,Number(wzViewScroll[view] || 0));
+
+    // The visible page can change height after a category/product/tournament update.
+    // Never restore to an empty coordinate below the current page.
+    const maxY=Math.max(
+      0,
+      Math.max(
+        document.documentElement.scrollHeight || 0,
+        document.body.scrollHeight || 0
+      ) - window.innerHeight
+    );
+    y=Math.min(y,maxY);
+
+    wzRestoringScroll=true;
+
+    const oldHtml=document.documentElement.style.scrollBehavior;
+    const oldBody=document.body.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior='auto';
+    document.body.style.scrollBehavior='auto';
+
+    window.scrollTo(0,y);
+
+    document.documentElement.style.scrollBehavior=oldHtml;
+    document.body.style.scrollBehavior=oldBody;
+
+    wzViewScroll[view]=y;
+    try{
+      sessionStorage.setItem(WZ_SCROLL_KEY_PREFIX+view,String(y));
+    }catch(_){}
+
     requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        const oldHtml=document.documentElement.style.scrollBehavior;
-        const oldBody=document.body.style.scrollBehavior;
-        document.documentElement.style.scrollBehavior='auto';
-        document.body.style.scrollBehavior='auto';
-        window.scrollTo(0,y);
-        document.documentElement.style.scrollBehavior=oldHtml;
-        document.body.style.scrollBehavior=oldBody;
-      });
+      wzRestoringScroll=false;
     });
   }
 
@@ -9521,7 +9571,12 @@ return;
     updateTopbar(view);
 
     if(view==='market'){
-      try{ if(typeof filtrele==='function') filtrele('Tümü'); }catch(_){}
+      // Keep the same category/search state the user left behind.
+      try{
+        if(typeof filtrele==='function'){
+          filtrele((typeof aktifKategori!=='undefined' && aktifKategori) ? aktifKategori : 'Tümü');
+        }
+      }catch(_){}
       updateSearchMode('market');
       cleanFilters();
     }else if(view==='tournament'){
@@ -9537,17 +9592,23 @@ return;
       syncProfile();
     }
 
-    wzRestoreViewScroll(view);
+    if(view!=='tournament'){
+      wzRestoreViewScroll(view);
+    }
   };
 
   let wzScrollRememberTimer=null;
   window.addEventListener('scroll',()=>{
+    if(wzRestoringScroll) return;
+
     clearTimeout(wzScrollRememberTimer);
     wzScrollRememberTimer=setTimeout(()=>{
-      const y=window.scrollY || document.documentElement.scrollTop || 0;
-      wzViewScroll[currentView]=y;
-      try{ sessionStorage.setItem(`wz_scroll_${currentView}`,String(y)); }catch(_){}
+      wzRememberCurrentScroll();
     },80);
+  },{passive:true});
+
+  window.addEventListener('pagehide',()=>{
+    wzRememberCurrentScroll();
   },{passive:true});
 
   window.wzSetMobileView=window.wzSetView;
@@ -10248,11 +10309,31 @@ return;
   const baseSetView=window.wzSetView;
   if(typeof baseSetView==='function'){
     window.wzSetView=function(view){
+      const enteringTournament =
+        view==='tournament' &&
+        !document.body.classList.contains('wz-view-tournament');
+
       baseSetView(view);
+
       if(view==='tournament'){
         setTimeout(()=>{
           render();
-          try{ if(typeof tv2LoadCatalog==='function' && catalog().length===0){ tv2LoadCatalog(false).then(()=>render()).catch(()=>render()); } }catch(_){ render(); }
+
+          if(enteringTournament && typeof window.wzRestoreViewScroll==='function'){
+            window.wzRestoreViewScroll('tournament');
+          }
+
+          try{
+            if(typeof tv2LoadCatalog==='function' && catalog().length===0){
+              tv2LoadCatalog(false)
+                .then(()=>{
+                  const keepY=window.scrollY || document.documentElement.scrollTop || 0;
+                  render();
+                  window.scrollTo(0,keepY);
+                })
+                .catch(()=>{});
+            }
+          }catch(_){}
         },0);
       }
     };
