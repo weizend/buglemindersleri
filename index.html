@@ -2007,40 +2007,21 @@ body.wz-view-profile.wz-profile-ready #wzMobileProfileView{
 </style>
 
 
-<style id="wz-v15-game-label">
-.wz-turn-hero-body{
-  padding-bottom:34px!important;
+<style id="wz-v16-profile-flash-fix">
+html[data-wz-initial-view="profile"] body .header-buttons,
+html[data-wz-initial-view="profile"] body .header-btn,
+html[data-wz-initial-view="profile"] body header .header-buttons,
+body.wz-view-profile .header-buttons,
+body.wz-view-profile .header-btn{
+  display:none!important;
 }
-.wz-turn-game-label{
-  position:absolute;
-  left:18px;
-  bottom:14px;
-  z-index:3;
-  display:flex;
-  align-items:center;
-  gap:7px;
-  padding:6px 9px;
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:9px;
-  background:rgba(7,8,11,.72);
-  backdrop-filter:blur(8px);
-}
-.wz-turn-game-label span{
-  color:#ff4a4a;
-  font-size:.56rem;
-  font-weight:1000;
-  letter-spacing:1.1px;
-}
-.wz-turn-game-label b{
-  color:#fff;
-  font-size:.68rem;
-  font-weight:1000;
-}
-@media(max-width:768px){
-  .wz-turn-game-label{
-    left:16px;
-    bottom:12px;
-  }
+
+/* While Profile is the saved initial view, keep non-profile main content hidden
+   until the correct view has fully initialized. */
+html[data-wz-initial-view="profile"] body:not(.wz-ready) #marketContent,
+html[data-wz-initial-view="profile"] body:not(.wz-ready) header,
+html[data-wz-initial-view="profile"] body:not(.wz-ready) .header-buttons{
+  display:none!important;
 }
 </style>
 
@@ -10138,7 +10119,6 @@ return;
       <section class="wz-turn-hero">
         <div class="wz-turn-hero-cover"><div class="wz-turn-hero-body">
           <div class="wz-turn-hero-title"><div class="wz-turn-h1">${esc(String(t.name||'Turnuva').replace(/cup/i,'').trim() || 'CUP')}</div><span class="wz-turn-badge ${status}">${esc(statusLabel(item))}</span></div>
-          <div class="wz-turn-game-label"><span>OYUN</span><b>${esc(gameName(t,rule))}</b></div>
         </div></div>
         <div class="wz-turn-info-grid">
           <div class="wz-turn-info"><b>${esc(modeText(t))}</b><span>${Number(t.teamSize||1)>1?'Takımlı':'Solo'}</span></div>
