@@ -9492,7 +9492,7 @@ return;
     document.getElementById('wzNavTournament')?.classList.toggle('active',view==='tournament');
   }
 
-  const WZ_SCROLL_KEY_PREFIX='wz_v19_scroll_';
+  const WZ_SCROLL_KEY_PREFIX='wz_v20_scroll_';
 
   const wzViewScroll = {
     market: Number(sessionStorage.getItem(WZ_SCROLL_KEY_PREFIX+'market') || 0),
@@ -9557,6 +9557,27 @@ return;
   window.wzRememberCurrentScroll=wzRememberCurrentScroll;
   window.wzRestoreViewScroll=wzRestoreViewScroll;
 
+
+  let wzMarketCategory=(()=>{
+    try{
+      const saved=sessionStorage.getItem('wz_market_category_v20');
+      if(saved && saved !== 'Turnuva') return saved;
+
+      if(typeof aktifKategori!=='undefined' && aktifKategori && aktifKategori!=='Turnuva'){
+        return aktifKategori;
+      }
+    }catch(_){}
+    return 'Tümü';
+  })();
+
+  function wzSaveMarketCategory(category){
+    const value=String(category||'').trim();
+    if(!value || value==='Turnuva') return;
+    wzMarketCategory=value;
+    try{ sessionStorage.setItem('wz_market_category_v20',value); }catch(_){}
+  }
+  window.wzSaveMarketCategory=wzSaveMarketCategory;
+
   window.wzSetView=function(view){
     view=normalizeView(view);
 
@@ -9571,16 +9592,20 @@ return;
     updateTopbar(view);
 
     if(view==='market'){
-      // Keep the same category/search state the user left behind.
+      // Market and Tournament now have completely separate view state.
+      // Never reuse the hidden legacy 'Turnuva' product category here.
       try{
         if(typeof filtrele==='function'){
-          filtrele((typeof aktifKategori!=='undefined' && aktifKategori) ? aktifKategori : 'Tümü');
+          filtrele(wzMarketCategory || 'Tümü');
         }
       }catch(_){}
       updateSearchMode('market');
       cleanFilters();
     }else if(view==='tournament'){
-      try{ if(typeof filtrele==='function') filtrele('Turnuva'); }catch(_){}
+      // IMPORTANT:
+      // Do NOT call filtrele('Turnuva'). The new tournament UI is driven by
+      // wzEsportsHub + tv2Catalog and does not need the old product filter.
+      // This keeps the user's Market category and product grid untouched.
       updateSearchMode('tournament');
       cleanFilters();
       try{
@@ -9777,6 +9802,12 @@ return;
   });
 
   function init(){
+    try{
+      if(typeof aktifKategori!=='undefined' && aktifKategori==='Turnuva'){
+        aktifKategori=wzMarketCategory || 'Tümü';
+      }
+    }catch(_){}
+
     // Profile cannot be the initial view without a valid session.
     if(currentView==='profile' && !getSessionToken()){
       currentView='market';
@@ -10401,6 +10432,30 @@ return;
       e.stopImmediatePropagation();
     }
   },true);
+})();
+</script>
+
+
+<script id="wz-v20-market-category-state">
+(function(){
+  document.addEventListener('click',function(event){
+    const btn=event.target.closest('#filters .filter-btn');
+    if(!btn) return;
+
+    const label=String(btn.textContent||'').trim();
+    if(!label || label==='Turnuva') return;
+
+    // Run after the original button onclick/filtrele handler.
+    setTimeout(()=>{
+      try{
+        if(typeof wzSaveMarketCategory==='function'){
+          wzSaveMarketCategory(label);
+        }else{
+          sessionStorage.setItem('wz_market_category_v20',label);
+        }
+      }catch(_){}
+    },0);
+  });
 })();
 </script>
 
