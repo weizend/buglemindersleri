@@ -1354,6 +1354,294 @@ body.wz-view-tournament #wzDesktopMarket,body.wz-view-market #wzDesktopTournamen
 }
 </style>
 
+
+<style id="wz-esports-v6-css">
+/* =========================================================
+   WEIZEND ESPORTS V6 · PUBLIC TOURNAMENT EXPERIENCE
+   Existing purchase / auth / registration functions remain unchanged.
+========================================================= */
+#wzEsportsHub{display:none}
+body.wz-view-tournament #wzEsportsHub{display:block}
+body.wz-view-tournament #tournamentMarketSection>.tv2-section-heading,
+body.wz-view-tournament #tournamentMarketSection>#tournamentMarketGrid{
+  display:none!important;
+}
+body.wz-view-tournament .market-search-wrap{display:none!important}
+
+.wz-esports-hub{
+  --es-red:#e31b1b;
+  --es-red2:#ff3b3b;
+  --es-bg:#08080a;
+  --es-card:#101014;
+  --es-card2:#151519;
+  --es-line:#292930;
+  --es-muted:#92929d;
+  min-width:0;
+}
+.wz-esports-loading,.wz-esports-empty{
+  padding:42px 18px;
+  border:1px dashed #34343b;
+  border-radius:18px;
+  background:#0b0b0e;
+  color:#90909a;
+  text-align:center;
+}
+.wz-esports-stage{
+  display:grid;
+  grid-template-columns:minmax(250px,310px) minmax(0,1fr);
+  gap:16px;
+  align-items:start;
+}
+.wz-esports-sidebar{
+  position:sticky;
+  top:92px;
+  border:1px solid var(--es-line);
+  background:linear-gradient(180deg,#101014,#09090b);
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 15px 42px rgba(0,0,0,.24);
+}
+.wz-esports-sidehead{padding:16px;border-bottom:1px solid #24242a}
+.wz-esports-kicker{
+  color:#ff6565;font-size:.65rem;font-weight:1000;letter-spacing:1.7px;text-transform:uppercase
+}
+.wz-esports-sidehead h3{margin:5px 0 2px;font-size:1.15rem}
+.wz-esports-sidehead p{margin:0;color:#7f7f89;font-size:.75rem;line-height:1.4}
+.wz-esports-filters{
+  display:flex;gap:6px;overflow:auto;padding:11px 11px 4px;scrollbar-width:none
+}
+.wz-esports-filters::-webkit-scrollbar{display:none}
+.wz-esports-filter{
+  flex:0 0 auto;border:1px solid #2e2e35;background:#151519;color:#9696a0;
+  padding:7px 9px;border-radius:999px;font-size:.68rem;font-weight:900;cursor:pointer
+}
+.wz-esports-filter.active{background:#e31b1b;border-color:#e31b1b;color:#fff}
+.wz-esports-list{
+  max-height:calc(100vh - 230px);
+  overflow:auto;
+  padding:8px 9px 11px;
+  scrollbar-width:thin;
+}
+.wz-esports-event{
+  width:100%;border:1px solid transparent;background:transparent;color:#fff;
+  padding:11px;border-radius:14px;text-align:left;cursor:pointer;margin-top:4px
+}
+.wz-esports-event:hover{background:#151519;border-color:#28282e}
+.wz-esports-event.active{
+  background:#1a0e10;border-color:#742528;box-shadow:inset 3px 0 0 #e31b1b
+}
+.wz-esports-event-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.wz-esports-event-name{font-size:.82rem;font-weight:950;line-height:1.3}
+.wz-esports-status{
+  flex:0 0 auto;border-radius:999px;padding:4px 6px;font-size:.56rem;font-weight:1000;
+  border:1px solid #37373e;background:#1b1b20;color:#aaa
+}
+.wz-esports-status.live{background:#351012;border-color:#7f272b;color:#ff777b}
+.wz-esports-status.open{background:#0d2c1a;border-color:#27643d;color:#77eea0}
+.wz-esports-status.done{background:#1c1c21;border-color:#3a3a42;color:#b2b2bc}
+.wz-esports-status.soon{background:#1a1c2c;border-color:#3b4269;color:#aab6ff}
+.wz-esports-event-meta{
+  display:flex;gap:6px;flex-wrap:wrap;margin-top:7px;color:#777782;font-size:.62rem
+}
+.wz-esports-event-champion{
+  margin-top:7px;padding-top:7px;border-top:1px solid #25252b;color:#d4bd68;font-size:.64rem
+}
+
+.wz-esports-main{
+  min-width:0;border:1px solid var(--es-line);border-radius:22px;overflow:hidden;
+  background:linear-gradient(180deg,#0d0d10,#08080a);
+  box-shadow:0 16px 48px rgba(0,0,0,.26)
+}
+.wz-esports-hero{
+  min-height:250px;position:relative;overflow:hidden;padding:28px;
+  display:flex;align-items:flex-end;
+  background:
+    radial-gradient(circle at 82% 22%,rgba(227,27,27,.30),transparent 27%),
+    radial-gradient(circle at 14% 80%,rgba(227,27,27,.10),transparent 24%),
+    repeating-linear-gradient(128deg,transparent 0 24px,rgba(255,255,255,.012) 25px 26px),
+    linear-gradient(135deg,#17171b,#09090b 57%,#1b090a)
+}
+.wz-esports-hero:before{
+  content:'W';position:absolute;right:3%;top:-22%;font-size:290px;font-weight:1000;
+  color:rgba(255,255,255,.027);transform:skew(-7deg);pointer-events:none
+}
+.wz-esports-hero:after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:2px;
+  background:linear-gradient(90deg,transparent,#e31b1b,transparent)
+}
+.wz-esports-hero-inner{position:relative;z-index:1;width:100%}
+.wz-esports-hero-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+.wz-esports-hero h2{
+  margin:0;font-size:clamp(2rem,4.3vw,4rem);line-height:.92;text-transform:uppercase;letter-spacing:-1px
+}
+.wz-esports-hero h2 span{color:#ff3333}
+.wz-esports-subtitle{margin-top:10px;color:#b5b5bd;font-weight:750}
+.wz-esports-hero-pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}
+.wz-esports-pill{
+  border:1px solid #393940;background:rgba(7,7,9,.76);color:#d5d5dc;
+  padding:7px 9px;border-radius:999px;font-size:.68rem;font-weight:850
+}
+.wz-esports-pill.red{border-color:#7f282b;background:#291012;color:#fff}
+.wz-esports-pill.green{border-color:#26623b;background:#0d2918;color:#86f3aa}
+.wz-esports-summary{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px;padding:14px;border-bottom:1px solid #24242a;background:#0b0b0e
+}
+.wz-esports-stat{
+  min-width:0;padding:12px;border:1px solid #292930;border-radius:13px;background:#111115
+}
+.wz-esports-stat span{display:block;color:#777781;font-size:.64rem;margin-bottom:5px}
+.wz-esports-stat strong{display:block;font-size:.86rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wz-esports-tabs{
+  display:flex;gap:4px;overflow:auto;padding:10px 12px;border-bottom:1px solid #24242a;background:#0e0e11;
+  scrollbar-width:none
+}
+.wz-esports-tabs::-webkit-scrollbar{display:none}
+.wz-esports-tab{
+  flex:0 0 auto;border:1px solid transparent;background:transparent;color:#92929d;
+  padding:9px 11px;border-radius:9px;font-size:.75rem;font-weight:900;cursor:pointer
+}
+.wz-esports-tab.active{background:#271012;border-color:#672428;color:#fff}
+.wz-esports-body{padding:16px}
+.wz-esports-section-title{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 11px
+}
+.wz-esports-section-title h3{margin:0;font-size:1rem}
+.wz-esports-section-title small{color:#777781;font-size:.68rem}
+.wz-esports-overview{
+  display:grid;grid-template-columns:1.1fr .9fr;gap:12px
+}
+.wz-esports-panel{
+  border:1px solid #28282f;border-radius:16px;background:#111115;padding:15px;min-width:0
+}
+.wz-esports-info-list{display:flex;flex-direction:column}
+.wz-esports-info-row{
+  display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-bottom:1px solid #24242a
+}
+.wz-esports-info-row:last-child{border-bottom:0}
+.wz-esports-info-row span{color:#81818c;font-size:.76rem}
+.wz-esports-info-row strong{text-align:right;font-size:.78rem}
+.wz-esports-cta{
+  width:100%;margin-top:12px;min-height:46px;border:0;border-radius:12px;
+  background:linear-gradient(180deg,#ef2b2b,#b70f0f);color:#fff;font-weight:1000;cursor:pointer;
+  box-shadow:0 10px 24px rgba(227,27,27,.18)
+}
+.wz-esports-cta.secondary{background:#17171b;border:1px solid #33333a;box-shadow:none}
+.wz-esports-rules{display:flex;flex-direction:column;gap:8px}
+.wz-esports-rule{
+  display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:start;
+  padding:10px;border:1px solid #28282e;border-radius:12px;background:#0d0d10
+}
+.wz-esports-rule-num{
+  width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#e31b1b;color:#fff;font-weight:1000
+}
+.wz-esports-rule b{display:block;font-size:.76rem;margin-bottom:3px}
+.wz-esports-rule p{margin:0;color:#8b8b95;font-size:.69rem;line-height:1.45}
+.wz-esports-roster-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px
+}
+.wz-esports-roster{
+  border:1px solid #28282f;border-radius:13px;background:#111115;padding:11px;min-width:0
+}
+.wz-esports-roster-head{display:flex;justify-content:space-between;gap:8px}
+.wz-esports-roster-head b{font-size:.78rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wz-esports-roster-sub{margin-top:5px;color:#7d7d87;font-size:.66rem;line-height:1.4}
+.wz-esports-member{padding:7px 0;border-top:1px solid #232329;font-size:.69rem}
+.wz-esports-member:first-of-type{margin-top:7px}
+
+/* Bracket */
+.wz-bracket-scroller{
+  overflow:auto;padding:3px 2px 10px;scrollbar-width:thin;overscroll-behavior-x:contain
+}
+.wz-bracket{
+  min-width:820px;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(180px,1fr);gap:24px;align-items:center
+}
+.wz-bracket-round{display:flex;flex-direction:column;gap:12px;min-width:0}
+.wz-bracket-round-title{
+  text-align:center;color:#b7b7bf;font-size:.7rem;font-weight:1000;letter-spacing:.6px;text-transform:uppercase;margin-bottom:2px
+}
+.wz-bracket-match{
+  position:relative;border:1px solid #303037;border-radius:12px;background:#101014;padding:8px
+}
+.wz-bracket-match:after{
+  content:'';position:absolute;width:25px;height:1px;background:#6b2853;right:-25px;top:50%
+}
+.wz-bracket-round:last-child .wz-bracket-match:after{display:none}
+.wz-bracket-team{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:7px 7px;border-radius:8px;font-size:.68rem
+}
+.wz-bracket-team+.wz-bracket-team{border-top:1px solid #25252b;border-radius:0 0 8px 8px}
+.wz-bracket-team.winner{background:#261012;color:#fff}
+.wz-bracket-team span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wz-bracket-score{font-weight:1000}
+.wz-bracket-badge{margin-top:6px;color:#d4b94f;font-size:.6rem;font-weight:900}
+.wz-bracket-empty{padding:25px 12px;text-align:center;color:#85858f;border:1px dashed #34343b;border-radius:14px}
+
+/* Results */
+.wz-results-podium{
+  display:grid;grid-template-columns:1.2fr 1fr;gap:10px;margin-bottom:12px
+}
+.wz-podium-card{
+  border:1px solid #3a3220;border-radius:16px;background:linear-gradient(145deg,#18150c,#101014);padding:17px
+}
+.wz-podium-card.runner{border-color:#353840;background:linear-gradient(145deg,#15161a,#101014)}
+.wz-podium-card span{display:block;color:#8d8d96;font-size:.65rem;margin-bottom:6px}
+.wz-podium-card strong{font-size:1.05rem}
+.wz-podium-icon{font-size:1.8rem;margin-bottom:7px}
+.wz-result-list{display:flex;flex-direction:column;gap:7px}
+.wz-result-row{
+  display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;align-items:center;
+  border:1px solid #28282f;border-radius:11px;background:#101014;padding:9px 10px;font-size:.69rem
+}
+.wz-result-row .matchno{color:#777781}
+.wz-result-row .winner{font-weight:900}
+.wz-result-row .score{color:#d8d8de;font-weight:900}
+
+/* Fixed bottom navigation: always pinned while page scrolls */
+@media(max-width:768px){
+  body{padding-bottom:calc(92px + env(safe-area-inset-bottom))!important}
+  .wz-mobile-bottom-nav{
+    position:fixed!important;
+    left:10px!important;right:10px!important;
+    bottom:calc(8px + env(safe-area-inset-bottom))!important;
+    z-index:20000!important;
+    transform:none!important;
+    margin:0!important
+  }
+  .wz-esports-stage{display:block}
+  .wz-esports-sidebar{
+    position:static;margin-bottom:10px;border-radius:17px
+  }
+  .wz-esports-sidehead{padding:13px}
+  .wz-esports-sidehead p{display:none}
+  .wz-esports-filters{padding:9px 9px 2px}
+  .wz-esports-list{
+    display:grid;grid-auto-flow:column;grid-auto-columns:82%;
+    gap:7px;max-height:none;overflow-x:auto;overflow-y:hidden;padding:6px 9px 10px;scroll-snap-type:x proximity
+  }
+  .wz-esports-event{margin:0;scroll-snap-align:start;background:#101014;border-color:#27272d}
+  .wz-esports-main{border-radius:18px}
+  .wz-esports-hero{min-height:190px;padding:19px 16px}
+  .wz-esports-hero:before{font-size:165px;right:-9%;top:-22%}
+  .wz-esports-hero h2{font-size:1.8rem;line-height:.96}
+  .wz-esports-subtitle{font-size:.78rem}
+  .wz-esports-hero-pills{margin-top:11px}
+  .wz-esports-summary{grid-template-columns:1fr 1fr;padding:10px;gap:7px}
+  .wz-esports-stat{padding:10px}
+  .wz-esports-tabs{padding:8px}
+  .wz-esports-tab{padding:8px 9px;font-size:.68rem}
+  .wz-esports-body{padding:11px}
+  .wz-esports-overview{grid-template-columns:1fr}
+  .wz-esports-roster-grid{grid-template-columns:1fr}
+  .wz-results-podium{grid-template-columns:1fr 1fr}
+  .wz-bracket{min-width:760px;grid-auto-columns:170px;gap:20px}
+}
+@media(max-width:390px){
+  .wz-esports-list{grid-auto-columns:91%}
+  .wz-results-podium{grid-template-columns:1fr}
+}
+</style>
+
 </head>
 <body>
 
@@ -1818,6 +2106,10 @@ body.wz-view-tournament #wzDesktopMarket,body.wz-view-market #wzDesktopTournamen
             <div class="category-filters" id="filters"></div>
 
             <section id="tournamentMarketSection" class="tv2-market-section" style="display:none;">
+                <div id="wzEsportsHub" class="wz-esports-hub">
+                    <div class="wz-esports-loading">🏆 Turnuva merkezi hazırlanıyor...</div>
+                </div>
+
                 <div class="wz-mobile-tournament-hero" id="wzMobileTournamentHero">
   <div class="wz-mobile-kicker">WEIZEND ESPORTS</div>
   <h2>Turnuva Merkezi</h2>
@@ -8730,6 +9022,491 @@ return;
     <span>Turnuva</span>
   </button>
 </nav>
+
+
+<script id="wz-esports-v6-js">
+(function(){
+  const state={
+    filter:'all',
+    selectedId:'',
+    tab:'overview',
+    details:new Map(),
+    loading:new Set()
+  };
+
+  function esc(value){
+    try{
+      if(typeof tv2Esc==='function') return tv2Esc(value);
+    }catch(_){}
+    return String(value??'').replace(/[&<>"']/g,ch=>({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[ch]));
+  }
+  function catalog(){
+    try{return Array.isArray(tv2Catalog)?tv2Catalog:[]}catch(_){return []}
+  }
+  function lifecycle(item){
+    const t=item?.tournament||{};
+    return String(t.lifecycleStatus || (t.registrationOpen?'registration_open':'registration_closed'));
+  }
+  function comingSoon(item){
+    return item?.rule?.comingSoon===true || item?.tournament?.comingSoon===true;
+  }
+  function classFor(item){
+    const life=lifecycle(item);
+    if(life==='completed') return 'done';
+    if(life==='in_progress') return 'live';
+    if(comingSoon(item)) return 'soon';
+    if(life==='registration_open') return 'open';
+    return '';
+  }
+  function labelFor(item){
+    const life=lifecycle(item);
+    const labels={
+      completed:'TAMAMLANDI',
+      in_progress:'CANLI',
+      registration_complete:'KAYIT TAMAM',
+      registration_open:'KAYIT AÇIK',
+      registration_closed:'KAYIT KAPALI',
+      passive:'PASİF'
+    };
+    if(comingSoon(item) && !['completed','in_progress'].includes(life)) return 'YAKINDA';
+    return labels[life]||life.toUpperCase();
+  }
+  function formatDate(value){
+    if(!value) return 'Tarih açıklanmadı';
+    try{
+      const d=new Date(value);
+      return Number.isNaN(d.getTime())?String(value):d.toLocaleString('tr-TR',{dateStyle:'medium',timeStyle:'short'});
+    }catch(_){return String(value)}
+  }
+  function entryText(item){
+    try{
+      if(typeof tv2EntryLabel==='function') return tv2EntryLabel(item?.rule||{},item?.tournament||{});
+    }catch(_){}
+    return 'Turnuva katılımı';
+  }
+  function modeText(t){
+    const n=Math.max(1,Number(t?.teamSize||1));
+    return n<=1?'1v1 Solo':`${n}v${n} Takımlı`;
+  }
+  function filtered(){
+    const list=catalog();
+    return list.filter(item=>{
+      const life=lifecycle(item);
+      if(state.filter==='all') return true;
+      if(state.filter==='live') return life==='in_progress';
+      if(state.filter==='open') return life==='registration_open';
+      if(state.filter==='soon') return comingSoon(item) && life!=='completed';
+      if(state.filter==='done') return life==='completed';
+      return true;
+    });
+  }
+  function getItem(id){
+    return catalog().find(x=>String(x?.tournament?.id||'')===String(id))||null;
+  }
+  function finalInfo(detail){
+    const matches=Array.isArray(detail?.matches)?detail.matches:[];
+    if(!matches.length) return {champion:'',runner:'',final:null};
+    const maxRound=Math.max(...matches.map(m=>Number(m.roundNumber||0)));
+    const finals=matches.filter(m=>Number(m.roundNumber||0)===maxRound);
+    const final=finals.find(m=>m.winnerName)||finals[0]||null;
+    if(!final) return {champion:'',runner:'',final:null};
+    const champion=String(final.winnerName||'');
+    const a=String(final.participantAName||'');
+    const b=String(final.participantBName||'');
+    let runner='';
+    if(champion){
+      if(a && a!==champion) runner=a;
+      else if(b && b!==champion) runner=b;
+    }
+    return {champion,runner,final};
+  }
+  function statusCounts(){
+    const list=catalog();
+    return {
+      live:list.filter(x=>lifecycle(x)==='in_progress').length,
+      open:list.filter(x=>lifecycle(x)==='registration_open').length,
+      done:list.filter(x=>lifecycle(x)==='completed').length
+    };
+  }
+
+  async function ensureDetail(id){
+    if(!id) return null;
+    if(state.details.has(id)) return state.details.get(id);
+    if(state.loading.has(id)) return null;
+    state.loading.add(id);
+    try{
+      let data=null;
+      if(typeof tv2FetchPublicDetail==='function'){
+        data=await tv2FetchPublicDetail(id);
+      }else{
+        const r=await fetch(`${MARKET_WORKER}/tournament/public?id=${encodeURIComponent(id)}&_=${Date.now()}`,{cache:'no-store'});
+        data=await r.json();
+        if(!r.ok||!data?.success) throw new Error(data?.error||`HTTP ${r.status}`);
+      }
+      state.details.set(id,data);
+      return data;
+    }catch(error){
+      state.details.set(id,{__error:String(error?.message||error)});
+      return state.details.get(id);
+    }finally{
+      state.loading.delete(id);
+    }
+  }
+
+  function defaultRules(item){
+    const t=item?.tournament||{};
+    const team=Number(t.teamSize||1)>1;
+    const game=String(item?.rule?.gameName||t.gameName||'VALORANT').toUpperCase();
+    const list=[
+      ['Lobi ve Zamanlama','Maç saatinde hazır olmayan oyuncu veya takım organizasyon kararıyla hükmen mağlup sayılabilir.'],
+      ['Ekran Kaydı ve Güvenlik','Şüpheli durumlarda ekran kaydı istenebilir. Hile veya üçüncü parti yazılım kullanımı diskalifiye sebebidir.'],
+      ['Davranış Kuralları','Rakibi rahatsız eden davranışlar, oyun açığı kullanımı ve rekabet bütünlüğünü bozan hareketler yasaktır.']
+    ];
+    if(game.includes('VALORANT')){
+      list.unshift(['Oyun Kuralları','Harita ve özel silah kuralları turnuva duyurusunda belirtilen formata göre uygulanır.']);
+    }
+    if(team){
+      list.push(['Sesli İletişim','Oyuncular yalnızca kendi takım arkadaşlarıyla iletişim kurabilir. Takımlar arası veya harici grup konuşması yasaktır.']);
+    }
+    list.push(['Genel Hükümler','Organizasyon, rekabet bütünlüğünü korumak için gerekli durumlarda nihai karar verme hakkına sahiptir.']);
+    return list;
+  }
+
+  function hero(item,detail){
+    const t=detail?.tournament||item?.tournament||{};
+    const rule=item?.rule||{};
+    const life=lifecycle(item);
+    const statusClass=classFor(item);
+    return `
+      <section class="wz-esports-hero">
+        <div class="wz-esports-hero-inner">
+          <div class="wz-esports-hero-line">
+            <span class="wz-esports-status ${statusClass}">${esc(labelFor(item))}</span>
+            <span class="wz-esports-kicker">WEIZEND ESPORTS</span>
+          </div>
+          <h2>WEIZEND <span>${esc(t.name||'TURNUVA')}</span></h2>
+          <div class="wz-esports-subtitle">${esc(modeText(t))} · ${esc(rule.gameName||t.gameName||'VALORANT')}</div>
+          <div class="wz-esports-hero-pills">
+            <span class="wz-esports-pill ${life==='in_progress'?'red':''}">${esc(formatDate(t.eventDate))}</span>
+            <span class="wz-esports-pill">${esc(entryText(item))}</span>
+            <span class="wz-esports-pill">${Number(t.registeredCount||0)} / ${Number(t.capacity||0)||'-'} ${Number(t.teamSize||1)>1?'Takım':'Oyuncu'}</span>
+            ${life==='registration_open'?'<span class="wz-esports-pill green">● Kayıtlar Açık</span>':''}
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function summary(item,detail){
+    const t=detail?.tournament||item?.tournament||{};
+    const rule=item?.rule||{};
+    const matches=Array.isArray(detail?.matches)?detail.matches:[];
+    const completed=matches.filter(m=>['completed','bye'].includes(String(m.status))).length;
+    return `
+      <div class="wz-esports-summary">
+        <div class="wz-esports-stat"><span>FORMAT</span><strong>${esc(modeText(t))}</strong></div>
+        <div class="wz-esports-stat"><span>OYUN</span><strong>${esc(rule.gameName||t.gameName||'VALORANT')}</strong></div>
+        <div class="wz-esports-stat"><span>KONTENJAN</span><strong>${Number(t.registeredCount||0)} / ${Number(t.capacity||0)||'-'}</strong></div>
+        <div class="wz-esports-stat"><span>FİKSTÜR</span><strong>${matches.length?`${completed}/${matches.length} maç`:'Henüz yok'}</strong></div>
+      </div>`;
+  }
+
+  function overview(item,detail){
+    const t=detail?.tournament||item?.tournament||{};
+    const life=lifecycle(item);
+    const rules=defaultRules(item);
+    return `
+      <div class="wz-esports-overview">
+        <div class="wz-esports-panel">
+          <div class="wz-esports-section-title"><h3>Turnuva Özeti</h3><small>${esc(labelFor(item))}</small></div>
+          <div class="wz-esports-info-list">
+            <div class="wz-esports-info-row"><span>Turnuva</span><strong>${esc(t.name||'-')}</strong></div>
+            <div class="wz-esports-info-row"><span>Format</span><strong>${esc(modeText(t))}</strong></div>
+            <div class="wz-esports-info-row"><span>Katılım</span><strong>${esc(entryText(item))}</strong></div>
+            <div class="wz-esports-info-row"><span>Tarih</span><strong>${esc(formatDate(t.eventDate))}</strong></div>
+            <div class="wz-esports-info-row"><span>Durum</span><strong>${esc(labelFor(item))}</strong></div>
+          </div>
+          ${life==='registration_open'
+            ? `<button class="wz-esports-cta" onclick="wzTournamentRegistration('${esc(t.id)}')">KAYIT / TAKIM İŞLEMLERİ</button>`
+            : `<button class="wz-esports-cta secondary" onclick="wzEsportsSetTab('bracket')">FİKSTÜRÜ GÖR</button>`}
+        </div>
+        <div class="wz-esports-panel">
+          <div class="wz-esports-section-title"><h3>Turnuva Kuralları</h3><small>Weizend standartları</small></div>
+          <div class="wz-esports-rules">
+            ${rules.slice(0,5).map((r,i)=>`
+              <div class="wz-esports-rule">
+                <div class="wz-esports-rule-num">${i+1}</div>
+                <div><b>${esc(r[0])}</b><p>${esc(r[1])}</p></div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function participants(detail){
+    if(detail?.__error) return `<div class="wz-esports-empty">Turnuva ayrıntıları alınamadı: ${esc(detail.__error)}</div>`;
+    const t=detail?.tournament||{};
+    const teamMode=Number(t.teamSize||1)>1;
+    if(teamMode){
+      const teams=Array.isArray(detail?.teams)?detail.teams:[];
+      if(!teams.length) return `<div class="wz-esports-empty">Henüz tamamlanmış takım kaydı bulunmuyor.</div>`;
+      return `<div class="wz-esports-roster-grid">${
+        teams.map(team=>`
+          <div class="wz-esports-roster">
+            <div class="wz-esports-roster-head"><b>${esc(team.name||'Takım')}</b><span class="wz-esports-status">${esc(team.status||'')}</span></div>
+            <div class="wz-esports-roster-sub">${Array.isArray(team.members)?team.members.length:0} oyuncu</div>
+            ${(team.members||[]).map((m,i)=>`<div class="wz-esports-member">${i===0?'👑':'●'} ${esc(m.username||m.name||'-')} <span style="color:#777">· ${esc(m.riotId||'')}</span></div>`).join('')}
+          </div>`).join('')
+      }</div>`;
+    }
+    const players=Array.isArray(detail?.participants)?detail.participants:[];
+    if(!players.length) return `<div class="wz-esports-empty">Henüz tamamlanmış oyuncu kaydı bulunmuyor.</div>`;
+    return `<div class="wz-esports-roster-grid">${
+      players.map((p,i)=>`
+        <div class="wz-esports-roster">
+          <div class="wz-esports-roster-head"><b>#${i+1} ${esc(p.username||'-')}</b><span class="wz-esports-status">${p.status==='active'?'HAZIR':'BEKLİYOR'}</span></div>
+          <div class="wz-esports-roster-sub">${esc(p.riotId||'-')}</div>
+        </div>`).join('')
+    }</div>`;
+  }
+
+  function scoreParts(match){
+    let a='',b='';
+    const raw=typeof match?.result==='object'&&match.result?String(match.result.score||''):'';
+    const m=raw.match(/(\d+)\s*[-:]\s*(\d+)/);
+    if(m){a=m[1];b=m[2]}
+    return [a,b,raw];
+  }
+  function bracket(detail){
+    const matches=Array.isArray(detail?.matches)?detail.matches:[];
+    if(!matches.length) return `<div class="wz-bracket-empty">Fikstür henüz oluşturulmadı. Katılımcılar tamamlanınca turnuva ağacı burada görünecek.</div>`;
+    const rounds=new Map();
+    matches.forEach(match=>{
+      const r=Number(match.roundNumber||0);
+      if(!rounds.has(r)) rounds.set(r,[]);
+      rounds.get(r).push(match);
+    });
+    const total=rounds.size;
+    const roundName=r=>{
+      if(r===total) return 'Final';
+      if(r===total-1) return 'Yarı Final';
+      if(r===total-2) return 'Çeyrek Final';
+      return `${r}. Tur`;
+    };
+    return `<div class="wz-bracket-scroller"><div class="wz-bracket">${
+      [...rounds.entries()].sort((a,b)=>a[0]-b[0]).map(([round,list])=>`
+        <div class="wz-bracket-round">
+          <div class="wz-bracket-round-title">${esc(roundName(round))}</div>
+          ${list.sort((a,b)=>Number(a.matchNumber||0)-Number(b.matchNumber||0)).map(match=>{
+            const [sa,sb,raw]=scoreParts(match);
+            const wa=String(match.winnerName||'')===String(match.participantAName||'');
+            const wb=String(match.winnerName||'')===String(match.participantBName||'');
+            return `<div class="wz-bracket-match">
+              <div class="wz-bracket-team ${wa?'winner':''}"><span>${esc(match.participantAName||'Bekleniyor')}</span><span class="wz-bracket-score">${esc(sa||'')}</span></div>
+              <div class="wz-bracket-team ${wb?'winner':''}"><span>${esc(match.participantBName||'Bekleniyor')}</span><span class="wz-bracket-score">${esc(sb||'')}</span></div>
+              ${match.winnerName?`<div class="wz-bracket-badge">🏆 ${esc(match.winnerName)}</div>`:(raw?`<div class="wz-bracket-badge">${esc(raw)}</div>`:'')}
+            </div>`;
+          }).join('')}
+        </div>`).join('')
+    }</div></div>`;
+  }
+
+  function results(detail){
+    const matches=Array.isArray(detail?.matches)?detail.matches:[];
+    const done=matches.filter(m=>m.winnerName||['completed','bye'].includes(String(m.status)));
+    if(!done.length) return `<div class="wz-esports-empty">Henüz sonuçlanan maç bulunmuyor.</div>`;
+    const fin=finalInfo(detail);
+    return `
+      ${fin.champion?`
+        <div class="wz-results-podium">
+          <div class="wz-podium-card"><div class="wz-podium-icon">🏆</div><span>ŞAMPİYON</span><strong>${esc(fin.champion)}</strong></div>
+          <div class="wz-podium-card runner"><div class="wz-podium-icon">🥈</div><span>FİNALİST</span><strong>${esc(fin.runner||'Belirlenecek')}</strong></div>
+        </div>`:''}
+      <div class="wz-result-list">
+        ${done.slice().sort((a,b)=>Number(b.roundNumber||0)-Number(a.roundNumber||0)||Number(a.matchNumber||0)-Number(b.matchNumber||0)).map(m=>{
+          const raw=typeof m.result==='object'&&m.result?String(m.result.score||''):'';
+          return `<div class="wz-result-row">
+            <span class="matchno">M${Number(m.matchNumber||0)}</span>
+            <span class="winner">🏆 ${esc(m.winnerName||'Bay geçti')}</span>
+            <span class="score">${esc(raw||'-')}</span>
+          </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  function tabs(){
+    const defs=[['overview','Genel Bakış'],['participants','Katılımcılar'],['bracket','Fikstür'],['results','Sonuçlar']];
+    return `<nav class="wz-esports-tabs">${
+      defs.map(([id,name])=>`<button type="button" class="wz-esports-tab ${state.tab===id?'active':''}" onclick="wzEsportsSetTab('${id}')">${name}</button>`).join('')
+    }</nav>`;
+  }
+
+  function body(item,detail){
+    if(!detail) return `<div class="wz-esports-body"><div class="wz-esports-loading">Turnuva detayları yükleniyor...</div></div>`;
+    if(detail.__error) return `<div class="wz-esports-body"><div class="wz-esports-empty">${esc(detail.__error)}</div></div>`;
+    let content='';
+    if(state.tab==='overview') content=overview(item,detail);
+    if(state.tab==='participants') content=participants(detail);
+    if(state.tab==='bracket') content=bracket(detail);
+    if(state.tab==='results') content=results(detail);
+    const titles={
+      overview:['Turnuva Merkezi','Tek ekranda tüm turnuva bilgileri'],
+      participants:['Katılımcılar','Tamamlanmış kayıtlar'],
+      bracket:['Turnuva Ağacı','Maçlar ve turlar'],
+      results:['Maç Sonuçları','Tamamlanan karşılaşmalar']
+    };
+    const tt=titles[state.tab]||titles.overview;
+    return `<div class="wz-esports-body">
+      <div class="wz-esports-section-title"><h3>${tt[0]}</h3><small>${tt[1]}</small></div>
+      ${content}
+    </div>`;
+  }
+
+  function card(item){
+    const t=item?.tournament||{};
+    const id=String(t.id||'');
+    const d=state.details.get(id);
+    const fin=d&&!d.__error?finalInfo(d):{champion:''};
+    return `<button type="button" class="wz-esports-event ${state.selectedId===id?'active':''}" onclick="wzEsportsSelect('${esc(id)}')">
+      <div class="wz-esports-event-top">
+        <span class="wz-esports-event-name">${esc(t.name||'Turnuva')}</span>
+        <span class="wz-esports-status ${classFor(item)}">${esc(labelFor(item))}</span>
+      </div>
+      <div class="wz-esports-event-meta">
+        <span>${esc(modeText(t))}</span>
+        <span>•</span>
+        <span>${esc(item?.rule?.gameName||'VALORANT')}</span>
+        <span>•</span>
+        <span>${Number(t.registeredCount||0)}/${Number(t.capacity||0)||'-'}</span>
+      </div>
+      ${fin.champion?`<div class="wz-esports-event-champion">🏆 ${esc(fin.champion)}</div>`:''}
+    </button>`;
+  }
+
+  function render(){
+    const host=document.getElementById('wzEsportsHub');
+    if(!host) return;
+    const all=catalog();
+    if(!all.length){
+      host.innerHTML=`<div class="wz-esports-loading">🏆 Turnuvalar yükleniyor...</div>`;
+      return;
+    }
+    const list=filtered();
+    if(!state.selectedId || !getItem(state.selectedId)){
+      const preferred=list[0]||all[0];
+      state.selectedId=String(preferred?.tournament?.id||'');
+    }
+    const item=getItem(state.selectedId)||list[0]||all[0];
+    const id=String(item?.tournament?.id||'');
+    const detail=state.details.get(id)||null;
+    const counts=statusCounts();
+
+    host.innerHTML=`
+      <div class="wz-esports-stage">
+        <aside class="wz-esports-sidebar">
+          <div class="wz-esports-sidehead">
+            <div class="wz-esports-kicker">WEIZEND ESPORTS</div>
+            <h3>Turnuva Merkezi</h3>
+            <p>${counts.live} canlı · ${counts.open} kayıt açık · ${counts.done} tamamlanan</p>
+          </div>
+          <div class="wz-esports-filters">
+            ${[
+              ['all','Tümü'],['live','Canlı'],['open','Kayıt Açık'],['soon','Yaklaşan'],['done','Tamamlanan']
+            ].map(([id,name])=>`<button class="wz-esports-filter ${state.filter===id?'active':''}" type="button" onclick="wzEsportsFilter('${id}')">${name}</button>`).join('')}
+          </div>
+          <div class="wz-esports-list">
+            ${list.length?list.map(card).join(''):'<div class="wz-esports-empty">Bu bölümde turnuva bulunmuyor.</div>'}
+          </div>
+        </aside>
+        <main class="wz-esports-main">
+          ${hero(item,detail)}
+          ${summary(item,detail)}
+          ${tabs()}
+          ${body(item,detail)}
+        </main>
+      </div>`;
+
+    if(!detail && id) loadAndRender(id);
+
+    // Load champion badges for a few completed cards without flooding the backend.
+    const completed=all.filter(x=>lifecycle(x)==='completed').slice(0,6);
+    completed.forEach(x=>{
+      const cid=String(x?.tournament?.id||'');
+      if(cid && !state.details.has(cid) && !state.loading.has(cid)) ensureDetail(cid).then(()=>render());
+    });
+  }
+
+  async function loadAndRender(id){
+    await ensureDetail(id);
+    if(state.selectedId===id) render();
+  }
+
+  window.wzEsportsFilter=function(filter){
+    state.filter=filter;
+    const list=filtered();
+    if(list.length && !list.some(x=>String(x?.tournament?.id||'')===state.selectedId)){
+      state.selectedId=String(list[0]?.tournament?.id||'');
+      state.tab='overview';
+    }
+    render();
+  };
+  window.wzEsportsSelect=function(id){
+    state.selectedId=String(id||'');
+    state.tab='overview';
+    render();
+    if(window.innerWidth<=768){
+      setTimeout(()=>document.querySelector('.wz-esports-main')?.scrollIntoView({behavior:'smooth',block:'start'}),30);
+    }
+  };
+  window.wzEsportsSetTab=function(tab){
+    state.tab=['overview','participants','bracket','results'].includes(tab)?tab:'overview';
+    render();
+  };
+  window.wzTournamentRegistration=function(id){
+    try{
+      if(typeof marketAuthenticated!=='undefined' && marketAuthenticated && typeof tv2Open==='function'){
+        tv2Open(id); return;
+      }
+      if(typeof tv2OpenPublic==='function'){tv2OpenPublic(id);return;}
+    }catch(_){}
+  };
+  window.wzEsportsStart=function(){
+    render();
+  };
+
+  // Keep the existing Market / Tournament navigation but activate the esports hub.
+  const baseSetView=window.wzSetView;
+  if(typeof baseSetView==='function'){
+    window.wzSetView=function(view){
+      baseSetView(view);
+      if(view==='tournament'){
+        setTimeout(()=>{
+          render();
+          try{
+            if(typeof tv2LoadCatalog==='function' && catalog().length===0){
+              tv2LoadCatalog(false).then(()=>render()).catch(()=>render());
+            }
+          }catch(_){}
+        },0);
+      }
+    };
+    window.wzSetMobileView=window.wzSetView;
+  }
+
+  function init(){
+    const grid=document.getElementById('tournamentMarketGrid');
+    if(grid){
+      new MutationObserver(()=>{
+        if(document.body.classList.contains('wz-view-tournament')) render();
+      }).observe(grid,{childList:true,subtree:true});
+    }
+    if(document.body.classList.contains('wz-view-tournament')) render();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+})();
+</script>
 
 </body>
 </html>
