@@ -9134,14 +9134,31 @@ return;
   async function ensureDetail(id){
     if(!id) return null;
     if(state.details.has(id)) return state.details.get(id);
-    if(state.loading.has(id)) return null;
+    if(state.loading.has(id)){
+      for(let i=0;i<80;i++){
+        await new Promise(resolve=>setTimeout(resolve,100));
+        if(state.details.has(id)) return state.details.get(id);
+        if(!state.loading.has(id)) break;
+      }
+      return state.details.get(id) || null;
+    }
     state.loading.add(id);
     try{
       let data=null;
       if(typeof tv2FetchPublicDetail==='function'){
         data=await tv2FetchPublicDetail(id);
       }else{
-        const r=await fetch(`${MARKET_WORKER}/tournament/public?id=${encodeURIComponent(id)}&_=${Date.now()}`,{cache:'no-store'});
+        const controller=new AbortController();
+        const timeout=setTimeout(()=>controller.abort(),10000);
+        let r;
+        try{
+          r=await fetch(`${MARKET_WORKER}/tournament/public?id=${encodeURIComponent(id)}&_=${Date.now()}`,{
+            cache:'no-store',
+            signal:controller.signal
+          });
+        }finally{
+          clearTimeout(timeout);
+        }
         data=await r.json();
         if(!r.ok||!data?.success) throw new Error(data?.error||`HTTP ${r.status}`);
       }
@@ -9343,7 +9360,7 @@ return;
   }
 
   function body(item,detail){
-    if(!detail) return `<div class="wz-esports-body"><div class="wz-esports-loading">Turnuva detayları yükleniyor...</div></div>`;
+    if(!detail) return `<div class="wz-esports-body"><div class="wz-esports-loading">Turnuva detayları yükleniyor…<br><small style="display:block;margin-top:7px;color:#666">Fikstür ve sonuçlar hazırlanıyor.</small></div></div>`;
     if(detail.__error) return `<div class="wz-esports-body"><div class="wz-esports-empty">${esc(detail.__error)}</div></div>`;
     let content='';
     if(state.tab==='overview') content=overview(item,detail);
@@ -9427,14 +9444,10 @@ return;
         </main>
       </div>`;
 
-    if(!detail && id) loadAndRender(id);
+    if(!detail && id && !state.loading.has(id)) loadAndRender(id);
 
-    // Load champion badges for a few completed cards without flooding the backend.
-    const completed=all.filter(x=>lifecycle(x)==='completed').slice(0,6);
-    completed.forEach(x=>{
-      const cid=String(x?.tournament?.id||'');
-      if(cid && !state.details.has(cid) && !state.loading.has(cid)) ensureDetail(cid).then(()=>render());
-    });
+    // Completed tournament details are loaded only when selected.
+    // This keeps the tournament page light and prevents parallel detail requests.
   }
 
   async function loadAndRender(id){
