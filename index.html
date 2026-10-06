@@ -1836,6 +1836,81 @@ body.wz-modal-hard-lock .wz-product-info-card{
 }
 </style>
 
+
+<style id="wz-v11-image-zoom">
+#imageModal .main-slider{
+  overflow:hidden!important;
+  position:relative!important;
+  touch-action:none;
+}
+#imageModal #modalMainImg{
+  transform-origin:center center;
+  transition:transform .16s ease;
+  cursor:zoom-in;
+  user-select:none;
+  -webkit-user-drag:none;
+  max-height:68vh;
+  object-fit:contain;
+}
+#imageModal #modalMainImg[style*="scale(2"],
+#imageModal #modalMainImg[style*="scale(3"],
+#imageModal #modalMainImg[style*="scale(4"]{
+  cursor:zoom-out;
+}
+.wz-image-zoom-controls{
+  position:absolute;
+  left:50%;
+  bottom:42px;
+  transform:translateX(-50%);
+  z-index:9;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:5px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  background:rgba(8,8,10,.88);
+  backdrop-filter:blur(12px);
+  box-shadow:0 8px 28px rgba(0,0,0,.45);
+}
+.wz-zoom-btn,.wz-zoom-reset{
+  height:38px;
+  border:1px solid #303038;
+  border-radius:10px;
+  background:#17171c;
+  color:#fff;
+  font-weight:1000;
+  cursor:pointer;
+}
+.wz-zoom-btn{
+  width:40px;
+  font-size:1.25rem;
+}
+.wz-zoom-reset{
+  min-width:62px;
+  padding:0 10px;
+  font-size:.75rem;
+}
+#imageModal .zoom-info{
+  bottom:10px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  white-space:nowrap;
+}
+@media(max-width:768px){
+  #imageModal .modal-content{
+    width:calc(100vw - 20px)!important;
+    max-width:none!important;
+  }
+  #imageModal #modalMainImg{
+    max-height:60dvh;
+  }
+  .wz-image-zoom-controls{
+    bottom:44px;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -2336,7 +2411,6 @@ body.wz-modal-hard-lock .wz-product-info-card{
       <div class="wz-profile-section-title">Hesap Bilgileri</div>
       <div class="wz-profile-info-row"><span>Kick Kullanıcı Adı</span><strong id="wzProfileKick">-</strong></div>
       <div class="wz-profile-info-row"><span>Hesap Durumu</span><strong id="wzProfileAccountStatus">Aktif</strong></div>
-      <div class="wz-profile-info-row"><span>Son Güncelleme</span><strong id="wzProfileUpdated">-</strong></div>
     </div>
 
     <div class="wz-profile-section">
@@ -2396,9 +2470,16 @@ body.wz-modal-hard-lock .wz-product-info-card{
             <div class="modal-body">
                 <div class="main-slider" id="modalSlider">
                     <button class="nav-btn prev-btn" id="prevBtn" onclick="oncekiResim(event)">❮</button>
-                    <img id="modalMainImg" src="" alt="Önizleme">
+                    <img id="modalMainImg" src="" alt="Önizleme" onclick="resmeTiklaZoom(event)">
                     <button class="nav-btn next-btn" id="nextBtn" onclick="sonrakiResim(event)">❯</button>
-                    <div class="zoom-info">Fare tekerleği ile yakınlaştır</div>
+
+                    <div class="wz-image-zoom-controls" onclick="event.stopPropagation()">
+                        <button type="button" class="wz-zoom-btn" onclick="zoomAzalt(event)" aria-label="Uzaklaştır">−</button>
+                        <button type="button" class="wz-zoom-reset" id="wzZoomLevel" onclick="zoomSifirla(); zoomEtiketiGuncelle();" aria-label="Yakınlaştırmayı sıfırla">100%</button>
+                        <button type="button" class="wz-zoom-btn" onclick="zoomArtir(event)" aria-label="Yakınlaştır">+</button>
+                    </div>
+
+                    <div class="zoom-info">Dokunarak veya + / − ile yakınlaştır</div>
                 </div>
                 <div class="thumbnail-list" id="modalThumbnails"></div>
             </div>
@@ -6181,21 +6262,83 @@ return;
             thumbElement.classList.add('active');
         }
 
+        function zoomEtiketiGuncelle() {
+            const label = document.getElementById('wzZoomLevel');
+            if(label) label.textContent = `${Math.round(zoomLevel * 100)}%`;
+        }
+
+        function zoomUygula() {
+            zoomLevel = Math.min(Math.max(1, zoomLevel), 4);
+            const img = document.getElementById('modalMainImg');
+            if(img) img.style.transform = `scale(${zoomLevel})`;
+            zoomEtiketiGuncelle();
+        }
+
         function zoomSifirla() {
             zoomLevel = 1;
-            document.getElementById('modalMainImg').style.transform = `scale(1)`;
+            zoomUygula();
+        }
+
+        function zoomArtir(event) {
+            if(event) event.stopPropagation();
+            zoomLevel += 0.25;
+            zoomUygula();
+        }
+
+        function zoomAzalt(event) {
+            if(event) event.stopPropagation();
+            zoomLevel -= 0.25;
+            zoomUygula();
+        }
+
+        function resmeTiklaZoom(event) {
+            event.stopPropagation();
+            if(zoomLevel > 1) {
+                zoomLevel = 1;
+            } else {
+                zoomLevel = 2;
+            }
+            zoomUygula();
         }
 
         document.getElementById('modalSlider').addEventListener('wheel', function(e) {
             e.preventDefault();
-            if (e.deltaY < 0) {
-                zoomLevel += 0.2; 
-            } else {
-                zoomLevel -= 0.2; 
+            zoomLevel += e.deltaY < 0 ? 0.2 : -0.2;
+            zoomUygula();
+        }, { passive:false });
+
+        // Mobilde iki parmakla pinch-to-zoom
+        let wzPinchStartDistance = 0;
+        let wzPinchStartZoom = 1;
+
+        function wzTouchDistance(touches) {
+            if(!touches || touches.length < 2) return 0;
+            const dx = touches[0].clientX - touches[1].clientX;
+            const dy = touches[0].clientY - touches[1].clientY;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        document.getElementById('modalSlider').addEventListener('touchstart', function(e) {
+            if(e.touches.length === 2) {
+                wzPinchStartDistance = wzTouchDistance(e.touches);
+                wzPinchStartZoom = zoomLevel;
             }
-            zoomLevel = Math.min(Math.max(1, zoomLevel), 4);
-            document.getElementById('modalMainImg').style.transform = `scale(${zoomLevel})`;
-        });
+        }, { passive:true });
+
+        document.getElementById('modalSlider').addEventListener('touchmove', function(e) {
+            if(e.touches.length === 2 && wzPinchStartDistance > 0) {
+                e.preventDefault();
+                const currentDistance = wzTouchDistance(e.touches);
+                zoomLevel = wzPinchStartZoom * (currentDistance / wzPinchStartDistance);
+                zoomUygula();
+            }
+        }, { passive:false });
+
+        document.getElementById('modalSlider').addEventListener('touchend', function(e) {
+            if(e.touches.length < 2) {
+                wzPinchStartDistance = 0;
+            }
+        }, { passive:true });
 
         function modaliAc(urunId, baslangicIndex) {
             wzProductGalleryScrollY = window.scrollY || document.documentElement.scrollTop || 0;
@@ -9087,18 +9230,12 @@ return;
       : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=e31b1b&color=fff&bold=true&size=128`;
     const status=String(cache.accountStatus || (typeof currentAccountStatus!=='undefined'?currentAccountStatus:'active') || 'active').toLowerCase();
     const statusText=status==='blocked'?'Kısıtlı':status==='archived'?'Arşivlenmiş':'Aktif';
-    let updated='-';
-    if(cache.updatedAt){
-      const d=new Date(cache.updatedAt);
-      if(!Number.isNaN(d.getTime())) updated=d.toLocaleString('tr-TR',{dateStyle:'short',timeStyle:'short'});
-    }
 
     setText('wzProfileName',name);
     setText('wzProfileKick',name);
     setText('wzProfilePoints',points);
     setText('wzProfileLevel',level);
     setText('wzProfileAccountStatus',statusText);
-    setText('wzProfileUpdated',updated);
     setText('wzTopProfileName',name);
 
     const av=document.getElementById('wzProfileAvatar'); if(av) av.src=avatar;
