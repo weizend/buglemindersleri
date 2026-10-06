@@ -1357,7 +1357,7 @@ body.wz-view-tournament #wzDesktopMarket,body.wz-view-market #wzDesktopTournamen
 
 <style id="wz-esports-v6-css">
 /* =========================================================
-   WEIZEND ESPORTS V6 · PUBLIC TOURNAMENT EXPERIENCE
+   WEIZEND V6 · PUBLIC TOURNAMENT EXPERIENCE
    Existing purchase / auth / registration functions remain unchanged.
 ========================================================= */
 #wzEsportsHub{display:none}
@@ -1639,6 +1639,115 @@ body.wz-view-tournament .market-search-wrap{display:none!important}
 @media(max-width:390px){
   .wz-esports-list{grid-auto-columns:91%}
   .wz-results-podium{grid-template-columns:1fr}
+}
+</style>
+
+
+<style id="wz-tournament-v7-overrides">
+/* Tournament simplification */
+body.wz-view-tournament #wzViewName{display:none!important}
+body.wz-view-tournament .wz-profile-top-copy small{display:none!important}
+body.wz-view-tournament .wz-esports-kicker{color:#ff4d4d!important}
+body.wz-view-tournament .wz-esports-stage{display:block!important}
+body.wz-view-tournament .wz-esports-sidebar{
+  position:static!important;
+  margin-bottom:12px!important;
+  border-radius:18px!important;
+}
+body.wz-view-tournament .wz-esports-sidehead{
+  padding:14px 14px 10px!important;
+}
+body.wz-view-tournament .wz-esports-sidehead p{
+  display:none!important;
+}
+body.wz-view-tournament .wz-esports-filters{
+  padding:9px 10px 2px!important;
+}
+body.wz-view-tournament .wz-esports-list{
+  display:grid!important;
+  grid-auto-flow:column!important;
+  grid-auto-columns:minmax(260px, 320px)!important;
+  gap:8px!important;
+  max-height:none!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  padding:8px 10px 12px!important;
+  scrollbar-width:none!important;
+  scroll-snap-type:x proximity!important;
+}
+body.wz-view-tournament .wz-esports-list::-webkit-scrollbar{display:none!important}
+body.wz-view-tournament .wz-esports-event{
+  margin:0!important;
+  background:#111115!important;
+  border:1px solid #2a2a30!important;
+  border-radius:16px!important;
+  scroll-snap-align:start!important;
+}
+body.wz-view-tournament .wz-esports-event.active{
+  background:#190f11!important;
+  border-color:#7a272a!important;
+}
+body.wz-view-tournament .wz-esports-main{
+  border-radius:18px!important;
+}
+body.wz-view-tournament .wz-esports-hero{
+  min-height:185px!important;
+  padding:18px!important;
+}
+body.wz-view-tournament .wz-esports-hero:before{
+  font-size:150px!important;
+  top:-16%!important;
+  right:-6%!important;
+}
+body.wz-view-tournament .wz-esports-hero h2{
+  font-size:1.8rem!important;
+  line-height:.96!important;
+}
+body.wz-view-tournament .wz-esports-subtitle{
+  font-size:.82rem!important;
+}
+body.wz-view-tournament .wz-esports-summary{
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+  padding:10px!important;
+}
+body.wz-view-tournament .wz-esports-stat{
+  padding:10px!important;
+}
+body.wz-view-tournament .wz-esports-tabs{
+  padding:8px!important;
+}
+body.wz-view-tournament .wz-esports-tab{
+  font-size:.7rem!important;
+  padding:8px 10px!important;
+}
+body.wz-view-tournament .wz-esports-body{
+  padding:12px!important;
+}
+body.wz-view-tournament .wz-esports-overview{
+  grid-template-columns:1fr!important;
+}
+body.wz-view-tournament .wz-esports-panel{
+  border-radius:16px!important;
+  padding:14px!important;
+}
+body.wz-view-tournament .wz-results-podium{
+  grid-template-columns:1fr!important;
+}
+body.wz-view-tournament .wz-esports-kicker + h3,
+body.wz-view-tournament .wz-esports-kicker + h2{
+  letter-spacing:0!important;
+}
+body.wz-view-tournament .wz-bracket-round-title,
+body.wz-view-tournament .wz-esports-section-title h3,
+body.wz-view-tournament .wz-podium-card strong,
+body.wz-view-tournament .wz-result-row .winner{
+  color:#fff!important;
+}
+@media (min-width: 769px){
+  body.wz-view-tournament .wz-esports-list{
+    grid-auto-columns:minmax(280px, 320px)!important;
+  }
 }
 </style>
 
@@ -2111,8 +2220,8 @@ body.wz-view-tournament .market-search-wrap{display:none!important}
                 </div>
 
                 <div class="wz-mobile-tournament-hero" id="wzMobileTournamentHero">
-  <div class="wz-mobile-kicker">WEIZEND ESPORTS</div>
-  <h2>Turnuva Merkezi</h2>
+  <div class="wz-mobile-kicker">WEIZEND</div>
+  <h2>Turnuvalar</h2>
   <p>Aktif ve tamamlanan turnuvaları, katılımcıları, kayıt durumunu ve fikstürü tek yerden takip et.</p>
 </div>
                 <div class="tv2-section-heading">
@@ -9201,7 +9310,7 @@ return;
         <div class="wz-esports-hero-inner">
           <div class="wz-esports-hero-line">
             <span class="wz-esports-status ${statusClass}">${esc(labelFor(item))}</span>
-            <span class="wz-esports-kicker">WEIZEND ESPORTS</span>
+            <span class="wz-esports-kicker">WEIZEND</span>
           </div>
           <h2>WEIZEND <span>${esc(t.name||'TURNUVA')}</span></h2>
           <div class="wz-esports-subtitle">${esc(modeText(t))} · ${esc(rule.gameName||t.gameName||'VALORANT')}</div>
@@ -9368,7 +9477,7 @@ return;
     if(state.tab==='bracket') content=bracket(detail);
     if(state.tab==='results') content=results(detail);
     const titles={
-      overview:['Turnuva Merkezi','Tek ekranda tüm turnuva bilgileri'],
+      overview:['Turnuva Genel Bakış','Tek ekranda tüm turnuva bilgileri'],
       participants:['Katılımcılar','Tamamlanmış kayıtlar'],
       bracket:['Turnuva Ağacı','Maçlar ve turlar'],
       results:['Maç Sonuçları','Tamamlanan karşılaşmalar']
@@ -9423,13 +9532,13 @@ return;
       <div class="wz-esports-stage">
         <aside class="wz-esports-sidebar">
           <div class="wz-esports-sidehead">
-            <div class="wz-esports-kicker">WEIZEND ESPORTS</div>
-            <h3>Turnuva Merkezi</h3>
+            <div class="wz-esports-kicker">WEIZEND</div>
+            <h3>Turnuvalar</h3>
             <p>${counts.live} canlı · ${counts.open} kayıt açık · ${counts.done} tamamlanan</p>
           </div>
           <div class="wz-esports-filters">
             ${[
-              ['all','Tümü'],['live','Canlı'],['open','Kayıt Açık'],['soon','Yaklaşan'],['done','Tamamlanan']
+              ['all','Aktif'],['soon','Yaklaşan'],['live','Canlı'],['done','Tamamlanan']
             ].map(([id,name])=>`<button class="wz-esports-filter ${state.filter===id?'active':''}" type="button" onclick="wzEsportsFilter('${id}')">${name}</button>`).join('')}
           </div>
           <div class="wz-esports-list">
