@@ -2025,6 +2025,18 @@ html[data-wz-initial-view="profile"] body:not(.wz-ready) .header-buttons{
 }
 </style>
 
+
+<style id="wz-v17-nav-parse-fix">
+@media(max-width:768px){
+  html.wz-boot .wz-mobile-bottom-nav{
+    visibility:hidden!important;
+  }
+  html:not(.wz-boot) .wz-mobile-bottom-nav{
+    visibility:visible!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -2057,6 +2069,18 @@ html[data-wz-initial-view="profile"] body:not(.wz-ready) .header-buttons{
     </button>
   </div>
 </div>
+
+<nav class="wz-mobile-bottom-nav" id="wzMobileBottomNav" aria-label="Mobil ana menü">
+  <button class="wz-mobile-nav-btn active" id="wzNavMarket" type="button" onclick="wzSetView('market')" aria-label="Market">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18l-1.5 9h-15z"/><path d="M8 7a4 4 0 0 1 8 0"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
+    <span>Market</span>
+  </button>
+  <button class="wz-mobile-nav-btn" id="wzNavTournament" type="button" onclick="wzSetView('tournament')" aria-label="Turnuvalar">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M12 13v4"/><path d="M8 21h8"/><path d="M6 6H3v1a4 4 0 0 0 4 4"/><path d="M18 6h3v1a4 4 0 0 1-4 4"/></svg>
+    <span>Turnuva</span>
+  </button>
+</nav>
+
 
 <script id="wz-v12-early-profile">
 (function(){
@@ -9689,20 +9713,6 @@ return;
   else init();
 })();
 </script>
-
-<nav class="wz-mobile-bottom-nav" id="wzMobileBottomNav" aria-label="Mobil ana menü">
-  <button class="wz-mobile-nav-btn active" id="wzNavMarket" type="button" onclick="wzSetView('market')" aria-label="Market">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18l-1.5 9h-15z"/><path d="M8 7a4 4 0 0 1 8 0"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
-    <span>Market</span>
-  </button>
-  <button class="wz-mobile-nav-btn" id="wzNavTournament" type="button" onclick="wzSetView('tournament')" aria-label="Turnuvalar">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M12 13v4"/><path d="M8 21h8"/><path d="M6 6H3v1a4 4 0 0 0 4 4"/><path d="M18 6h3v1a4 4 0 0 1-4 4"/></svg>
-    <span>Turnuva</span>
-  </button>
-</nav>
-
-
-
 <script id="wz-esports-v6-js">
 (function(){
   const state={
