@@ -877,281 +877,354 @@
 
 </style>
 
-<!-- =========================================================
-     WEIZEND MOBILE REDESIGN V2
-     YALNIZCA MOBIL GORUNUM - MEVCUT OZELLIKLER KORUNUR
-     ========================================================= -->
-<style id="weizend-mobile-redesign-v2">
+<style id="wz-mobile-pro-v4">
 /* =========================================================
-   WEIZEND MOBILE REDESIGN V2
-   Sadece 768px ve altı. Mevcut işlevler korunur.
+   WEIZEND MOBILE PRO V4
+   Yalnızca mobil görünüm. Mevcut işlevler/endpointler korunur.
    ========================================================= */
+.wz-mobile-topbar,.wz-mobile-bottom-nav,#wzMobileProfileView,.wz-mobile-page-intro,.wz-mobile-tournament-hero,.wz-inbox-extra{display:none}
+
 @media (max-width:768px){
   :root{
-    --wz-bg:#050506;
-    --wz-panel:#0c0c0f;
-    --wz-panel2:#121216;
-    --wz-line:#292930;
-    --wz-red:#e31b1b;
-    --wz-red2:#ff3535;
-    --wz-text:#fff;
-    --wz-muted:#92929b;
+    --wz-mobile-bg:#050506;
+    --wz-mobile-card:#0d0d10;
+    --wz-mobile-card-2:#121216;
+    --wz-mobile-line:#24242a;
+    --wz-mobile-soft:#8f8f99;
+    --wz-mobile-red:#e31b1b;
+    --wz-mobile-red-2:#ff3030;
   }
 
-  html{background:var(--wz-bg);overflow-x:hidden}
+  html{background:var(--wz-mobile-bg);scroll-padding-top:78px}
   body{
-    padding:0 0 calc(78px + env(safe-area-inset-bottom));
-    overflow-x:hidden;
+    margin:0!important;
+    padding:0 10px calc(88px + env(safe-area-inset-bottom))!important;
     background:
-      radial-gradient(circle at 50% -120px,rgba(227,27,27,.15),transparent 300px),
-      linear-gradient(180deg,#070709 0,#050506 45%,#030304 100%);
+      radial-gradient(circle at 12% 0%,rgba(227,27,27,.11),transparent 26%),
+      linear-gradient(180deg,#08080a 0,#050506 260px)!important;
     color:#fff;
+    min-height:100dvh;
+    overflow-x:hidden!important;
   }
   body.wz-mobile-modal-open{overflow:hidden!important}
+  .container{width:100%!important;max-width:none!important;margin:0!important;padding:0!important}
 
-  .container{width:100%;max-width:none;padding:0 12px;overflow:visible}
-
-  /* ÜST BAR: sadece marka. Profil/tekrar eden aksiyonlar ana sayfadan kaldırıldı. */
-  header{
-    display:grid;
-    grid-template-columns:46px minmax(0,1fr);
+  /* ---------- Sabit üst marka çubuğu ---------- */
+  .wz-mobile-topbar{
+    display:flex;
+    position:sticky;
+    top:0;
+    z-index:700;
+    height:68px;
+    margin:0 -10px 14px;
+    padding:10px 14px;
     align-items:center;
+    justify-content:space-between;
     gap:10px;
-    text-align:left;
-    padding:12px 2px 10px;
-    margin:0 0 4px;
-    border:0;
+    background:rgba(5,5,6,.94);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border-bottom:1px solid rgba(255,255,255,.07);
   }
-  .logo-img{
-    grid-column:1;grid-row:1;
-    width:44px;height:44px;margin:0;
-    object-fit:cover;border-radius:13px;
-    border:1px solid rgba(227,27,27,.62);
-    background:#0b0b0d;
-    box-shadow:0 0 22px rgba(227,27,27,.20);
+  .wz-mobile-brand{display:flex;align-items:center;gap:10px;min-width:0}
+  .wz-mobile-brand img{
+    width:42px;height:42px;border-radius:50%;object-fit:cover;background:#000;
+    border:1px solid rgba(227,27,27,.65);box-shadow:0 0 18px rgba(227,27,27,.18)
   }
-  header h1{
-    grid-column:2;grid-row:1;
-    margin:0;font-size:0;line-height:1;
+  .wz-mobile-brand-copy{min-width:0}
+  .wz-mobile-brand-name{font-size:1rem;font-weight:1000;letter-spacing:1.6px;line-height:1.05}
+  .wz-mobile-view-name{margin-top:4px;color:#8d8d97;font-size:.67rem;font-weight:850;letter-spacing:1.4px;text-transform:uppercase}
+  .wz-mobile-status{
+    display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;
+    color:#b7b7bf;font-size:.68rem;font-weight:900;letter-spacing:.7px;
+    padding:7px 9px;border:1px solid #27272c;border-radius:999px;background:#0d0d10
   }
-  header h1::after{
-    content:'WEIZEND';
-    font-size:1.25rem;
-    letter-spacing:2px;
-    font-weight:1000;
-    color:#fff;
-  }
-  header>p,.header-buttons{display:none!important}
+  .wz-mobile-status i{width:7px;height:7px;border-radius:50%;background:#31d875;box-shadow:0 0 10px rgba(49,216,117,.55)}
 
-  /* Mevcut hesap kartı backend/state için DOM'da kalır fakat ana sayfada gösterilmez. */
-  .user-wallet-wrapper{display:none!important}
-  #accountRestrictionBanner{display:none!important}
-  body[data-wz-mobile-view="profile"] #accountRestrictionBanner[style*="block"]{display:block!important;grid-column:1/-1;margin:8px 0 0}
-  #accessCard{display:none!important}
-  body[data-wz-mobile-view="profile"] #accessCard[style*="block"]{
-    display:block!important;
-    grid-column:1/-1;
-    margin:10px 0 0!important;
-    padding:16px!important;
+  /* ---------- Masaüstü üst alanını mobilde sadeleştir ---------- */
+  header{
+    border:0!important;
+    padding:0!important;
+    margin:0 0 12px!important;
+    text-align:left!important;
+  }
+  header>.logo-img,header>h1,header>p,.header-buttons,.user-wallet-wrapper{display:none!important}
+  #accountRestrictionBanner{margin:8px 0 12px!important;border-radius:16px!important}
+  #accessCard{
+    margin:8px 0 16px!important;
+    max-width:none!important;
+    padding:18px!important;
     border-radius:18px!important;
-    background:linear-gradient(145deg,#111115,#09090b)!important;
-    border:1px solid rgba(227,27,27,.55)!important;
-    box-shadow:0 14px 34px rgba(0,0,0,.28)!important;
+    background:linear-gradient(145deg,#121214,#09090b)!important;
+    box-shadow:0 12px 34px rgba(0,0,0,.32)!important;
   }
-  #accessCard .access-input{font-size:16px;min-width:0;width:100%;max-width:none}
-  #accessCard .access-form{gap:8px}
-  #accessCard .access-btn{min-height:44px}
+  #accessCard h3{font-size:1.12rem!important}
+  .access-form{gap:9px!important;align-items:stretch!important}
+  .access-input{max-width:none!important;min-width:0!important;width:100%!important;font-size:16px!important;border-radius:12px!important}
+  .access-btn{min-height:46px!important;border-radius:12px!important}
 
-  /* MOBİL ANA GÖRÜNÜMLER */
-  #wzMobileProfileView{display:none}
-  body[data-wz-mobile-view="profile"] #marketContent{display:none!important}
-  body[data-wz-mobile-view="profile"] #wzMobileProfileView{display:block}
+  /* ---------- Mobil sayfa intro ---------- */
+  .wz-mobile-page-intro{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    position:relative;overflow:hidden;
+    margin:0 0 14px;padding:18px 17px;
+    border:1px solid #3e1719;border-radius:19px;
+    background:
+      radial-gradient(circle at 90% 30%,rgba(227,27,27,.23),transparent 34%),
+      linear-gradient(135deg,#151518,#09090b 64%,#16090a);
+    box-shadow:0 14px 34px rgba(0,0,0,.25)
+  }
+  .wz-mobile-page-intro:after{
+    content:'W';position:absolute;right:-7px;top:-31px;font-size:126px;font-weight:1000;
+    color:rgba(255,255,255,.025);transform:skew(-8deg);pointer-events:none
+  }
+  .wz-mobile-kicker{color:#ff6464;font-size:.67rem;font-weight:1000;letter-spacing:1.8px;text-transform:uppercase}
+  .wz-mobile-page-intro h2{margin:5px 0 5px;font-size:1.35rem;line-height:1.08}
+  .wz-mobile-page-intro p{margin:0;color:#9999a3;font-size:.8rem;line-height:1.45;max-width:260px}
+  .wz-mobile-intro-mark{
+    width:48px;height:48px;border-radius:15px;display:grid;place-items:center;flex:0 0 48px;
+    background:linear-gradient(145deg,#ed2727,#941010);font-size:1.25rem;font-weight:1000;
+    box-shadow:0 10px 24px rgba(227,27,27,.24)
+  }
 
-  /* Market = sadece ürünler. Turnuva = sadece turnuva alanı. */
-  body[data-wz-mobile-view="market"] #tournamentMarketSection{display:none!important}
-  body[data-wz-mobile-view="market"] #urunGrid{display:grid!important}
-  body[data-wz-mobile-view="tournament"] #urunGrid{display:none!important}
-  body[data-wz-mobile-view="tournament"] .category-filters{display:none!important}
-  body[data-wz-mobile-view="tournament"] #tournamentMarketSection{display:block!important}
-  body[data-wz-mobile-view="profile"] .market-search-wrap,
-  body[data-wz-mobile-view="profile"] .category-filters,
-  body[data-wz-mobile-view="profile"] #tournamentMarketSection,
-  body[data-wz-mobile-view="profile"] #urunGrid{display:none!important}
-
-  /* Tek geçiş noktası alt nav olduğu için üstteki eski geçiş gizlenir. */
-  .wz-mobile-modebar{display:none!important}
-
-  /* ARAMA */
-  .market-search-wrap{margin:5px 0 10px;max-width:none}
+  /* ---------- Market arama/kategoriler ---------- */
+  .market-search-wrap{margin:0 0 12px!important;max-width:none!important}
   .market-search-box{
-    min-height:48px;border-radius:14px;padding:6px 8px 6px 12px;
-    background:#0d0d11;border:1px solid #292930;box-shadow:none;
+    min-height:50px!important;border-radius:15px!important;padding:7px 10px 7px 13px!important;
+    background:#0d0d10!important;border-color:#29292f!important;box-shadow:none!important
   }
-  .market-search-input{font-size:16px}
-  .market-search-clear{border-radius:10px;padding:7px 9px}
-  .market-search-info{margin-top:5px;font-size:.68rem;min-height:12px}
+  .market-search-box:focus-within{border-color:#8e2828!important;box-shadow:0 0 0 3px rgba(227,27,27,.08)!important}
+  .market-search-input{font-size:16px!important}
+  .market-search-clear{border-radius:10px!important}
+  .market-search-info{min-height:10px!important;margin-top:5px!important}
 
-  /* MARKET KATEGORİLERİ: Turnuva kopyası JS ile .wz-mobile-duplicate-tab alır ve gizlenir. */
   .category-filters{
-    justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
-    gap:7px;margin:0 -12px 14px;padding:1px 12px 5px;scrollbar-width:none;
+    display:flex!important;justify-content:flex-start!important;flex-wrap:nowrap!important;
+    gap:7px!important;overflow-x:auto!important;overflow-y:hidden!important;
+    margin:0 -2px 14px!important;padding:2px 2px 6px!important;
+    scrollbar-width:none;-webkit-overflow-scrolling:touch
   }
   .category-filters::-webkit-scrollbar{display:none}
-  .category-filters .wz-mobile-duplicate-tab{display:none!important}
   .filter-btn{
-    flex:0 0 auto;white-space:nowrap;padding:8px 12px!important;
-    border-radius:999px!important;font-size:.72rem!important;font-weight:850!important;
-    background:#111116!important;border:1px solid #2b2b31!important;color:#aaa!important;
+    flex:0 0 auto!important;white-space:nowrap!important;padding:9px 13px!important;
+    border-radius:999px!important;font-size:.78rem!important;background:#101014!important;
+    border-color:#29292f!important;color:#a5a5af!important
   }
-  .filter-btn.active,.filter-btn:hover{background:#e31b1b!important;border-color:#e31b1b!important;color:#fff!important}
-  .filter-btn.tukenenler-btn{background:#111116!important;color:#ff7777!important;border-color:#5a2626!important}
+  .filter-btn.active{background:#e31b1b!important;border-color:#e31b1b!important;color:#fff!important;box-shadow:0 6px 16px rgba(227,27,27,.18)}
+  .filter-btn.wz-hide-mobile{display:none!important}
 
-  /* ÜRÜNLER */
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  /* ---------- Ürün grid ---------- */
+  .grid{
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;align-items:start!important
+  }
   .card{
-    min-width:0;padding:10px;border-radius:16px;border:1px solid #26262d;
-    background:linear-gradient(180deg,rgba(255,255,255,.015),transparent 40%),#0d0d11;
-    box-shadow:0 10px 26px rgba(0,0,0,.20);overflow:hidden;
+    min-width:0!important;padding:10px!important;border-radius:17px!important;
+    border:1px solid #222228!important;background:linear-gradient(180deg,#101014,#0b0b0e)!important;
+    box-shadow:0 9px 24px rgba(0,0,0,.20)!important;transform:none!important;overflow:hidden
   }
-  .card:hover{transform:none;box-shadow:0 10px 26px rgba(0,0,0,.20)}
-  .img-container{width:100%;height:150px;margin-bottom:8px;border-radius:12px;border:1px solid #28282f;background:#08080a}
-  .img-container img{object-fit:contain}
-  .category-badge{top:7px;right:7px;max-width:calc(100% - 14px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:4px 7px;border-radius:7px;font-size:.58rem;background:rgba(227,27,27,.94)}
+  .card:hover{transform:none!important}
+  .img-container{
+    height:auto!important;aspect-ratio:1/1!important;margin:0 0 9px!important;
+    border-radius:13px!important;background:#08080a!important;border-color:#25252b!important
+  }
+  .img-container img{object-fit:contain!important;padding:3px}
+  .category-badge{
+    top:7px!important;right:7px!important;padding:4px 7px!important;border-radius:999px!important;
+    font-size:.58rem!important;max-width:82%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+  }
   .zoom-hint{display:none!important}
-  .card-thumbnails{gap:5px!important;margin-bottom:7px!important}
-  .card-thumb{width:30px!important;height:30px!important;border-radius:7px!important}
-  .product-title{margin:3px 1px 7px!important;font-size:.91rem!important;line-height:1.2!important;min-height:2.25em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .stock-wrapper{margin-bottom:7px}.stock-badge{padding:4px 7px;font-size:.62rem;border-radius:7px}.stock-info-text{display:none}
-  .price-command{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:5px!important;margin:0 0 8px!important}
-  .price-command .price,.price{font-size:.86rem!important;font-weight:1000!important;color:#fff!important;line-height:1.2}
-  .command{width:100%;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:5px 6px!important;border-radius:7px!important;font-size:.58rem!important;text-align:center}
-  .action-btn{min-height:42px;padding:8px 6px!important;border-radius:10px!important;font-size:.68rem!important;line-height:1.15!important;white-space:normal!important;font-weight:950!important}
-  .card details{margin-top:7px!important}.card details summary{padding:8px 7px!important;border-radius:9px!important;font-size:.67rem!important;line-height:1.15}.card .details-content{font-size:.72rem!important;line-height:1.45!important;padding:9px 3px 2px!important}
-
-  /* TURNUVA LİSTESİ */
-  .tv2-market-section{
-    margin:4px 0 14px;padding:12px;border-radius:18px;border:1px solid #4c1b1b;
-    background:radial-gradient(circle at 100% 0,rgba(227,27,27,.18),transparent 42%),linear-gradient(180deg,#111115,#09090c);
-    box-shadow:0 14px 34px rgba(0,0,0,.28);
+  .card-thumbnails{gap:5px!important;margin-bottom:8px!important;overflow-x:auto!important;flex-wrap:nowrap!important}
+  .card-thumb{width:34px!important;height:34px!important;flex:0 0 34px!important;border-radius:7px!important}
+  .product-title{
+    min-height:34px!important;margin:0 1px 6px!important;font-size:.89rem!important;line-height:1.2!important;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
   }
-  .tv2-section-heading{flex-direction:row;align-items:center;gap:8px;margin-bottom:12px}
-  .tv2-section-heading>div{min-width:0}.tv2-section-kicker{font-size:.62rem;letter-spacing:.08em}.tv2-section-heading h2{margin:2px 0;font-size:1.15rem}.tv2-section-heading p{margin:2px 0 0;font-size:.72rem;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .tv2-refresh-btn{flex:0 0 auto;width:40px;height:40px;padding:0;overflow:hidden;color:transparent;position:relative;border-radius:11px;background:#151519;border:1px solid #303038}
-  .tv2-refresh-btn::after{content:'↻';color:#fff;position:absolute;inset:0;display:grid;place-items:center;font-size:1.25rem;font-weight:900}
-  .tv2-market-grid{grid-template-columns:1fr;gap:9px}.tv2-market-card{padding:13px;gap:10px;border-radius:15px;background:linear-gradient(145deg,#131318,#0b0b0e);border:1px solid #2e2e35;box-shadow:inset 3px 0 0 rgba(227,27,27,.78)}
-  .tv2-card-title{font-size:.98rem}.tv2-card-badge{font-size:.61rem;padding:5px 7px}.tv2-card-meta{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.tv2-meta-box{padding:8px;border-radius:9px;background:#0d0d11}.tv2-meta-label{font-size:.59rem}.tv2-meta-value{font-size:.76rem}.tv2-card-note{font-size:.7rem}.tv2-card-action{min-height:43px;border-radius:10px;font-size:.71rem}
+  .stock-wrapper{margin:0 0 7px!important}
+  .stock-badge{padding:3px 7px!important;border-radius:999px!important;font-size:.61rem!important}
+  .stock-info-text{display:none!important}
+  .price-command{
+    display:flex!important;align-items:flex-start!important;flex-direction:column!important;gap:5px!important;
+    margin:0 0 8px!important;padding:8px 0!important
+  }
+  .price{font-size:.9rem!important;line-height:1.15!important}
+  .command{max-width:100%;font-size:.60rem!important;padding:4px 6px!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .action-btn{
+    min-height:42px!important;margin:0 0 8px!important;padding:9px 7px!important;border-radius:11px!important;
+    font-size:.76rem!important;box-shadow:0 7px 16px rgba(227,27,27,.16)!important
+  }
+  .card details{margin:5px 0 0!important;border-radius:10px!important}
+  .card summary{padding:9px 10px!important;font-size:.70rem!important}
+  .card .details-content{padding:10px!important;font-size:.72rem!important;line-height:1.45!important}
 
-  /* PROFİL */
-  .wz-profile-shell{padding:4px 0 18px}
-  .wz-profile-kicker{font-size:.68rem;color:#ff6666;font-weight:1000;letter-spacing:1.4px;margin:4px 2px 7px}
+  /* ---------- Turnuva görünümü ---------- */
+  .wz-mobile-tournament-hero{
+    display:block;margin:0 0 12px;padding:19px 17px;border-radius:19px;overflow:hidden;position:relative;
+    border:1px solid #451719;background:
+      radial-gradient(circle at 82% 10%,rgba(227,27,27,.24),transparent 35%),
+      linear-gradient(135deg,#181114,#09090b 65%);
+  }
+  .wz-mobile-tournament-hero:after{
+    content:'🏆';position:absolute;right:12px;top:9px;font-size:4rem;opacity:.08;filter:grayscale(1)
+  }
+  .wz-mobile-tournament-hero h2{margin:5px 0 6px;font-size:1.4rem}
+  .wz-mobile-tournament-hero p{margin:0;color:#9999a2;font-size:.8rem;line-height:1.45;max-width:85%}
+  .tv2-market-section{padding:0!important;margin:0!important;background:transparent!important;border:0!important}
+  .tv2-section-heading{
+    margin:0 0 11px!important;padding:0 2px!important;gap:8px!important;align-items:center!important;flex-direction:row!important
+  }
+  .tv2-section-heading h2{font-size:1.08rem!important;margin:2px 0!important}
+  .tv2-section-heading p{display:none!important}
+  .tv2-section-kicker{font-size:.64rem!important;color:#ff5e5e!important}
+  .tv2-refresh-btn{width:auto!important;min-width:44px!important;padding:9px 10px!important;border-radius:11px!important;font-size:.70rem!important}
+  .tv2-market-grid{display:grid!important;grid-template-columns:1fr!important;gap:11px!important}
+  .tv2-market-card{
+    border-radius:18px!important;border:1px solid #2b2b31!important;
+    background:linear-gradient(145deg,#121216,#0b0b0e)!important;
+    padding:15px!important;box-shadow:0 10px 28px rgba(0,0,0,.22)!important
+  }
+  .tv2-market-card:hover{transform:none!important}
+  .tv2-card-title{font-size:1rem!important}
+  .tv2-card-badge{font-size:.62rem!important;border-radius:999px!important;padding:5px 8px!important}
+  .tv2-card-meta{grid-template-columns:1fr 1fr!important;gap:7px!important}
+  .tv2-card-meta>div{border-radius:10px!important;padding:9px!important;background:#0a0a0c!important}
+  .tv2-card-action{min-height:44px!important;border-radius:11px!important}
+
+  /* ---------- Profil sayfası ---------- */
+  #wzMobileProfileView{display:none;margin:0 0 10px}
+  body.wz-view-profile #wzMobileProfileView{display:block}
+  body.wz-view-profile header,body.wz-view-profile #marketContent{display:none!important}
   .wz-profile-hero{
-    position:relative;overflow:hidden;padding:17px;border-radius:20px;border:1px solid #632222;
-    background:radial-gradient(circle at 100% 0,rgba(227,27,27,.22),transparent 40%),linear-gradient(145deg,#151519,#09090c);
-    box-shadow:0 14px 36px rgba(0,0,0,.28);
+    position:relative;overflow:hidden;padding:19px;border:1px solid #351719;border-radius:20px;
+    background:radial-gradient(circle at 90% 15%,rgba(227,27,27,.22),transparent 34%),linear-gradient(145deg,#151518,#09090b);
+    box-shadow:0 14px 34px rgba(0,0,0,.28)
   }
-  .wz-profile-hero::after{content:'W';position:absolute;right:-4px;top:-34px;font-size:130px;font-weight:1000;color:rgba(255,255,255,.025);pointer-events:none}
-  .wz-profile-main{position:relative;z-index:1;display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;align-items:center}
-  .wz-profile-avatar{width:62px;height:62px;border-radius:18px;border:1px solid #8d2929;background:#1a0e0e;object-fit:cover}
-  .wz-profile-name{font-size:1.15rem;font-weight:1000;overflow-wrap:anywhere}.wz-profile-state{display:inline-flex;margin-top:5px;padding:4px 7px;border-radius:999px;background:#102b19;border:1px solid #275b37;color:#7eed9e;font-size:.62rem;font-weight:900}
-  .wz-profile-stats{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
-  .wz-profile-stat{padding:11px;border-radius:13px;border:1px solid #292930;background:rgba(5,5,7,.68)}
-  .wz-profile-stat small{display:block;color:#85858f;font-size:.65rem;margin-bottom:4px}.wz-profile-stat strong{font-size:1rem;overflow-wrap:anywhere}
-  .wz-profile-section{margin-top:13px;padding:14px;border-radius:18px;border:1px solid #292930;background:#0d0d11}
-  .wz-profile-section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}.wz-profile-section-head h3{margin:0;font-size:1rem}.wz-profile-section-head span{font-size:.65rem;color:#7f7f88}
-  .wz-support-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .wz-support-item{min-width:0;padding:11px;border-radius:12px;background:#111116;border:1px solid #292930}
-  .wz-support-item .ico{font-size:1rem;margin-bottom:6px}.wz-support-item small{display:block;color:#85858f;font-size:.63rem}.wz-support-item strong{display:block;margin-top:4px;font-size:.82rem;overflow-wrap:anywhere}.wz-support-item.wide{grid-column:1/-1}
-  .wz-profile-note{margin-top:9px;color:#686871;font-size:.66rem;line-height:1.45}
-  .wz-profile-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}
-  .wz-profile-action{min-height:46px;border-radius:12px;border:1px solid #303037;background:#151519;color:#fff;font-weight:900;font-size:.78rem;padding:9px}
-  .wz-profile-action.red{background:#2a0d0d;border-color:#6f2424;color:#ffb0b0}.wz-profile-action.primary{background:#e31b1b;border-color:#e31b1b;color:#fff}
-  .wz-profile-links{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.wz-profile-links a{display:flex;align-items:center;justify-content:center;text-align:center;min-height:42px;padding:8px;border-radius:11px;background:#101014;border:1px solid #292930;color:#cfcfd5;text-decoration:none;font-size:.72rem;font-weight:850}
-  .wz-profile-guest{padding:18px;border-radius:18px;background:#0d0d11;border:1px solid #492020;text-align:center;color:#aaa;line-height:1.5}
+  .wz-profile-head{display:flex;align-items:center;gap:13px;position:relative;z-index:1}
+  .wz-profile-avatar{width:64px;height:64px;border-radius:18px;object-fit:cover;border:1px solid #702323;background:#111;box-shadow:0 7px 20px rgba(0,0,0,.3)}
+  .wz-profile-name{font-size:1.23rem;font-weight:1000;overflow-wrap:anywhere}
+  .wz-profile-state{display:flex;align-items:center;gap:6px;margin-top:5px;color:#9b9ba5;font-size:.75rem}
+  .wz-profile-state i{width:7px;height:7px;border-radius:50%;background:#32d676}
+  .wz-profile-stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:15px}
+  .wz-profile-stat{padding:12px;border-radius:14px;border:1px solid #29292f;background:rgba(5,5,7,.58)}
+  .wz-profile-stat span{display:block;color:#8f8f99;font-size:.68rem;margin-bottom:5px}
+  .wz-profile-stat strong{display:block;font-size:1.02rem;overflow-wrap:anywhere}
+  .wz-profile-section{margin-top:12px;padding:15px;border:1px solid #24242a;border-radius:18px;background:#0d0d10}
+  .wz-profile-section-title{font-weight:950;font-size:.9rem;margin-bottom:11px}
+  .wz-profile-info-row{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid #202025}
+  .wz-profile-info-row:last-child{border-bottom:0}
+  .wz-profile-info-row span{color:#8f8f99;font-size:.75rem}
+  .wz-profile-info-row strong{text-align:right;font-size:.78rem;max-width:62%;overflow-wrap:anywhere}
+  .wz-profile-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .wz-profile-action{
+    min-height:48px;border-radius:12px;border:1px solid #303037;background:#141418;color:#fff;
+    font-weight:850;font-size:.78rem;padding:10px
+  }
+  .wz-profile-action.primary{background:#e31b1b;border-color:#e31b1b}
+  .wz-profile-action.danger{background:#241010;border-color:#652222;color:#ffb0b0}
+  .wz-profile-login{padding:28px 18px;text-align:center;border:1px dashed #3a3a40;border-radius:18px;background:#0c0c0f;color:#aaa}
+  .wz-profile-login strong{display:block;color:#fff;font-size:1rem;margin-bottom:7px}
+  .wz-profile-login button{margin-top:14px;width:100%;min-height:46px;border:0;border-radius:12px;background:#e31b1b;color:#fff;font-weight:900}
 
-  /* MESAJLAR ALTINDA HEDİYE KODU */
-  .wz-inbox-gift-card{margin:10px 0 2px;padding:12px;border-radius:14px;border:1px solid #492020;background:linear-gradient(145deg,#140d0e,#0d0d10)}
-  .wz-inbox-gift-title{font-weight:950;font-size:.88rem}.wz-inbox-gift-note{margin:4px 0 10px;color:#85858e;font-size:.7rem;line-height:1.4}.wz-inbox-gift-btn{width:100%;min-height:42px;border:1px solid #7a2424;border-radius:10px;background:#e31b1b;color:#fff;font-weight:900}
+  /* ---------- Mesaj kutusu altındaki hediye kodu ---------- */
+  .wz-inbox-extra{display:block;margin-top:12px;padding-top:12px;border-top:1px solid #26262b}
+  .wz-inbox-extra button{
+    width:100%;min-height:46px;border-radius:12px;border:1px solid #632222;background:#1b0d0f;color:#fff;font-weight:900
+  }
 
-  /* TÜM AÇILIR PENCERELER MOBİLDE EKRAN ORTASINDA */
+  /* ---------- Tüm popup/modal'lar mobilde ekran ortasında ---------- */
   .modal-overlay{
-    padding:14px!important;
-    align-items:center!important;
-    justify-content:center!important;
-    overflow:hidden!important;
+    align-items:center!important;justify-content:center!important;
+    padding:14px!important;overflow:hidden!important;
   }
-  .modal-content{
-    width:min(94vw,680px)!important;
-    max-width:680px!important;
-    max-height:88dvh!important;
-    margin:0!important;
-    border-radius:20px!important;
-    border:1px solid #303038!important;
-    background:#0b0b0e!important;
-    overflow:hidden!important;
-    box-shadow:0 24px 80px rgba(0,0,0,.72)!important;
+  .modal-content,
+  .purchase-modal-content,
+  .tv2-modal-content,
+  #redirectModal>.modal-content,
+  #giftRedeemModal>.modal-content,
+  #actionResultModal>.modal-content{
+    width:100%!important;max-width:560px!important;
+    height:auto!important;min-height:0!important;max-height:calc(100dvh - 28px)!important;
+    margin:auto!important;border-radius:20px!important;
+    border:1px solid #2d2d33!important;background:#0c0c0f!important;
+    box-shadow:0 24px 70px rgba(0,0,0,.72)!important;overflow:hidden!important
   }
-  .modal-header{position:sticky;top:0;z-index:8;background:rgba(12,12,15,.98);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:20px 20px 0 0}
-  .modal-body,.redirect-modal-body,.purchase-body{max-height:calc(88dvh - 72px);overflow:auto;-webkit-overflow-scrolling:touch}
-  #redirectModal .modal-content,#giftRedeemModal .modal-content,#actionResultModal .modal-content,#purchaseModal .modal-content{width:min(92vw,520px)!important;max-width:520px!important}
+  .modal-header{padding:15px 16px!important;background:#0e0e11!important}
+  .modal-header h3{font-size:1.05rem!important}
+  .close-icon{width:40px!important;height:40px!important;display:grid!important;place-items:center!important;font-size:1.35rem!important}
+  .redirect-modal-body,.purchase-body,.modal-body,.tv2-modal-body{padding:18px!important;overflow-y:auto!important;max-height:calc(100dvh - 92px)!important}
+  .redirect-command-box{font-size:1.15rem!important;word-break:break-all!important}
+  .gift-redeem-input{font-size:16px!important}
 
+  /* Mesaj kutusu da alt sheet değil, ortalanmış uygulama penceresi */
   #inboxModal{
-    padding:12px!important;
-    align-items:center!important;
-    justify-content:center!important;
+    padding:14px!important;align-items:center!important;justify-content:center!important;overflow:hidden!important
   }
   #inboxModal .inbox-modal-content{
-    width:min(95vw,720px)!important;
-    height:min(88dvh,760px)!important;
-    max-height:88dvh!important;
-    border-radius:20px!important;
-    border:1px solid #303038!important;
-    overflow:hidden!important;
+    width:100%!important;max-width:620px!important;
+    height:min(78dvh,720px)!important;min-height:480px!important;max-height:calc(100dvh - 28px)!important;
+    border-radius:20px!important;border:1px solid #2d2d33!important;overflow:hidden!important
   }
-  #inboxModal .inbox-shell,#inboxModal #inboxListView,#inboxModal #inboxThreadView{min-height:0!important}
-  #inboxModal .inbox-body{overflow:auto!important;-webkit-overflow-scrolling:touch}
+  #inboxModal .inbox-body{padding:12px!important}
+  #inboxModal .inbox-toolbar{gap:7px!important}
+  #inboxModal .inbox-toolbar-actions{grid-template-columns:1fr 1fr!important;gap:7px!important}
+  #inboxModal .inbox-mini-btn{min-height:40px!important;border-radius:10px!important;font-size:.72rem!important}
+  #inboxModal #inboxMessages{padding:13px 11px 18px!important}
+  #inboxModal .inbox-reply-box{padding:10px!important}
+  #inboxModal .inbox-reply-input{font-size:16px!important}
 
-  #tv2Modal{padding:12px!important;align-items:center!important;justify-content:center!important}
-  #tv2Modal .tv2-modal-content{
-    width:min(95vw,760px)!important;
-    height:auto!important;
-    max-height:90dvh!important;
-    border-radius:20px!important;
-    border:1px solid #303038!important;
-  }
-  #tv2Modal .tv2-modal-body{max-height:calc(90dvh - 70px);overflow:auto;padding:12px 12px 18px!important;-webkit-overflow-scrolling:touch}
-  .tv2-hero{grid-template-columns:1fr;gap:9px}.tv2-panel{border-radius:14px;padding:12px;background:#101014}.tv2-big-title{font-size:1.14rem}.tv2-muted{font-size:.78rem}.tv2-actions{gap:7px}.tv2-actions .tv2-btn{min-height:42px;font-size:.74rem}.tv2-input,.tv2-select{min-height:44px;font-size:16px}
+  /* Görsel galerisi */
+  #imageModal .modal-content{max-width:620px!important}
+  #imageModal .main-slider img{max-height:58dvh!important}
 
-  .verify-wait-overlay{align-items:center!important;justify-content:center!important;padding:14px!important}
-  .verify-wait-card{width:min(92vw,480px)!important;max-width:480px!important;margin:0!important;border-radius:20px!important}
-
-  /* ALT MENÜ = TEK ANA NAVİGASYON */
+  /* ---------- Alt mobil navigasyon ---------- */
   .wz-mobile-bottom-nav{
-    position:fixed;left:0;right:0;bottom:0;z-index:850;
-    display:grid;grid-template-columns:repeat(4,1fr);gap:2px;
-    padding:6px 8px calc(6px + env(safe-area-inset-bottom));
-    background:rgba(7,7,9,.96);border-top:1px solid #292930;
-    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-    box-shadow:0 -12px 32px rgba(0,0,0,.35);
+    display:grid;grid-template-columns:repeat(4,1fr);position:fixed;z-index:850;
+    left:8px;right:8px;bottom:calc(8px + env(safe-area-inset-bottom));
+    min-height:66px;padding:6px;border:1px solid rgba(255,255,255,.08);border-radius:20px;
+    background:rgba(11,11,13,.96);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    box-shadow:0 18px 50px rgba(0,0,0,.50)
   }
-  .wz-mobile-bottom-btn{min-width:0;min-height:50px;padding:4px 2px;border:0;border-radius:11px;background:transparent;color:#7d7d87;font-size:.60rem;font-weight:900;line-height:1.1}
-  .wz-mobile-bottom-btn .ico{display:block;margin-bottom:3px;font-size:1.16rem;line-height:1}.wz-mobile-bottom-btn.active{color:#fff;background:rgba(227,27,27,.12)}
+  .wz-mobile-nav-btn{
+    position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    min-width:0;border:0;border-radius:14px;background:transparent;color:#72727c;padding:6px 2px;
+    font-size:.61rem;font-weight:850;line-height:1.05
+  }
+  .wz-mobile-nav-btn svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .wz-mobile-nav-btn.active{background:#211011;color:#fff}
+  .wz-mobile-nav-btn.active:before{content:'';position:absolute;top:0;width:28px;height:2px;border-radius:999px;background:#f42d2d;box-shadow:0 0 10px rgba(244,45,45,.45)}
+  .wz-mobile-nav-badge{display:none;position:absolute;top:4px;right:20%;min-width:17px;height:17px;padding:0 4px;border-radius:999px;background:#e31b1b;color:#fff;border:2px solid #0b0b0d;font-size:.57rem;font-weight:1000;line-height:13px;align-items:center;justify-content:center}
+  .wz-mobile-nav-badge.show{display:flex}
 
-  .modal-overlay,#inboxModal,#verificationWaitModal{z-index:1200!important}
-}
+  body.wz-view-market #tournamentMarketSection{display:none!important}
+  body.wz-view-tournament .market-search-wrap,
+  body.wz-view-tournament .category-filters,
+  body.wz-view-tournament #urunGrid,
+  body.wz-view-tournament .wz-mobile-page-intro{display:none!important}
+  body.wz-view-tournament #tournamentMarketSection{display:block!important}
 
-@media(max-width:350px){
-  .grid{grid-template-columns:1fr}.img-container{height:min(72vw,250px)}
-  .wz-support-grid,.wz-profile-actions,.wz-profile-links{grid-template-columns:1fr}
-  .wz-support-item.wide{grid-column:auto}
-}
-
-@media(min-width:769px){
-  .wz-mobile-bottom-nav,#wzMobileProfileView{display:none!important}
+  @media(max-width:370px){
+    .grid{grid-template-columns:1fr!important}
+    .img-container{aspect-ratio:16/10!important}
+    .product-title{min-height:auto!important;font-size:.96rem!important}
+    .wz-profile-actions{grid-template-columns:1fr!important}
+  }
 }
 </style>
 
 </head>
 <body>
+
+<div class="wz-mobile-topbar" id="wzMobileTopbar" aria-label="Weizend mobil üst menü">
+  <div class="wz-mobile-brand">
+    <img src="https://i.hizliresim.com/fo5evkh4.png" alt="Weizend">
+    <div class="wz-mobile-brand-copy">
+      <div class="wz-mobile-brand-name">WEIZEND</div>
+      <div class="wz-mobile-view-name" id="wzMobileViewName">MARKET</div>
+    </div>
+  </div>
+  <div class="wz-mobile-status"><i></i><span>ONLINE</span></div>
+</div>
+
 
     <script>
         // TÜM ÜRÜN TASLAKLARI
@@ -1554,7 +1627,16 @@
                 </div>
             </div>
         </header>
+
         <div id="marketContent" style="display:block;">
+            <div class="wz-mobile-page-intro" id="wzMobileMarketIntro">
+  <div>
+    <div class="wz-mobile-kicker">WEIZEND MARKET</div>
+    <h2>Ödüller & Dijital Ürünler</h2>
+    <p>Puanlarınla ürünleri keşfet, güvenli şekilde satın al ve teslimatını takip et.</p>
+  </div>
+  <div class="wz-mobile-intro-mark">W</div>
+</div>
             <!-- ÜRÜN ARAMA -->
             <div class="market-search-wrap">
                 <div class="market-search-box">
@@ -1575,6 +1657,11 @@
             <div class="category-filters" id="filters"></div>
 
             <section id="tournamentMarketSection" class="tv2-market-section" style="display:none;">
+                <div class="wz-mobile-tournament-hero" id="wzMobileTournamentHero">
+  <div class="wz-mobile-kicker">WEIZEND ESPORTS</div>
+  <h2>Turnuva Merkezi</h2>
+  <p>Aktif ve tamamlanan turnuvaları, katılımcıları, kayıt durumunu ve fikstürü tek yerden takip et.</p>
+</div>
                 <div class="tv2-section-heading">
                     <div>
                         <div class="tv2-section-kicker">🏆 WEIZEND TURNUVALARI</div>
@@ -1588,58 +1675,48 @@
 
             <div class="grid" id="urunGrid"></div>
         </div>
+    </div>
 
-        <!-- WEIZEND MOBILE V2: Profil yalnızca alt menüdeki Profil sekmesinde görünür -->
-        <section id="wzMobileProfileView" aria-label="Kullanıcı profili">
-            <div class="wz-profile-shell">
-                <div class="wz-profile-kicker">WEIZEND PROFİL</div>
+    <div class="container">
+        <section id="wzMobileProfileView" aria-label="Profil">
+  <div id="wzProfileAuthenticated">
+    <div class="wz-profile-hero">
+      <div class="wz-profile-head">
+        <img id="wzProfileAvatar" class="wz-profile-avatar" src="https://ui-avatars.com/api/?name=W&background=e31b1b&color=fff&bold=true&size=128" alt="Profil">
+        <div style="min-width:0;">
+          <div id="wzProfileName" class="wz-profile-name">Kullanıcı</div>
+          <div class="wz-profile-state"><i></i><span id="wzProfileState">Doğrulanmış Kick hesabı</span></div>
+        </div>
+      </div>
+      <div class="wz-profile-stats">
+        <div class="wz-profile-stat"><span>🪙 Bakiye</span><strong id="wzProfilePoints">-</strong></div>
+        <div class="wz-profile-stat"><span>⭐ Level</span><strong id="wzProfileLevel">-</strong></div>
+      </div>
+    </div>
 
-                <div id="wzProfileSignedIn" style="display:none;">
-                    <div class="wz-profile-hero">
-                        <div class="wz-profile-main">
-                            <img id="wzProfileAvatar" class="wz-profile-avatar" alt="Profil resmi">
-                            <div>
-                                <div id="wzProfileName" class="wz-profile-name">Kullanıcı</div>
-                                <div id="wzProfileStatus" class="wz-profile-state">● Kick Doğrulandı</div>
-                            </div>
-                        </div>
-                        <div class="wz-profile-stats">
-                            <div class="wz-profile-stat"><small>🪙 BAKİYE</small><strong id="wzProfilePoints">-</strong></div>
-                            <div class="wz-profile-stat"><small>⭐ LEVEL</small><strong id="wzProfileLevel">-</strong></div>
-                        </div>
-                    </div>
+    <div class="wz-profile-section">
+      <div class="wz-profile-section-title">Hesap Bilgileri</div>
+      <div class="wz-profile-info-row"><span>Kick Kullanıcı Adı</span><strong id="wzProfileKick">-</strong></div>
+      <div class="wz-profile-info-row"><span>Hesap Durumu</span><strong id="wzProfileAccountStatus">Aktif</strong></div>
+      <div class="wz-profile-info-row"><span>Son Güncelleme</span><strong id="wzProfileUpdated">-</strong></div>
+    </div>
 
-                    <div class="wz-profile-section">
-                        <div class="wz-profile-section-head"><h3>📊 Destek Özeti</h3><span>Profil geçmişi</span></div>
-                        <div class="wz-support-grid">
-                            <div class="wz-support-item"><div class="ico">💸</div><small>SON BAĞIŞ</small><strong id="wzLastDonation">—</strong></div>
-                            <div class="wz-support-item"><div class="ico">⭐</div><small>SON ABONELİK</small><strong id="wzLastSubscription">—</strong></div>
-                            <div class="wz-support-item"><div class="ico">🎁</div><small>SON HEDİYE ABONELİĞİ</small><strong id="wzLastGiftSubscription">—</strong></div>
-                            <div class="wz-support-item"><div class="ico">⚡</div><small>SON KICKs</small><strong id="wzLastKicks">—</strong></div>
-                            <div class="wz-support-item wide"><div class="ico">⏱️</div><small>TAKİP SÜRESİ</small><strong id="wzFollowDuration">—</strong></div>
-                        </div>
-                        <div class="wz-profile-note">Bu destek geçmişi alanları tasarıma hazırlandı. Mevcut profil servisi bu 5 bilgiyi henüz göndermediği için yanlış veri göstermemek adına boş bırakılır.</div>
-                    </div>
-
-                    <div class="wz-profile-section">
-                        <div class="wz-profile-section-head"><h3>👤 Hesap</h3><span id="wzProfileUpdated">Son güncelleme: —</span></div>
-                        <div class="wz-profile-actions">
-                            <button class="wz-profile-action primary" type="button" onclick="wzMobileRefreshProfile(event)">🔄 Bilgileri Yenile</button>
-                            <button class="wz-profile-action red" type="button" onclick="logoutAccount()">🚪 Çıkış Yap</button>
-                        </div>
-                        <div class="wz-profile-links">
-                            <a href="https://weizend.github.io/weizendbilgi/" target="_blank" rel="noopener noreferrer">❓ Puan Nasıl Kazanılır?</a>
-                            <a href="https://instagram.com/weizendtv" target="_blank" rel="noopener noreferrer">📸 @weizendtv</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="wzProfileGuest" class="wz-profile-guest">
-                    <b style="color:#fff;">🔐 Profilini açmak için Kick hesabını doğrula</b><br>
-                    Doğrulama formu bu Profil sekmesinin üst kısmında görünecek. Market ve Turnuva bölümleri profil kartıyla kalabalıklaşmayacak.
-                </div>
-            </div>
-        </section>
+    <div class="wz-profile-section">
+      <div class="wz-profile-section-title">Hızlı İşlemler</div>
+      <div class="wz-profile-actions">
+        <button class="wz-profile-action" type="button" onclick="location.reload()">↻ Bilgileri Yenile</button>
+        <button class="wz-profile-action" type="button" onclick="openGiftRedeem()">🎁 Hediye Kodu</button>
+        <button class="wz-profile-action" type="button" onclick="wzOpenMessages()">✉ Mesaj Kutusu</button>
+        <button class="wz-profile-action danger" type="button" onclick="logoutAccount()">Çıkış Yap</button>
+      </div>
+    </div>
+  </div>
+  <div id="wzProfileGuest" class="wz-profile-login" style="display:none;">
+    <strong>Profilini görüntülemek için hesabını doğrula</strong>
+    Kick hesabın doğrulandığında puanın, levelin ve hesap bilgilerin burada görünür.
+    <button type="button" onclick="wzGoToLogin()">Kick Hesabını Doğrula</button>
+  </div>
+</section>
     </div>
 
     <div id="copyToast" class="copy-toast" style="display:none!important" aria-hidden="true"></div>
@@ -1804,12 +1881,9 @@
                         <div id="inboxList" class="inbox-list">
                             <div class="inbox-empty">Mesajlar yükleniyor...</div>
                         </div>
-
-                        <div class="wz-inbox-gift-card">
-                            <div class="wz-inbox-gift-title">🎁 Hediye Kodun mu var?</div>
-                            <div class="wz-inbox-gift-note">Mesaj kutusundan çıkmadan tek kullanımlık Weizend kodunu kullanabilirsin.</div>
-                            <button class="wz-inbox-gift-btn" type="button" onclick="wzMobileOpenGiftFromInbox()">Hediye Kodu Kullan</button>
-                        </div>
+                        <div class="wz-inbox-extra" id="wzInboxExtra">
+  <button type="button" onclick="wzOpenGiftFromInbox()">🎁 Hediye Kodu Kullan</button>
+</div>
                     </div>
                 </div>
 
@@ -8222,198 +8296,200 @@ return;
     });
     </script>
 
-    <!-- WEIZEND MOBILE V2: Tek ana navigasyon -->
-    <nav class="wz-mobile-bottom-nav" aria-label="Mobil ana menü">
-        <button id="wzBottomMarket" class="wz-mobile-bottom-btn active" type="button" onclick="wzMobileSelectView('market')"><span class="ico">🛒</span>Market</button>
-        <button id="wzBottomTournament" class="wz-mobile-bottom-btn" type="button" onclick="wzMobileSelectView('tournament')"><span class="ico">🏆</span>Turnuva</button>
-        <button id="wzBottomMessages" class="wz-mobile-bottom-btn" type="button" onclick="wzMobileOpenMessages()"><span class="ico">✉️</span>Mesaj</button>
-        <button id="wzBottomProfile" class="wz-mobile-bottom-btn" type="button" onclick="wzMobileSelectView('profile')"><span class="ico">👤</span>Profil</button>
-    </nav>
 
-    <script id="weizend-mobile-redesign-js-v2">
-    // Sadece mobil sunum/navigasyon katmanı. Mevcut market, turnuva, mesaj,
-    // doğrulama, satın alma ve ödeme fonksiyonları aynen kullanılmaya devam eder.
-    let wzMobileCurrentView = 'market';
+<script id="wz-mobile-pro-v4-js">
+(function(){
+  const mobileMq = window.matchMedia('(max-width: 768px)');
+  let wzCurrentView = 'market';
+  let wzMessageTempActive = false;
 
-    function wzIsMobile(){
-        return window.matchMedia('(max-width: 768px)').matches;
+  function navBtn(id){ return document.getElementById(id); }
+  function isMobile(){ return mobileMq.matches; }
+
+  function wzSetNavActive(view){
+    const map={market:'wzNavMarket',tournament:'wzNavTournament',messages:'wzNavMessages',profile:'wzNavProfile'};
+    Object.values(map).forEach(id=>navBtn(id)?.classList.remove('active'));
+    navBtn(map[view])?.classList.add('active');
+  }
+
+  function wzSetTitle(view){
+    const el=document.getElementById('wzMobileViewName');
+    if(!el) return;
+    const names={market:'MARKET',tournament:'TURNUVALAR',messages:'MESAJLAR',profile:'PROFİL'};
+    el.textContent=names[view]||'WEIZEND';
+  }
+
+  window.wzSetMobileView=function(view){
+    if(!isMobile()) return;
+    if(!['market','tournament','profile'].includes(view)) view='market';
+    wzCurrentView=view;
+    wzMessageTempActive=false;
+    document.body.classList.remove('wz-view-market','wz-view-tournament','wz-view-profile');
+    document.body.classList.add('wz-view-'+view);
+    wzSetNavActive(view);
+    wzSetTitle(view);
+
+    if(view==='market'){
+      try{ if(typeof filtrele==='function') filtrele('Tümü'); }catch(_){}
+      setTimeout(wzCleanMobileFilters,0);
+    }else if(view==='tournament'){
+      try{ if(typeof filtrele==='function') filtrele('Turnuva'); }catch(_){}
+      setTimeout(wzCleanMobileFilters,0);
+    }else if(view==='profile'){
+      wzSyncProfile();
     }
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
 
-    function wzMobileSetActiveBottom(view){
-        const ids = {
-            market:'wzBottomMarket',
-            tournament:'wzBottomTournament',
-            messages:'wzBottomMessages',
-            profile:'wzBottomProfile'
-        };
-        Object.values(ids).forEach(id => document.getElementById(id)?.classList.remove('active'));
-        document.getElementById(ids[view] || ids.market)?.classList.add('active');
+  window.wzOpenMessages=function(){
+    if(!isMobile()){
+      if(typeof openInbox==='function') openInbox();
+      return;
     }
+    wzMessageTempActive=true;
+    wzSetNavActive('messages');
+    wzSetTitle('messages');
+    if(typeof openInbox==='function') openInbox();
+  };
 
-    function wzTagDuplicateTournamentFilter(){
-        const filters = document.getElementById('filters');
-        if (!filters) return;
-        Array.from(filters.querySelectorAll('button')).forEach(btn => {
-            const isTournament = btn.textContent.trim().toLocaleLowerCase('tr-TR') === 'turnuva';
-            btn.classList.toggle('wz-mobile-duplicate-tab', isTournament);
-        });
-    }
+  window.wzOpenGiftFromInbox=function(){
+    try{ if(typeof closeInbox==='function') closeInbox(); }catch(_){}
+    setTimeout(()=>{ if(typeof openGiftRedeem==='function') openGiftRedeem(); },80);
+  };
 
-    function wzMobileSetSearchPlaceholder(view){
-        const input = document.getElementById('productSearchInput');
-        if (!input) return;
-        input.placeholder = view === 'tournament'
-            ? 'Turnuva adı, format veya oyun ara...'
-            : 'Ürün adı, kategori veya komut ara...';
-    }
+  window.wzGoToLogin=function(){
+    wzSetMobileView('market');
+    setTimeout(()=>{
+      const card=document.getElementById('accessCard');
+      if(card){ card.scrollIntoView({behavior:'smooth',block:'center'}); }
+    },120);
+  };
 
-    function wzMobileSyncProfile(){
-        const signed = document.getElementById('wzProfileSignedIn');
-        const guest = document.getElementById('wzProfileGuest');
-        if (!signed || !guest) return;
-
-        const authenticated = typeof marketAuthenticated !== 'undefined' && !!marketAuthenticated;
-        signed.style.display = authenticated ? 'block' : 'none';
-        guest.style.display = authenticated ? 'none' : 'block';
-        if (!authenticated) return;
-
-        const srcAvatar = document.getElementById('walletAvatar')?.src || '';
-        const srcName = document.getElementById('walletUsername')?.textContent?.trim() || 'Kullanıcı';
-        const srcPoints = document.getElementById('walletPoints')?.textContent?.trim() || '-';
-        const srcLevel = document.getElementById('walletLevel')?.textContent?.trim() || '-';
-
-        const avatar = document.getElementById('wzProfileAvatar');
-        if (avatar) avatar.src = srcAvatar;
-        const name = document.getElementById('wzProfileName');
-        if (name) name.textContent = srcName;
-        const points = document.getElementById('wzProfilePoints');
-        if (points) points.textContent = srcPoints;
-        const level = document.getElementById('wzProfileLevel');
-        if (level) level.textContent = srcLevel;
-
-        const status = document.getElementById('wzProfileStatus');
-        const blocked = typeof currentAccountStatus !== 'undefined' && String(currentAccountStatus) === 'blocked';
-        if (status) {
-            status.textContent = blocked ? '⛔ Hesap Kısıtlı' : '● Kick Doğrulandı';
-            status.style.background = blocked ? '#351010' : '#102b19';
-            status.style.borderColor = blocked ? '#772828' : '#275b37';
-            status.style.color = blocked ? '#ff9494' : '#7eed9e';
-        }
-
-        let updated = '';
-        try {
-            const key = typeof PROFILE_CACHE_KEY !== 'undefined' ? PROFILE_CACHE_KEY : '';
-            const data = key ? JSON.parse(localStorage.getItem(key) || 'null') : null;
-            updated = data?.updatedAt || '';
-        } catch (_) {}
-        const updatedEl = document.getElementById('wzProfileUpdated');
-        if (updatedEl) {
-            let text = 'Son güncelleme: —';
-            if (updated) {
-                const d = new Date(updated);
-                if (!Number.isNaN(d.getTime())) text = 'Son güncelleme: ' + d.toLocaleString('tr-TR',{dateStyle:'short',timeStyle:'short'});
-            }
-            updatedEl.textContent = text;
-        }
-    }
-
-    async function wzMobileRefreshProfile(ev){
-        const button = ev?.currentTarget;
-        if (button) { button.disabled = true; button.textContent = '⏳ Güncelleniyor...'; }
-        try {
-            if (typeof checkSession === 'function') await checkSession({silent:true,retries:1});
-            wzMobileSyncProfile();
-            if (typeof showStatusToast === 'function') showStatusToast('✅ Profil bilgileri güncellendi.',2600);
-        } catch (_) {
-            if (typeof showStatusToast === 'function') showStatusToast('⚠️ Profil bilgileri yenilenemedi.',3000);
-        } finally {
-            if (button) { button.disabled = false; button.textContent = '🔄 Bilgileri Yenile'; }
-        }
-    }
-
-    function wzMobileSelectView(view){
-        if (!wzIsMobile()) return;
-        if (!['market','tournament','profile'].includes(view)) view = 'market';
-        wzMobileCurrentView = view;
-        document.body.dataset.wzMobileView = view;
-        wzMobileSetActiveBottom(view);
-        wzMobileSetSearchPlaceholder(view);
-
-        if (view === 'market') {
-            if (typeof filtrele === 'function') filtrele('Tümü');
-            const section = document.getElementById('tournamentMarketSection');
-            if (section) section.style.display = 'none';
-        } else if (view === 'tournament') {
-            if (typeof filtrele === 'function') filtrele('Turnuva');
-            if (typeof tv2LoadCatalog === 'function' && !tv2CatalogLoadedOnce) tv2LoadCatalog(false).catch(()=>{});
-        } else if (view === 'profile') {
-            wzMobileSyncProfile();
-            if (typeof marketAuthenticated !== 'undefined' && marketAuthenticated && typeof checkSession === 'function') {
-                checkSession({silent:true,retries:0}).then(()=>wzMobileSyncProfile()).catch(()=>{});
-            }
-        }
-
-        wzTagDuplicateTournamentFilter();
-        window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    function wzMobileOpenMessages(){
-        if (!wzIsMobile()) { if (typeof openInbox === 'function') openInbox(); return; }
-        wzMobileSetActiveBottom('messages');
-        if (typeof openInbox === 'function') openInbox();
-    }
-
-    function wzMobileOpenGiftFromInbox(){
-        if (typeof closeInbox === 'function') closeInbox();
-        setTimeout(() => {
-            if (typeof openGiftRedeem === 'function') openGiftRedeem();
-        }, 80);
-    }
-
-    function wzObserveModalState(){
-        const modal = document.getElementById('inboxModal');
-        if (!modal) return;
-        const observer = new MutationObserver(() => {
-            const open = getComputedStyle(modal).display !== 'none';
-            if (!open) wzMobileSetActiveBottom(wzMobileCurrentView);
-        });
-        observer.observe(modal,{attributes:true,attributeFilter:['style','class']});
-    }
-
-    function wzObserveProfileSource(){
-        const source = document.getElementById('walletCard');
-        if (!source) return;
-        const observer = new MutationObserver(() => {
-            if (wzMobileCurrentView === 'profile') wzMobileSyncProfile();
-        });
-        observer.observe(source,{attributes:true,childList:true,subtree:true,characterData:true});
-    }
-
-    function wzMobileInitV2(){
-        if (!wzIsMobile()) return;
-        document.body.dataset.wzMobileView = 'market';
-        wzMobileSetActiveBottom('market');
-        wzTagDuplicateTournamentFilter();
-        wzMobileSetSearchPlaceholder('market');
-        wzObserveModalState();
-        wzObserveProfileSource();
-
-        const filters = document.getElementById('filters');
-        if (filters) {
-            new MutationObserver(wzTagDuplicateTournamentFilter).observe(filters,{childList:true,subtree:true});
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', wzMobileInitV2);
-    window.addEventListener('resize', () => {
-        if (wzIsMobile()) {
-            if (!document.body.dataset.wzMobileView) document.body.dataset.wzMobileView = wzMobileCurrentView || 'market';
-            wzTagDuplicateTournamentFilter();
-        } else {
-            delete document.body.dataset.wzMobileView;
-        }
+  function wzCleanMobileFilters(){
+    const filters=document.getElementById('filters');
+    if(!filters) return;
+    filters.querySelectorAll('button').forEach(btn=>{
+      btn.classList.toggle('wz-hide-mobile',btn.textContent.trim()==='Turnuva');
     });
-    </script>
+  }
+
+  function wzReadProfileCache(){
+    try{
+      const raw=localStorage.getItem(typeof PROFILE_CACHE_KEY!=='undefined'?PROFILE_CACHE_KEY:'weizend_market_profile_cache_v1');
+      return raw?JSON.parse(raw):null;
+    }catch(_){return null;}
+  }
+
+  window.wzSyncProfile=function(){
+    const token=(()=>{try{return localStorage.getItem(typeof SESSION_STORAGE_KEY!=='undefined'?SESSION_STORAGE_KEY:'weizend_market_session_secure_v2')||''}catch(_){return ''}})();
+    const authed=!!token && (typeof marketAuthenticated==='undefined' || marketAuthenticated!==false);
+    const auth=document.getElementById('wzProfileAuthenticated');
+    const guest=document.getElementById('wzProfileGuest');
+    if(auth) auth.style.display=authed?'block':'none';
+    if(guest) guest.style.display=authed?'none':'block';
+    if(!authed) return;
+
+    const name=(document.getElementById('walletUsername')?.textContent||'Kullanıcı').trim();
+    const points=(document.getElementById('walletPoints')?.textContent||'-').trim();
+    const level=(document.getElementById('walletLevel')?.textContent||'-').trim();
+    const avatar=document.getElementById('walletAvatar')?.src||`https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=e31b1b&color=fff&bold=true&size=128`;
+    const cache=wzReadProfileCache()||{};
+    const status=String(cache.accountStatus || (typeof currentAccountStatus!=='undefined'?currentAccountStatus:'active') || 'active').toLowerCase();
+    const statusText=status==='blocked'?'Kısıtlı':status==='archived'?'Arşivlenmiş':'Aktif';
+    let updated='-';
+    if(cache.updatedAt){
+      const d=new Date(cache.updatedAt);
+      if(!Number.isNaN(d.getTime())) updated=d.toLocaleString('tr-TR',{dateStyle:'short',timeStyle:'short'});
+    }
+
+    const set=(id,val)=>{const el=document.getElementById(id);if(el) el.textContent=val};
+    set('wzProfileName',name);set('wzProfileKick',name);set('wzProfilePoints',points);set('wzProfileLevel',level);
+    set('wzProfileAccountStatus',statusText);set('wzProfileUpdated',updated);
+    const av=document.getElementById('wzProfileAvatar');if(av) av.src=avatar;
+    const state=document.getElementById('wzProfileState');
+    if(state) state.textContent=status==='active'?'Doğrulanmış Kick hesabı':`Hesap durumu: ${statusText}`;
+  };
+
+  function wzSyncMessageBadge(){
+    const original=document.getElementById('inboxBadge');
+    const target=document.getElementById('wzNavMessageBadge');
+    if(!target) return;
+    const txt=(original?.textContent||'0').trim();
+    const n=parseInt(txt,10)||0;
+    target.textContent=n>99?'99+':String(n);
+    target.classList.toggle('show',n>0);
+  }
+
+  function wzWatchModalState(){
+    const inbox=document.getElementById('inboxModal');
+    if(!inbox) return;
+    const obs=new MutationObserver(()=>{
+      const open=getComputedStyle(inbox).display!=='none';
+      document.body.classList.toggle('wz-mobile-modal-open',isMobile()&&open);
+      if(!open && wzMessageTempActive){
+        wzMessageTempActive=false;
+        wzSetNavActive(wzCurrentView);
+        wzSetTitle(wzCurrentView);
+      }
+    });
+    obs.observe(inbox,{attributes:true,attributeFilter:['style','class']});
+  }
+
+  function wzObserveAllModalLocks(){
+    document.querySelectorAll('.modal-overlay,.verify-wait-overlay').forEach(modal=>{
+      const obs=new MutationObserver(()=>{
+        if(!isMobile()) return;
+        const anyOpen=[...document.querySelectorAll('.modal-overlay,.verify-wait-overlay')].some(el=>getComputedStyle(el).display!=='none');
+        document.body.classList.toggle('wz-mobile-modal-open',anyOpen);
+      });
+      obs.observe(modal,{attributes:true,attributeFilter:['style','class']});
+    });
+  }
+
+  function init(){
+    if(!isMobile()) return;
+    document.body.classList.add('wz-view-market');
+    wzSetNavActive('market');wzSetTitle('market');wzCleanMobileFilters();wzSyncProfile();wzSyncMessageBadge();
+
+    const filters=document.getElementById('filters');
+    if(filters){
+      new MutationObserver(()=>wzCleanMobileFilters()).observe(filters,{childList:true,subtree:true});
+      filters.addEventListener('click',()=>{ if(wzCurrentView!=='market'){wzCurrentView='market';wzSetNavActive('market');wzSetTitle('market');} });
+    }
+
+    ['walletUsername','walletPoints','walletLevel','walletAvatar'].forEach(id=>{
+      const el=document.getElementById(id);if(el)new MutationObserver(()=>wzSyncProfile()).observe(el,{childList:true,attributes:true,subtree:true,characterData:true});
+    });
+    const badge=document.getElementById('inboxBadge');if(badge)new MutationObserver(wzSyncMessageBadge).observe(badge,{childList:true,attributes:true,subtree:true,characterData:true});
+
+    wzWatchModalState();wzObserveAllModalLocks();
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true}); else init();
+  mobileMq.addEventListener?.('change',e=>{ if(e.matches) init(); else document.body.classList.remove('wz-view-market','wz-view-tournament','wz-view-profile','wz-mobile-modal-open'); });
+})();
+</script>
+
+
+<nav class="wz-mobile-bottom-nav" id="wzMobileBottomNav" aria-label="Mobil ana menü">
+  <button class="wz-mobile-nav-btn active" id="wzNavMarket" type="button" onclick="wzSetMobileView('market')" aria-label="Market">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h18l-1.5 9h-15z"/><path d="M8 7a4 4 0 0 1 8 0"/><circle cx="9" cy="20" r="1"/><circle cx="17" cy="20" r="1"/></svg>
+    <span>Market</span>
+  </button>
+  <button class="wz-mobile-nav-btn" id="wzNavTournament" type="button" onclick="wzSetMobileView('tournament')" aria-label="Turnuvalar">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M12 13v4"/><path d="M8 21h8"/><path d="M6 6H3v1a4 4 0 0 0 4 4"/><path d="M18 6h3v1a4 4 0 0 1-4 4"/></svg>
+    <span>Turnuva</span>
+  </button>
+  <button class="wz-mobile-nav-btn" id="wzNavMessages" type="button" onclick="wzOpenMessages()" aria-label="Mesajlar">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v12H8l-4 3z"/><path d="M8 9h8M8 13h5"/></svg>
+    <span id="wzNavMessageBadge" class="wz-mobile-nav-badge">0</span>
+    <span>Mesaj</span>
+  </button>
+  <button class="wz-mobile-nav-btn" id="wzNavProfile" type="button" onclick="wzSetMobileView('profile')" aria-label="Profil">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+    <span>Profil</span>
+  </button>
+</nav>
 
 </body>
 </html>
