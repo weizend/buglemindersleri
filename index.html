@@ -1,808 +1,159 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weizend Market</title>
-    <style>
-        /* WEIZEND RENK PALETİ VE TASARIM AYARLARI */
-        :root {
-            --bg-color: #050505; 
-            --card-bg: #111111; 
-            --border-color: #2a2a2a; 
-            --weizend-red: #e31b1b; 
-            --weizend-white: #ffffff;
-            --text-muted: #a0a0a0;
-        }
-
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: var(--weizend-white); margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        
-        /* Header & Kategori */
-        header { text-align: center; padding: 20px 0; border-bottom: 2px solid var(--border-color); margin-bottom: 30px; }
-        .logo-img { width: 120px; border-radius: 50%; box-shadow: 0 0 20px rgba(227, 27, 27, 0.4); margin-bottom: 15px; }
-        header h1 { margin: 0; font-size: 2.2rem; color: var(--weizend-white); text-transform: uppercase; letter-spacing: 2px; }
-        .header-buttons { display: flex; justify-content: center; gap: 15px; margin-top: 15px; flex-wrap: wrap; }
-        
-        .ig-contact { display: inline-block; padding: 8px 15px; background: rgba(227, 27, 27, 0.1); border: 1px solid var(--weizend-red); border-radius: 20px; color: var(--weizend-red); text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: 0.3s; }
-        .ig-contact:hover { background: rgba(227, 27, 27, 0.3); }
-        
-        .wcoin-btn { display: inline-block; padding: 8px 15px; background: var(--weizend-red); border: 1px solid var(--weizend-red); border-radius: 20px; color: var(--weizend-white); text-decoration: none; font-weight: bold; font-size: 0.9rem; transition: 0.3s; box-shadow: 0 0 10px rgba(227, 27, 27, 0.4); }
-        .wcoin-btn:hover { background: #c21414; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(227, 27, 27, 0.6); }
-        
-        .category-filters { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
-        .filter-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--weizend-white); padding: 8px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; font-weight: 600; }
-        .filter-btn.active, .filter-btn:hover { background: var(--weizend-red); border-color: var(--weizend-red); }
-        .filter-btn.tukenenler-btn { color: var(--weizend-red); border-color: var(--weizend-red); background: rgba(227, 27, 27, 0.1); }
-        .filter-btn.tukenenler-btn.active, .filter-btn.tukenenler-btn:hover { background: var(--weizend-red); color: var(--weizend-white); }
-
-        /* Ürün Grid ve Kartlar */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; transition: 0.3s; display: flex; flex-direction: column; }
-        .card:hover { border-color: var(--weizend-red); transform: translateY(-5px); box-shadow: 0 5px 20px rgba(227, 27, 27, 0.15); }
-        .card.out-of-stock { opacity: 0.75; }
-        
-        /* Resim Alanı & Büyütme Tıklaması */
-        .img-container { width: 100%; height: 280px; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 10px; position: relative; border: 1px solid var(--border-color); cursor: pointer; }
-        .img-container img { width: 100%; height: 100%; object-fit: contain; transition: 0.3s; }
-        .img-container:hover img { transform: scale(1.03); }
-        .category-badge { position: absolute; top: 10px; right: 10px; background: var(--weizend-red); color: white; padding: 4px 10px; font-size: 0.75rem; font-weight: bold; border-radius: 4px; z-index: 2; }
-        
-        /* Stok ve Tükenmişlik Etiketleri */
-        .stock-wrapper { margin-bottom: 15px; }
-        .stock-badge { display: inline-block; background: rgba(0,0,0,0.8); border: 1px solid var(--weizend-red); color: var(--weizend-white); padding: 4px 10px; font-size: 0.8rem; font-weight: bold; border-radius: 4px; }
-        .stock-info-text { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-style: italic; }
-
-        .out-of-stock-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 3; }
-        .out-of-stock-text { background: var(--weizend-red); color: white; padding: 8px 20px; font-weight: bold; border-radius: 6px; font-size: 1.1rem; letter-spacing: 1px; transform: rotate(-5deg); }
-
-        .zoom-hint { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); border: 1px solid var(--weizend-red); color: white; padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; opacity: 0; transition: 0.3s; pointer-events: none; }
-        .img-container:hover .zoom-hint { opacity: 1; }
-
-        /* Kart İçi Küçük Görseller (Thumbnails) */
-        .card-thumbnails { display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-        .card-thumbnails::-webkit-scrollbar { display: none; }
-        .card-thumb { width: 55px; height: 55px; object-fit: contain; border-radius: 6px; border: 2px solid #222; cursor: pointer; opacity: 0.5; transition: 0.2s; background: #000; flex-shrink: 0; }
-        .card-thumb:hover { opacity: 1; }
-        .card-thumb.active { border-color: var(--weizend-red); opacity: 1; }
-
-        /* Ürün Bilgileri */
-        .product-title { margin: 0 0 10px 0; font-size: 1.3rem; min-height: 55px;}
-        .price-command { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
-        .price { color: var(--weizend-red); font-weight: bold; font-size: 1.1rem; }
-        .command { background: #000; border: 1px dashed var(--weizend-red); padding: 5px 10px; border-radius: 4px; color: var(--weizend-red); font-family: monospace; }
-        .command.disabled { border-color: #555; color: #772ce8; text-decoration: line-through; }
-
-        /* İşlem Yap Butonu */
-        .action-btn { width: 100%; background: var(--weizend-red); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s; margin-top: auto; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(227, 27, 27, 0.3); }
-        .action-btn:hover:not(.disabled) { background: #c21414; transform: translateY(-2px); }
-        .action-btn.disabled { background: #333; color: #777; cursor: not-allowed; box-shadow: none; transform: none; }
-
-        /* Açılır Kutular (Accordion) */
-        details { background: #1a1a1a; border-radius: 6px; margin-bottom: 8px; overflow: hidden; border: 1px solid var(--border-color); }
-        summary { padding: 12px 15px; cursor: pointer; font-weight: 600; color: var(--weizend-white); outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center; }
-        summary::-webkit-details-marker { display: none; }
-        summary::after { content: '+'; color: var(--weizend-red); font-weight: bold; font-size: 1.2rem; }
-        details[open] summary::after { content: '-'; }
-        .details-content { padding: 15px; background: var(--card-bg); font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; border-top: 1px solid var(--border-color); }
-        
-        .details-content ul { margin: 0; padding-left: 20px; }
-        .details-content li { margin-bottom: 6px; }
-
-        /* MODAL (AÇILIR GALERİ VE ZOOM) TASARIMI */
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 999; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: var(--card-bg); width: 100%; max-width: 900px; /* Daha büyük ekran için genişletildi */ border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden;}
-        
-        .modal-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; z-index: 10; background: var(--card-bg); }
-        .modal-header h3 { margin: 0; font-size: 1.2rem; }
-        .close-icon { background: none; border: none; color: var(--weizend-white); font-size: 1.5rem; cursor: pointer; transition: 0.2s; line-height: 1; }
-        .close-icon:hover { color: var(--weizend-red); }
-
-        .modal-body { padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        
-        /* Zoom Alanı */
-        .main-slider { position: relative; width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; overflow: hidden; /* Zoom yapınca taşmaması için */ cursor: zoom-in;}
-        .main-slider img { width: 100%; max-height: 70vh; /* Ekranda daha büyük görünmesi için height artırıldı */ object-fit: contain; border-radius: 8px; transition: transform 0.15s ease-out; /* Yumuşak zoom efekti */ transform-origin: center; }
-        
-        .zoom-info { position: absolute; bottom: 10px; background: rgba(0,0,0,0.7); padding: 5px 15px; border-radius: 15px; font-size: 0.8rem; color: var(--text-muted); pointer-events: none; z-index: 5;}
-
-        .nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.8); color: white; border: 1px solid var(--weizend-red); width: 45px; height: 45px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; z-index: 5; }
-        .nav-btn:hover { background: var(--weizend-red); }
-        .prev-btn { left: 10px; }
-        .next-btn { right: 10px; }
-
-        .thumbnail-list { display: flex; gap: 10px; justify-content: center; overflow-x: auto; padding-bottom: 5px; width: 100%; z-index: 10; background: var(--card-bg); }
-        .modal-thumb { width: 70px; height: 70px; object-fit: contain; border: 2px solid #222; border-radius: 6px; cursor: pointer; transition: 0.2s; opacity: 0.5; background: #000; }
-        .modal-thumb:hover { opacity: 1; }
-        .modal-thumb.active { border-color: var(--weizend-red); opacity: 1; }
-
-        /* SATIN ALMA YÖNLENDİRME MODALI */
-        .redirect-modal-body { padding: 30px; text-align: center; }
-        .redirect-command-box { background: #000; border: 2px dashed var(--weizend-red); padding: 15px; border-radius: 8px; font-size: 1.4rem; color: var(--weizend-red); font-family: monospace; margin: 20px 0; font-weight: bold; }
-        .redirect-timer { color: var(--weizend-white); font-size: 1rem; margin-top: 15px; }
-        .cancel-btn { background: #222; color: var(--text-muted); border: 1px solid var(--border-color); padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; margin-top: 20px; width: 100%; }
-        .cancel-btn:hover { background: #333; color: white; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#070707" />
+  <title>Weizend — Market & Turnuvalar Demo</title>
+  <style>
+    :root{
+      --bg:#050505; --panel:#0d0d0f; --panel2:#131316; --line:#2a2a30;
+      --text:#fff; --muted:#9a9aa3; --red:#e31b1b; --red2:#ff3030;
+      --red-soft:rgba(227,27,27,.14); --green:#29d66f; --gold:#f4c542;
+      --silver:#cfd5df; --bronze:#d9813f; --shadow:0 16px 50px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at 20% -10%,rgba(227,27,27,.13),transparent 34%),radial-gradient(circle at 100% 0,rgba(227,27,27,.08),transparent 26%),var(--bg);color:var(--text);min-height:100vh}
+    button,input,select,textarea{font:inherit} button{cursor:pointer}
+    .app{max-width:1500px;margin:0 auto;padding:0 18px 40px}
+    .topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);background:rgba(5,5,5,.88);border-bottom:1px solid rgba(255,255,255,.06);margin:0 -18px 18px;padding:12px 18px}
+    .topbar-inner{max-width:1500px;margin:auto;display:flex;align-items:center;gap:18px;min-width:0}
+    .brand{display:flex;align-items:center;gap:11px;min-width:max-content;font-weight:1000;letter-spacing:2px}
+    .brand-mark{width:42px;height:42px;border-radius:12px;border:1px solid rgba(227,27,27,.75);background:linear-gradient(145deg,rgba(227,27,27,.22),rgba(255,255,255,.02));display:grid;place-items:center;box-shadow:0 0 24px rgba(227,27,27,.22);font-weight:1000;font-size:20px}
+    .main-switch{display:flex;background:#0b0b0d;border:1px solid var(--line);padding:4px;border-radius:13px;margin-left:auto;min-width:280px}
+    .main-switch button{flex:1;border:0;background:transparent;color:#b7b7c0;padding:10px 16px;border-radius:10px;font-weight:900}
+    .main-switch button.active{color:#fff;background:linear-gradient(180deg,#ef2626,#b90f0f);box-shadow:0 5px 22px rgba(227,27,27,.28)}
+    .top-actions{display:flex;gap:8px}.icon-btn{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:#101014;color:#fff;display:grid;place-items:center}
+    .section{display:none}.section.active{display:block}
+    .hero{border:1px solid #3a1717;border-radius:24px;padding:26px;overflow:hidden;position:relative;background:linear-gradient(120deg,rgba(227,27,27,.26),rgba(13,13,15,.92) 38%,rgba(13,13,15,.96)),repeating-linear-gradient(135deg,transparent 0 18px,rgba(255,255,255,.018) 19px 20px);box-shadow:var(--shadow);margin-bottom:18px}
+    .hero:after{content:"";position:absolute;width:320px;height:320px;border:1px solid rgba(227,27,27,.28);border-radius:50%;right:-110px;top:-150px;box-shadow:0 0 80px rgba(227,27,27,.16) inset}
+    .hero-grid{position:relative;z-index:1;display:grid;grid-template-columns:1.4fr .8fr;gap:24px;align-items:center}
+    .eyebrow{color:#ff7777;font-size:.8rem;letter-spacing:2px;font-weight:1000;text-transform:uppercase}
+    .hero h1{margin:8px 0 10px;font-size:clamp(2rem,5vw,4rem);line-height:.95;text-transform:uppercase;max-width:900px}.hero h1 span{color:var(--red2)}.hero p{color:#c8c8ce;line-height:1.65;max-width:760px;margin:0}
+    .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.pill{border:1px solid #3a3a42;background:#0b0b0e;color:#ddd;padding:8px 11px;border-radius:999px;font-size:.83rem;font-weight:800}.pill.live{border-color:#783333;color:#fff;background:#2a0c0c}.pill.green{border-color:#1e6a3d;background:#0f2b1a;color:#7af0a1}
+    .hero-side{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hero-stat{border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.33);border-radius:16px;padding:16px;min-width:0}.hero-stat small{display:block;color:var(--muted);margin-bottom:7px}.hero-stat strong{font-size:1.2rem}
+    .layout{display:grid;grid-template-columns:320px minmax(0,1fr);gap:18px;align-items:start}
+    .side{border:1px solid var(--line);background:linear-gradient(180deg,#0e0e11,#09090b);border-radius:20px;padding:14px;position:sticky;top:86px;box-shadow:var(--shadow)}.side h3{margin:4px 4px 12px}
+    .filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}.filter{border:1px solid var(--line);background:#121216;color:#bbb;padding:8px 10px;border-radius:10px;font-weight:800;font-size:.8rem}.filter.active{background:var(--red);color:#fff;border-color:var(--red)}
+    .tournament-list{display:flex;flex-direction:column;gap:9px}.tournament-card{border:1px solid #2b2b31;background:#111115;border-radius:14px;padding:13px;transition:.18s}.tournament-card:hover,.tournament-card.active{border-color:#8e2323;background:#171013}.tournament-card.active{box-shadow:inset 3px 0 0 var(--red)}
+    .tc-top{display:flex;justify-content:space-between;gap:8px;align-items:start}.tc-title{font-weight:950;line-height:1.2}.status{font-size:.7rem;font-weight:1000;padding:5px 8px;border-radius:999px;white-space:nowrap}.status.live{background:#351010;color:#ff7777;border:1px solid #732727}.status.open{background:#0d2d1a;color:#6cf49b;border:1px solid #1e6c3a}.status.soon{background:#171d33;color:#9eb7ff;border:1px solid #344272}.status.done{background:#202024;color:#aaa;border:1px solid #3b3b42}.tc-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px;color:#9d9da6;font-size:.78rem}
+    .content{border:1px solid var(--line);background:linear-gradient(180deg,#0c0c0f,#08080a);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);min-width:0}
+    .event-cover{min-height:250px;padding:28px;display:flex;align-items:flex-end;position:relative;background:radial-gradient(circle at 80% 20%,rgba(227,27,27,.28),transparent 24%),linear-gradient(135deg,#19191d 0%,#0d0d0f 40%,#190909 100%);border-bottom:1px solid var(--line);overflow:hidden}
+    .event-cover:before{content:"W";position:absolute;right:4%;top:-10%;font-size:260px;font-weight:1000;color:rgba(255,255,255,.025);transform:skew(-7deg)}.event-cover:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(125deg,transparent 0 18px,rgba(227,27,27,.035) 19px 20px);pointer-events:none}.event-cover-inner{position:relative;z-index:1;width:100%}.event-title{font-size:clamp(2rem,4vw,3.8rem);font-weight:1000;line-height:.95;text-transform:uppercase;margin:7px 0}.event-title span{color:var(--red2)}.event-sub{color:#d0d0d5;font-weight:750}.event-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .detail-tabs{display:flex;gap:6px;padding:12px;overflow:auto;border-bottom:1px solid var(--line);background:#0d0d10;scrollbar-width:none}.detail-tabs::-webkit-scrollbar{display:none}.detail-tab{border:1px solid transparent;background:transparent;color:#aaa;padding:10px 13px;border-radius:10px;white-space:nowrap;font-weight:900}.detail-tab.active{color:#fff;background:var(--red-soft);border-color:#6f2222}
+    .detail-panel{display:none;padding:18px}.detail-panel.active{display:block}.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.info-card{border:1px solid var(--line);background:#111115;border-radius:15px;padding:16px}.info-card .label{font-size:.75rem;color:var(--muted);margin-bottom:7px}.info-card .value{font-weight:950;font-size:1.08rem}
+    .section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 10px}.section-title h3{margin:0}.section-title small{color:var(--muted)}
+    .rules{display:flex;flex-direction:column;gap:10px}.rule{display:grid;grid-template-columns:46px minmax(0,1fr);gap:12px;border:1px solid var(--line);background:#101014;border-radius:14px;padding:12px}.rule-num{width:46px;height:46px;border-radius:12px;background:linear-gradient(180deg,#f52b2b,#a00b0b);display:grid;place-items:center;font-size:1.2rem;font-weight:1000}.rule h4{margin:2px 0 5px}.rule p{margin:0;color:#b4b4bc;line-height:1.55;font-size:.9rem}.rule strong{color:#fff}
+    .prizes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.prize{padding:18px;border-radius:15px;background:#111115;border:1px solid var(--line);text-align:center}.prize .medal{font-size:2.1rem}.prize h3{margin:5px 0}.prize strong{font-size:1.25rem}.prize.gold{border-color:#6f5a16}.prize.silver{border-color:#545963}.prize.bronze{border-color:#6e4025}
+    .bracket-wrap{overflow:auto;padding-bottom:8px}.bracket{min-width:900px;display:grid;grid-template-columns:repeat(4,1fr);gap:18px;align-items:center}.round{display:flex;flex-direction:column;gap:14px}.round h4{text-align:center;margin:0 0 3px;color:#d8d8df}.match{border:1px solid #34343c;background:#101014;border-radius:12px;padding:10px;position:relative}.match:after{content:"";position:absolute;right:-19px;top:50%;width:18px;height:1px;background:#7a284f}.round:last-child .match:after{display:none}.team{display:flex;justify-content:space-between;gap:12px;padding:7px 6px;border-radius:8px}.team + .team{border-top:1px solid #25252a}.team.win{background:#261010;color:#fff}.score{font-weight:1000}.final-card{border-color:#8b6d13;box-shadow:0 0 25px rgba(244,197,66,.08)}
+    .prediction-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.primary-btn,.secondary-btn{border-radius:12px;padding:12px 16px;font-weight:950;border:1px solid transparent}.primary-btn{background:linear-gradient(180deg,#f22a2a,#bb1111);color:white;box-shadow:0 8px 24px rgba(227,27,27,.22)}.secondary-btn{background:#16161a;color:#ddd;border-color:#34343c}
+    .ranking{display:flex;flex-direction:column;gap:8px}.rank-row{display:grid;grid-template-columns:44px minmax(0,1fr) auto auto;gap:10px;align-items:center;border:1px solid var(--line);background:#111115;border-radius:12px;padding:11px 12px}.rank-no{font-weight:1000;color:#bbb}.rank-user{font-weight:900}.rank-correct{color:#aaa;font-size:.82rem}.rank-points{font-weight:1000}.rank-row.me{border-color:#7d2323;background:#1b1012}
+    .market-hero{border:1px solid #3b1616;border-radius:22px;padding:28px;background:radial-gradient(circle at 85% 35%,rgba(227,27,27,.25),transparent 22%),linear-gradient(135deg,#17171b,#08080a 60%,#180808);margin-bottom:16px;overflow:hidden;position:relative}.market-hero h1{font-size:clamp(2rem,5vw,4rem);margin:4px 0 8px}.market-hero h1 span{color:var(--red2)}.market-hero p{color:#b9b9c2;max-width:700px;line-height:1.55}
+    .category-row{display:flex;gap:8px;overflow:auto;margin-bottom:16px;padding-bottom:4px}.category-row button{border:1px solid var(--line);background:#111115;color:#bbb;border-radius:999px;padding:9px 14px;white-space:nowrap;font-weight:850}.category-row button.active{background:var(--red);color:#fff;border-color:var(--red)}
+    .product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.product{border:1px solid var(--line);background:#101014;border-radius:16px;padding:14px;min-width:0}.product-art{height:160px;border-radius:12px;margin-bottom:12px;background:radial-gradient(circle at 50% 35%,rgba(227,27,27,.35),transparent 26%),linear-gradient(145deg,#18181d,#09090b);border:1px solid #2f2f36;display:grid;place-items:center;font-size:3.2rem}.product h3{margin:0 0 5px;font-size:1rem}.product p{margin:0;color:#999;font-size:.8rem}.product-bottom{display:flex;justify-content:space-between;gap:8px;align-items:end;margin-top:13px}.price{font-weight:1000;color:#fff}.buy{width:auto;border:0;background:var(--red);color:#fff;padding:9px 12px;border-radius:9px;font-weight:900}
+    .mobile-bottom{display:none}
+    @media(max-width:1100px){.layout{grid-template-columns:280px minmax(0,1fr)}.product-grid{grid-template-columns:repeat(3,1fr)}.grid-3{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:820px){.app{padding:0 10px 88px}.topbar{margin:0 -10px 12px;padding:10px}.brand span{display:none}.main-switch{min-width:0;flex:1;margin-left:0}.top-actions{display:none}.hero{padding:20px;border-radius:18px}.hero-grid{grid-template-columns:1fr}.hero-side{grid-template-columns:repeat(4,1fr)}.layout{display:block}.side{position:static;border-radius:16px;padding:12px;margin-bottom:12px}.tournament-list{display:grid;grid-auto-flow:column;grid-auto-columns:82%;overflow:auto;padding-bottom:3px}.content{border-radius:16px}.event-cover{min-height:210px;padding:20px}.grid-3{grid-template-columns:1fr 1fr}.prizes{grid-template-columns:1fr}.product-grid{grid-template-columns:repeat(2,1fr)}.mobile-bottom{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;bottom:0;left:0;right:0;z-index:80;background:rgba(8,8,10,.96);backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:7px 8px 9px}.mobile-bottom button{border:0;background:transparent;color:#888;padding:7px 3px;font-size:.72rem;font-weight:850}.mobile-bottom button b{display:block;font-size:1.15rem;margin-bottom:3px}.mobile-bottom button.active{color:#fff}}
+    @media(max-width:560px){.main-switch button{padding:9px 8px;font-size:.78rem}.brand-mark{width:38px;height:38px}.hero-side{grid-template-columns:1fr 1fr}.hero h1{font-size:2.15rem}.event-title{font-size:2rem}.grid-3{grid-template-columns:1fr}.rank-row{grid-template-columns:34px minmax(0,1fr) auto}.rank-correct{display:none}.product-grid{grid-template-columns:1fr 1fr;gap:9px}.product-art{height:130px}.product{padding:10px}.product-bottom{display:block}.buy{width:100%;margin-top:9px}}
+    @media(max-width:380px){.product-grid{grid-template-columns:1fr}.tournament-list{grid-auto-columns:92%}}
+  </style>
 </head>
 <body>
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand"><div class="brand-mark">W</div><span>WEIZEND</span></div>
+        <div class="main-switch"><button id="marketMainTab" class="active">🛒 MARKET</button><button id="tournamentMainTab">🏆 TURNUVALAR</button></div>
+        <div class="top-actions"><button class="icon-btn" title="Ara">⌕</button><button class="icon-btn" title="Bildirimler">🔔</button><button class="icon-btn" title="Profil">👤</button></div>
+      </div>
+    </header>
 
-    <script>
-        // TÜM ÜRÜN TASLAKLARI
-        const URUNLER = [
-            // --- FİZİKSEL ÜRÜNLER (YENİ LİSTE) ---
-            {
-                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Siyah Bez Şapka",
-                puan: "155.000 Puan", komut: "!alsapka",
-                gorseller: ["https://i.hizliresim.com/scvyurdk.jpg"],
-                ozellikler: `
-                    <ul>
-                        <li>Renk: Siyah</li>
-                        <li>Standart ebat ölçüye sahip</li>
-                        <li>Pamuklu kumaşıyla rahat kullanım</li>
-                        <li>Nefes alan ve terletmeyen dokudadır</li>
-                        <li>Siperlik kısmı deformasyona karşı dirençlidir</li>
-                        <li>Estetik, spor ve şık görünüme sahiptir</li>
-                        <li>Arka kısımda cırtlı ayar bölgesi bulunur</li>
-                        <li>Kafa ölçünüze göre kolayca ayarlayabilirsiniz</li>
-                        <li>Gündelik kullanım ve spor faaliyetleriniz için idealdir</li>
-                        <li>30°C’de tersten, elde yıkayınız ve asarak kurutunuz</li>
-                        <li>Ekonomik fiyatıyla promosyon ürün olarak tercih edilebilir</li>
-                    </ul>`
-            },
-            {
-                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Mouse Pad",
-                puan: "100.000 Puan", komut: "!almousepad",
-                gorseller: ["https://i.hizliresim.com/beb4m3ta.jpg"],
-                ozellikler: `
-                    <ul>
-                        <li>175x210 mm ebatlar</li>
-                        <li>2 mm kalınlık</li>
-                        <li>Polyester dayanıklılık kaplaması</li>
-                        <li>Kaydırmaz hammadde özelliklerine sahiptir</li>
-                        <li>Sağlığa zararlı kimyasalların dağıtımı yapıdadır</li>
-                    </ul>`
-            },
-            {
-                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Yastık Kılıfı",
-                puan: "125.000 Puan", komut: "!alyastıkklıfı",
-                gorseller: ["https://i.hizliresim.com/3xvtef5k.jpg"],
-                ozellikler: `
-                    <ul>
-                        <li>Renk: Beyaz</li>
-                        <li>Ebat: 38x38 cm</li>
-                        <li>Saten kumaşa sahiptir</li>
-                        <li>İçten gizli dikiş formu bulunur</li>
-                        <li>Fermuarlı yapısıyla kolay kullanım sunar</li>
-                        <li>Sağlığa zararsız, sertifikalı, özel mürekkep kullanılır</li>
-                        <li>30°C kısa programda, tersten, ağartıcı kullanmadan yıkayabilirsiniz</li>
-                        <li>Ürün, kurutma makinesine ve kuru temizlemeye uygun değildir</li>
-                        <li>Eğer ütüleme yapılacaksa tersten ve düşük ısıda yapılmalıdır</li>
-                        <li>Ürün sadece kılıf olarak gelmektedir, iç kısmı yoktur</li>
-                    </ul>`
-            },
-            {
-                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Siyah Erkek Tişört",
-                puan: "280.000 Puan", komut: "!altshirt",
-                gorseller: ["https://i.hizliresim.com/v3dcbfps.jpg", "https://i.hizliresim.com/4qjxy0gw.jpg", "https://i.hizliresim.com/e12ap6ck.jpg"],
-                ozellikler: `
-                    <ul>
-                        <li>Beden kesimlerinden dolayı bir beden büyük almanız tavsiye edilir</li>
-                        <li>Beden tablosuna dikkat ediniz</li>
-                        <li>Renk: Siyah</li>
-                        <li>%100 pamuklu kumaş yapısı</li>
-                        <li>Estetik, spor ve şık bir duruşa sahiptir</li>
-                        <li>Hava alan ve terletmeyen kumaş dokusu</li>
-                        <li>Kolay kırışmayan esnek kumaş yapısı bulunur</li>
-                        <li>Sağlığa zarar vermeyen özel mürekkep kullanılır</li>
-                        <li>30°C’de kısa programda ve tersten yıkanmalıdır</li>
-                        <li>Kuru temizlemeye ve kurutma makinesine uygun değildir</li>
-                        <li>Düşük ısıda ve tersten ütüleme yapılmalıdır</li>
-                    </ul>`
-            },
-            {
-                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Kahverengi Peluş Ayıcık",
-                puan: "190.000 Puan", komut: "!alayıcık",
-                gorseller: ["https://i.hizliresim.com/jvm31sgk.jpg"],
-                ozellikler: `
-                    <ul>
-                        <li>Renk: Kahverengi</li>
-                        <li>22x12x20 cm boyutlarda</li>
-                        <li>Sağlığa zararsız peluş kumaş</li>
-                        <li>Kaliteli elyaf dolgu malzemesi</li>
-                        <li>Sempatik ve tatlı bir hediyelik ürün</li>
-                        <li>Baskı yapılan alan ılık suda ve elde yıkanmalıdır</li>
-                    </ul>`
-            },
-            {
-                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Kapüşonlu Kanguru Cepli Siyah Sweatshirt",
-                puan: "405.000 Puan", komut: "!alsweatshirt",
-                gorseller: ["https://i.hizliresim.com/zuhelzqa.png", "https://i.hizliresim.com/jcbegwjq.png", "https://i.hizliresim.com/lvkogmqn.jpg"],
-                ozellikler: `<ul>
-                        <li>Renk: Siyah</li>
-                        <li>Uzun kollu dan kapüşonlu formda</li>
-                        <li>Kanguru cepli şık tasarımıyla ön plana çıkar</li>
-                        <li>Şardonlu kumaşıyla sıcak tutan yapıdadır</li>
-                        <li>Polyester katkılı pamuklu kumaş yapısı</li>
-                        <li>Kolay kırışmayan esnek kumaş yapısı bulunur</li>
-                        <li>Hava alan ve terletmeyen dokuya sahiptir</li>
-                        <li>Unisex ürünüdür, erkek ve kadınlar kullanabilir</li>
-                        <li>Her yaştan bireyin kullanımına uygundur</li>
-                        <li>Estetik, spor ve şık bir duruşa sahiptir</li>
-                        <li>S, M, L, XL olmak üzere dört farklı bedeni bulunur</li>
-                        <li>Sağlığa zarar vermeyen özel mürekkep kullanılır</li>
-                        <li>30°C’de kısa programda ve tersten yıkanmalıdır</li>
-                        <li>Kuru temizlemeye ve kurutma makinesine uygun değildir</li>
-                        <li>Düşük ısıda ve tersten ütüleme yapınız</li>
-                        <li>Hediyelik ürün veya promosyon olarak da tercih edilebilir</li>
-                    </ul>`
-            },
-            {
-                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Siyah Powerbank",
-                puan: "255.000 Puan", komut: "!alpowerbank",
-                gorseller: ["https://i.hizliresim.com/twgj1q8q.jpg"],
-                ozellikler: `
-                    <ul>
-                        <li>Siyah renktedir</li>
-                        <li>70x140x14 mm boyutlara sahiptir</li>
-                        <li>Uzun ömürlü lityum polimer batarya tipi</li>
-                        <li>Darbeye dirençli mat ABS plastik kasa tasarımı</li>
-                        <li>5V-2A mikro USB giriş bağlantı noktasına sahiptir</li>
-                        <li>2 adet USB-A çıkış portu ve 1 adet Type-C giriş portu bulunur</li>
-                        <li>Aynı anda iki cihazı birden şarj edebilmesiyle ön plana çıkmaktadır</li>
-                        <li>10.000 mAh pil kapasitesine sahip oldukça işlevsel bir güç bankasıdır</li>
-                        <li>4 adet LED ışığı sayesinde batarya durumunu kolayca görebilirsiniz</li>
-                        <li>Uçak yolculuğu güvenliği için gerekli seyahat sertifikası bulunur</li>
-                        <li>Ergonomik, estetik, dekoratif ve kompakt tasarımı ile fazla yer işgal etmez</li>
-                        <li>Kısa devre koruması ve aşırı akım koruması ile güvenli kullanım sunar</li>
-                        <li>Uluslararası RoHS, CE, FCC sertifikalarına sahip, nitelikli bir güç bankasıdır</li>
-                        <li>Ürünle birlikte 20 cm uzunlukta USB-Type C şarj kablosu gelmektedir</li>
-                        <li>Ev, ofis, iş yeri, seyahat, kamp ve açık alan etkinliklerinde tercih edilebilir</li>
-                    </ul>`
-            },
-            {
-                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Siyah Masa Saati – Ahşap Standlı",
-                puan: "165.000 Puan", komut: "!alsaat",
-                gorseller: ["https://i.hizliresim.com/ddzlvrx3.jpg"],
-                ozellikler: `
-                    <ul>
-                        <li>20x10 cm</li>
-                        <li>Şık siyah masa saati tasarımı</li>
-                        <li>Ahşap masa standı</li>
-                        <li>Dekoratif ve kullanışlı tasarım</li>
-                        <li>Ev ve ofis kullanımına uygun</li>
-                        <li>Sevgiliye ve sevdiklerinize özel hediye alternatifi</li>
-                    </ul>`
-            },
-            {
-                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Keten Kalemlik / Makyaj Çantası",
-                puan: "120.000 Puan", komut: "!alketenkalemlik",
-                gorseller: ["https://i.hizliresim.com/0pjcynbp.jpg"],
-                ozellikler: `
-                    <ul>
-                        <li>Renk: Bej</li>
-                        <li>Ebat: 7x6x20 cm</li>
-                        <li>Baskı alanı: 7x12 cm</li>
-                        <li>Tek gözlü kullanım</li>
-                        <li>Bozulmaya dirençli fermuar</li>
-                        <li>Paslanmaz metal fermuar sapları</li>
-                        <li>Fermuar üzerinde şık kumaş detaylar</li>
-                        <li>Nefes alabilen ham keten kumaş</li>
-                        <li>Deformasyona dirençli yapıda</li>
-                        <li>Kullanışlı geniş iç hacim</li>
-                        <li>Non-toxic, astarsız kumaş yapısı</li>
-                        <li>Fonksiyonel kullanım özellikleri</li>
-                        <li>Kalıcı süblimasyon baskı tekniği</li>
-                    </ul>`
-            },
-            {
-                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Porselen Bella Beyaz Kupa Bardak",
-                puan: "145.000 Puan", komut: "!alkupabardak",
-                tukenmeZamani: "2024-05-15",
-                gorseller: ["https://i.hizliresim.com/54xh3kbw.jpg", "https://i.hizliresim.com/jz5rodes.jpg", "https://i.hizliresim.com/bx5uveba.jpg"],
-                ozellikler: `
-                    <ul>
-                    <li>8 cm bardak ağız çapı</li>
-                        <li>9,5 cm yüksekliğe sahiptir</li>
-                        <li>3,5 cm kulp parmak açıklığı</li>
-                        <li>Yaklaşık 325 ml iç hacim sunar</li>
-                        <li>7.5x20 cm baskı alanı bulunur</li>
-                        <li>Estetik ve dekoratif görünüme sahiptir</li>
-                        <li>Beyaz renkte yüksek kalite seramik malzeme</li>
-                        <li>Sağlığa zararlı kimyasallar içermeyen yapıdadır</li>
-                        <li>Çamaşır makinesinde yıkamaya uygun değildir</li>
-                        <li>30°C ılık su ve elde yıkamanız daha uzun süreler dayanan baskılar sağlar</li>
-                        <li>CMYK süblimasyon baskı sayesinde uzun yıllar renklerini kaybetmez</li>
-                    </ul>`
-            },
-            {
-                durum: "on", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Paslanmaz Çelik Siyah Termos 500Ml",
-                puan: "305.000 Puan", komut: "!altermos",
-                tukenmeZamani: "2024-05-15",
-                gorseller: ["https://i.hizliresim.com/bsjhkxee.jpg"],
-                ozellikler: `
-                    <ul>
-                        <li>Mat siyah renkte dış yüzey</li>
-                        <li>19,5 cm yükseklğe sahiptir</li>
-                        <li>8 cm ağız çapı bulunur</li>
-                        <li>7 cm çapta taban genişliği sunar</li>
-                        <li>Tabana doğru daralan formdadır</li>
-                        <li>500 ml geniş iç hacmiyle işlevseldir</li>
-                        <li>Ürünün iç yüzeyi SUS 304 paslanmaz çeliktir</li>
-                        <li>Ürünün dış yüzeyi SUS 201 paslanmaz çeliktir</li>
-                        <li>Sıcak ve soğuk içecekleriniz için ısı yalıtımı sağlar</li>
-                        <li>İçeceklerinizin ısısını yaklaşık 3-4 saat muhafaza eder</li>
-                        <li>Pratik aç-kapa ağızlık tasarımıyla rahat kullanım sağlar</li>
-                        <li>Ergonomik, estetik ve dekoratif bir görünüm sunar</li>
-                        <li>Kapak yapısı sızdırmaz nitelikte silikon contaya sahiptir</li>
-                        <li>Ağızlık kısmı tamamen sızdırmaz değildir, dik taşımanız önerilir</li>
-                        <li>Bireysel, hediyelik ve promosyon amaçlı kullanımlara uygundur</li>
-                        <li>Sağlığa zararlı BPA, fitalat ve azo boyar madde içermez</li>
-                        <li>Ürün bulaşık makinesinde yıkamaya uygun değildir</li>
-                        <li>Elde ve düşük sıcaklıkta yıkanmalıdır</li>
-                    </ul>`
-            },
-            {
-                durum: "off", stok: 1, kategori: "Fiziksel Ürün",
-                ad: "Porselen Bella Beyaz Kupa Bardak",
-                puan: "135.000 Puan", komut: "!alkupabardak",
-                tukenmeZamani: "2024-05-15",
-                gorseller: ["https://i.hizliresim.com/54xh3kbw.jpg", "https://i.hizliresim.com/jz5rodes.jpg", "https://i.hizliresim.com/bx5uveba.jpg"],
-                ozellikler: `
-                    <ul>
-                    <li>Renk: Beyaz</li>
-                        <li>8 cm bardak ağız çapı</li>
-                        <li>9,5 cm yüksekliğe sahiptir</li>
-                        <li>3,5 cm kulp parmak açıklığı</li>
-                        <li>Yaklaşık 325 ml iç hacim sunar</li>
-                        <li>7.5x20 cm baskı alanı bulunur</li>
-                        <li>Estetik ve dekoratif görünüme sahiptir</li>
-                        <li>Beyaz renkte yüksek kalite seramik malzeme</li>
-                        <li>Sağlığa zararlı kimyasallar içermeyen yapıdadır</li>
-                        <li>Çamaşır makinesinde yıkamaya uygun değildir</li>
-                        <li>30°C ılık su ve elde yıkamanız daha uzun süreler dayanan baskılar sağlar</li>
-                        <li>CMYK süblimasyon baskı sayesinde uzun yıllar renklerini kaybetmez</li>
-                    </ul>`
-            },
-            
-            // --- VALORANT ---
-            {
-                durum: "on", stok: 2, kategori: "Valorant",
-                ad: "375 VP KODU Valorant Points",
-                puan: "50.000 Puan", komut: "!alvalorant375vp",
-                gorseller: ["https://i.hizliresim.com/npqe9gqv.png"],
-                ozellikler: `<ul><li>Riot Games - Valorant TR sunucularında geçerlidir.</li></ul>`
-            },
-            { durum: "on", stok: 2, kategori: "Valorant",
-             ad: "825 VP KODU Valorant Points",
-             puan: "105.000 Puan", komut: "!alvalorant825vp",
-             gorseller: ["https://i.hizliresim.com/wn2mxmkr.png"],
-             ozellikler: `<ul><li>Riot Games - Valorant TR sunucularında geçerlidir.</li></ul>`},
-            
-            { durum: "on", stok: 1, kategori: "Valorant",
-             ad: "1.700 VP KODU Valorant Points",
-             puan: "210.000 Puan", komut: "!alvalorant1700vp",
-             gorseller: ["https://i.hizliresim.com/8u85rolc.png"],
-             ozellikler: `<ul><li>Riot Games - Valorant TR sunucularında geçerlidir.</li></ul>`},
-            
-            // --- STEAM ---
-            {
-                durum: "on", stok: 3, kategori: "Steam",
-                ad: "5 USD Steam Cüzdan Kodu",
-                puan: "115.000 Puan", komut: "!alsteam5usd",
-                gorseller: ["https://i.hizliresim.com/tbbn5il5.png"],
-                ozellikler: `<ul><li>Steam TR hesaplarında geçerlidir.</li></ul>`
-            },
-            {
-                durum: "on", stok: 1, kategori: "Steam",
-                ad: "20 USD Steam Cüzdan Kodu",
-                puan: "460.000 Puan", komut: "!alsteam20usd",
-                tukenmeZamani: "2023-10-01",
-                gorseller: ["https://i.hizliresim.com/u9j3b2lc.jpg"],
-                ozellikler: `<ul><li>Anında teslim.</li></ul>`
-            },
-            { durum: "on", stok: 2, kategori: "Steam",
-             ad: "10 USD Steam Cüzdan Kodu",
-             puan: "230.000 Puan", komut: "!alsteam10usd",
-             gorseller: ["https://i.hizliresim.com/6ibndvmu.png"],
-             ozellikler: `<ul><li>Anında teslim.</li></ul>` },
-            
-            // --- TURNUVA ---
-            {
-                durum: "on", stok: 0, kategori: "Turnuva",
-                ad: "1 VS 1 Valorant Turnuva Katılım Bileti",
-                puan: "ÜCRETSİZ", komut: "!alturnuva1vs1",
-                tukenmeZamani: "2024-05-15",
-                gorseller: ["https://i.hizliresim.com/joby9cul.png"],
-                ozellikler: `<ul><li>Sıradaki turnuvaya katılım hakkı sağlar.</li><li>Discord ve İnstagram üzerinden duyuru yapılır.</li></ul>`},
-            {
-                durum: "on", stok: 0, kategori: "Turnuva",
-                ad: "2 VS 2 Valorant Turnuva Katılım Bileti",
-                puan: "200 TL", komut: "!alturnuva2vs2",
-                tukenmeZamani: "2024-06-15",
-                gorseller: ["https://i.hizliresim.com/9asvvsvl.png"],
-                ozellikler: `<ul><li>Sıradaki turnuvaya katılım hakkı sağlar.</li><li>Discord ve İnstagram üzerinden duyuru yapılır.</li></ul>`
-            },
-            
-            // ---ÇEKİLİŞ---
-            {
-                durum: "on", stok: "Sınırsız", kategori: "Şanslar",
-                ad: "Kart Oyunu",
-                puan: "10.000 Puan", komut: "!alkartoyunu",
-                tukenmeZamani: "2024-05-15",
-                gorseller: ["https://i.hizliresim.com/uynn5ttt.jpg"],
-                ozellikler: `<ul>
-                    <li>Kick canlı yayınlarımızdaki kart oyununa katılım hakkı sağlar.</li>
-                    <li>Kick sohbetimize <b>!alkartoyunu</b> yazdığın anda ekranda 4 adet kapalı kart belirir.</li>
-                    <li>Seçmek istediğin kartın üzerinde ki numarayı sohbete yazıp kartı açabilirsin.</li>
-                    <li>Seçtiğin kartın içinden ödül çıkarsa TAMAM ve DEVAM ekranı gelir seçim yapman istenir.</li>
-                    <li>Sohbete TAMAM yazarsan kazandığın ödül senin olur DEVAM yazarsan tekrar kart oyununa girersin bu sefer 3 kart olur ve ödül daha yüksek olur.</li>
-                    <li>İkinci kez kazandığın zaman son kez seçim yapman istenir TAMAM veya DEVAM yazarsın.</li>
-                    <li>Devam yazarsan bu sefer ekranda 2 kart olur ve 1 tanesinde büyük ödül olur. Unutma büyük risk büyük ödül kazandırır.</li>
-                    <li>Kazandığında ödülünü teslim alabilmek için İnstagram <a href="https://instagram.com/weizendtv" target="_blank" style="color:var(--weizend-red); font-weight:bold; text-decoration:none;">@weizendtv</a> adresinden bizimle iletişime geçmelisin!</li>
-                </ul>`
-            },
-            {
-                durum: "on", stok: "Sınırsız", kategori: "Şanslar",
-                ad: "Bar Çekiliş Bileti",
-                puan: "10.000 Puan", komut: "!albilet",
-                tukenmeZamani: "2024-05-15",
-                gorseller: ["https://i.hizliresim.com/guvmcwq4.jpg"],
-                ozellikler: `<ul>
-                    <li>Kick canlı yayınlarımızdaki BAR çekilişlerine katılım hakkı sağlar.</li>
-                    <li>Dilediğin kadar bilet alabilirsin, tüm biletlerin envanterine eklenir.</li>
-                    <li>Sahip olduğun biletleri kontrol etmek için Kick sohbetimize <b>!envanter</b> yazabilirsin.</li>
-                    <li>Çekilişi kazandığında ödülünü teslim alabilmek için İnstagram <a href="https://instagram.com/weizendtv" target="_blank" style="color:var(--weizend-red); font-weight:bold; text-decoration:none;">@weizendtv</a> adresinden bizimle iletişime geçmelisin!</li>
-                </ul>`
-            }
-        ];
-        
-        URUNLER.forEach((urun, index) => urun.orijinalId = index);
-    </script>
+    <section id="marketSection" class="section active">
+      <div class="market-hero">
+        <div class="eyebrow">WEIZEND MARKET</div>
+        <h1>OYUNUNU <span>GÜÇLENDİR</span></h1>
+        <p>VP, Steam, fiziksel ürünler ve topluluk ödülleri için tek merkez. Bu sayfa yalnızca tasarım demosudur.</p>
+        <div class="hero-badges"><span class="pill green">● Sistem Aktif</span><span class="pill">⚡ Hızlı Teslimat</span><span class="pill">🔒 Güvenli İşlem</span></div>
+      </div>
+      <div class="category-row"><button class="active">Tümü</button><button>Valorant VP</button><button>Steam</button><button>Fiziksel</button><button>Hediye Kodları</button></div>
+      <div class="product-grid">
+        <article class="product"><div class="product-art">🎮</div><h3>375 VP</h3><p>Valorant Points</p><div class="product-bottom"><div class="price">50.000 Puan</div><button class="buy">İncele</button></div></article>
+        <article class="product"><div class="product-art">🖱️</div><h3>Mouse Pad</h3><p>Weizend Özel Seri</p><div class="product-bottom"><div class="price">100.000 Puan</div><button class="buy">İncele</button></div></article>
+        <article class="product"><div class="product-art">🧢</div><h3>Siyah Şapka</h3><p>Fiziksel Ürün</p><div class="product-bottom"><div class="price">155.000 Puan</div><button class="buy">İncele</button></div></article>
+        <article class="product"><div class="product-art">🎁</div><h3>Sürpriz Kutu</h3><p>Topluluk Ödülü</p><div class="product-bottom"><div class="price">125.000 Puan</div><button class="buy">İncele</button></div></article>
+      </div>
+    </section>
 
-    <div class="container">
-        <header>
-            <img src="https://i.hizliresim.com/fo5evkh4.png" alt="Weizend Logo" class="logo-img">
-            <h1>WEİZEND MARKET</h1>
-            <p style="color: var(--text-muted);">Yayını izleyerek kazandığın puanlarla ödülleri kap!</p>
-            
-            <!-- Butonlar -->
-            <div class="header-buttons">
-                <a href="https://weizend.github.io/weizendbilgi/" class="ig-contact">❓ Puan Nasıl Kazanılır?</a>
-                <a href="https://instagram.com/weizendtv" target="_blank" class="ig-contact">📸 İletişim: @weizendtv</a>
+    <section id="tournamentSection" class="section">
+      <div class="hero"><div class="hero-grid"><div><div class="eyebrow">WEIZEND ESPORTS</div><h1>TURNUVANI <span>TAKİP ET</span></h1><p>Aktif turnuvalar, kurallar, haritalar, ödüller, canlı fikstür ve Pick'em tahminleri tek ekranda.</p><div class="hero-badges"><span class="pill live">● Canlı Turnuva</span><span class="pill">16 Takım</span><span class="pill">BO1</span><span class="pill">Ascent</span></div></div><div class="hero-side"><div class="hero-stat"><small>Toplam Ödül</small><strong>17.900 VP</strong></div><div class="hero-stat"><small>Format</small><strong>2v2</strong></div><div class="hero-stat"><small>Harita</small><strong>Ascent</strong></div><div class="hero-stat"><small>Tahmin</small><strong>Açık</strong></div></div></div></div>
+      <div class="layout">
+        <aside class="side">
+          <h3>🏆 Turnuvalar</h3>
+          <div class="filters"><button class="filter active">Tümü</button><button class="filter">Canlı</button><button class="filter">Yaklaşan</button><button class="filter">Tamamlanan</button></div>
+          <div class="tournament-list">
+            <article class="tournament-card active"><div class="tc-top"><div class="tc-title">Weizend Sheriff Cup</div><span class="status live">CANLI</span></div><div class="tc-meta"><span>2v2</span><span>16 Takım</span><span>Ascent</span><span>BO1</span></div></article>
+            <article class="tournament-card"><div class="tc-top"><div class="tc-title">Weizend Duo Cup</div><span class="status open">KAYIT AÇIK</span></div><div class="tc-meta"><span>2v2</span><span>32 Takım</span><span>Haven</span><span>BO3</span></div></article>
+            <article class="tournament-card"><div class="tc-top"><div class="tc-title">Community Cup</div><span class="status soon">YAKINDA</span></div><div class="tc-meta"><span>5v5</span><span>16 Takım</span><span>Harita Havuzu</span></div></article>
+            <article class="tournament-card"><div class="tc-top"><div class="tc-title">Night Cup #4</div><span class="status done">TAMAMLANDI</span></div><div class="tc-meta"><span>Şampiyon: Weizend</span><span>04 Ekim</span></div></article>
+          </div>
+        </aside>
+        <main class="content">
+          <div class="event-cover"><div class="event-cover-inner"><div class="eyebrow">VALORANT • WEIZEND TURNUVASI</div><div class="event-title">WEIZEND <span>SHERIFF CUP</span></div><div class="event-sub">2v2 • Tek Eleme • Çarpışma Haritası A</div><div class="event-badges"><span class="pill live">● CANLI</span><span class="pill">16 Takım</span><span class="pill">11 Ekim 2026 • 20:00</span><span class="pill">Kayıtlar Kapandı</span></div></div></div>
+          <nav class="detail-tabs"><button class="detail-tab active" data-tab="overview">Genel Bakış</button><button class="detail-tab" data-tab="rules">Kurallar</button><button class="detail-tab" data-tab="rewards">Ödüller</button><button class="detail-tab" data-tab="bracket">Fikstür</button><button class="detail-tab" data-tab="prediction">Tahminim</button><button class="detail-tab" data-tab="ranking">Sıralama</button></nav>
+
+          <section class="detail-panel active" id="overview">
+            <div class="grid-3"><div class="info-card"><div class="label">🎮 Oyun</div><div class="value">VALORANT</div></div><div class="info-card"><div class="label">👥 Format</div><div class="value">2v2 Takımlı</div></div><div class="info-card"><div class="label">🗺️ Harita</div><div class="value">Ascent</div></div><div class="info-card"><div class="label">⚔️ Harita Tipi</div><div class="value">Çarpışma Haritası A</div></div><div class="info-card"><div class="label">🏁 Maç Formatı</div><div class="value">BO1</div></div><div class="info-card"><div class="label">📅 Başlangıç</div><div class="value">11 Ekim • 20:00</div></div></div>
+            <div class="section-title"><h3>Turnuva Hakkında</h3><small>Örnek açıklama</small></div>
+            <div class="info-card" style="line-height:1.65;color:#c2c2c9">Weizend Sheriff Cup, rekabetçi ve hızlı tempolu 2v2 formatında düzenlenen özel bir VALORANT turnuvasıdır. Harita tipi Çarpışma Haritası A olduğu için silah ve son round kuralları otomatik uygulanır.</div>
+            <div class="section-title"><h3>Hızlı Kurallar</h3><button class="secondary-btn" data-open-tab="rules">Tüm Kuralları Gör</button></div>
+            <div class="rules"><div class="rule"><div class="rule-num">1</div><div><h4>Silah Kuralı</h4><p>Vandal / Phantom serbest. <strong>Son round sadece Sheriff.</strong></p></div></div><div class="rule"><div class="rule-num">2</div><div><h4>Sesli İletişim</h4><p>Oyuncular sadece kendi takım arkadaşlarıyla konuşabilir. <strong>Grup konuşması yasaktır.</strong></p></div></div></div>
+          </section>
+
+          <section class="detail-panel" id="rules">
+            <div class="section-title"><h3>📜 Turnuva Kuralları</h3><small>Çarpışma Haritası A • Takımlı</small></div>
+            <div class="rules">
+              <div class="rule"><div class="rule-num">1</div><div><h4>Silah Kuralı</h4><p>Maç boyunca Vandal ve Phantom kullanımı serbesttir. <strong>Son round istisnasız sadece Sheriff oynanır.</strong> Son round Sheriff dışında bir silahla kill alınması halinde ilgili takım diskalifiye edilebilir.</p></div></div>
+              <div class="rule"><div class="rule-num">2</div><div><h4>Lobi ve Zamanlama</h4><p>Takımlar maç saatinden önce hazır olmalıdır. Belirlenen süre içinde hazır olmayan takım organizasyon kararıyla hükmen mağlup sayılabilir.</p></div></div>
+              <div class="rule"><div class="rule-num">3</div><div><h4>Ekran Kaydı ve Güvenlik</h4><p>Organizasyon gerekli gördüğünde ekran kaydı talep edebilir. Hile veya üçüncü parti yazılım tespitinde takım diskalifiye edilir.</p></div></div>
+              <div class="rule"><div class="rule-num">4</div><div><h4>Davranış Kuralları</h4><p>Rakibe chat açmak, kışkırtıcı davranışlar, oyun açığı kullanmak ve organizasyonu yanıltacak hareketler yasaktır.</p></div></div>
+              <div class="rule"><div class="rule-num">5</div><div><h4>Sesli İletişim</h4><p>Oyuncular yalnızca <strong>kendi takım arkadaşlarıyla</strong> iletişim kurabilir. Takımlar arası veya harici grup konuşması yasaktır.</p></div></div>
+              <div class="rule"><div class="rule-num">6</div><div><h4>Genel Hükümler</h4><p>Kurallar tüm katılımcılar için bağlayıcıdır. Organizasyon, gerekli durumlarda rekabet bütünlüğünü korumak amacıyla karar verebilir.</p></div></div>
             </div>
-        </header>
+          </section>
 
-        <!-- KATEGORİ BUTONLARI OTOMATİK OLUŞTURULACAK -->
-        <div class="category-filters" id="filters"></div>
+          <section class="detail-panel" id="rewards"><div class="section-title"><h3>🏆 Turnuva Ödülleri</h3><small>İlk 3</small></div><div class="prizes"><div class="prize gold"><div class="medal">🏆</div><h3>1. Sıra</h3><strong>8.650 VP</strong></div><div class="prize silver"><div class="medal">🥈</div><h3>2. Sıra</h3><strong>5.850 VP</strong></div><div class="prize bronze"><div class="medal">🥉</div><h3>3. Sıra</h3><strong>3.400 VP</strong></div></div></section>
 
-        <div class="grid" id="urunGrid"></div>
-    </div>
+          <section class="detail-panel" id="bracket">
+            <div class="section-title"><h3>⚔️ Turnuva Fikstürü</h3><small>Yatay kaydırılabilir</small></div>
+            <div class="bracket-wrap"><div class="bracket">
+              <div class="round"><h4>1. Tur</h4><div class="match"><div class="team win"><span>Team Alpha</span><span class="score">13</span></div><div class="team"><span>Team Nova</span><span class="score">8</span></div></div><div class="match"><div class="team"><span>Team Vex</span><span class="score">11</span></div><div class="team win"><span>Team Core</span><span class="score">13</span></div></div><div class="match"><div class="team win"><span>Team Red</span><span class="score">13</span></div><div class="team"><span>Team Zero</span><span class="score">5</span></div></div><div class="match"><div class="team"><span>Team Hex</span><span class="score">9</span></div><div class="team win"><span>Team Rush</span><span class="score">13</span></div></div></div>
+              <div class="round"><h4>2. Tur</h4><div class="match"><div class="team win"><span>Team Alpha</span><span class="score">13</span></div><div class="team"><span>Team Core</span><span class="score">10</span></div></div><div class="match"><div class="team"><span>Team Red</span><span class="score">7</span></div><div class="team win"><span>Team Rush</span><span class="score">13</span></div></div></div>
+              <div class="round"><h4>Yarı Final</h4><div class="match"><div class="team"><span>Team Alpha</span><span class="score">-</span></div><div class="team"><span>Team Rush</span><span class="score">-</span></div></div></div>
+              <div class="round"><h4>Final</h4><div class="match final-card"><div class="team"><span>Yarı Final Galibi</span><span class="score">?</span></div><div class="team"><span>Diğer Yarı Final Galibi</span><span class="score">?</span></div></div><div class="match" style="margin-top:24px"><div style="font-weight:950;color:var(--bronze);margin-bottom:8px">🥉 3.'lük Maçı</div><div class="team"><span>Yarı Final Mağlubu</span><span>-</span></div><div class="team"><span>Yarı Final Mağlubu</span><span>-</span></div></div></div>
+            </div></div>
+          </section>
 
-    <!-- MODAL 1: GÖRSEL BÜYÜTME GALERİSİ -->
-    <div id="imageModal" class="modal-overlay" onclick="disariTiklaKapat(event)">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 id="modalTitle">Tasarım Önizleme</h3>
-                <button class="close-icon" onclick="modaliKapat()">✖</button>
-            </div>
-            
-            <div class="modal-body">
-                <div class="main-slider" id="modalSlider">
-                    <button class="nav-btn prev-btn" id="prevBtn" onclick="oncekiResim(event)">❮</button>
-                    <img id="modalMainImg" src="" alt="Önizleme">
-                    <button class="nav-btn next-btn" id="nextBtn" onclick="sonrakiResim(event)">❯</button>
-                    <div class="zoom-info">Fare tekerleği ile yakınlaştır</div>
-                </div>
-                <div class="thumbnail-list" id="modalThumbnails"></div>
-            </div>
-        </div>
-    </div>
+          <section class="detail-panel" id="prediction"><div class="section-title"><h3>🎯 Pick'em Tahminim</h3><small>Tahminler açık</small></div><div class="info-card"><div class="label">Tahmin Sistemi</div><div class="value">Turnuva başlamadan önce fikstürdeki galipleri seç.</div><p style="color:#aaa;line-height:1.55;margin-bottom:0">Turnuva başladığında seçimler kilitlenir. Bu demo yalnızca tasarımı göstermek için hazırlanmıştır.</p></div><div class="prediction-actions"><button class="primary-btn" id="predictionDemoBtn">Tahminimi Oluştur</button><button class="secondary-btn" data-open-tab="rules">Kuralları Gör</button></div><div id="predictionMessage" style="margin-top:12px;color:#8ee5a8;display:none;font-weight:900">✓ Demo tahmin ekranı açıldı varsayalım 😄</div></section>
 
-    <!-- MODAL 2: KICK SOHBET YÖNLENDİRME PENCERESİ -->
-    <div id="redirectModal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 450px;">
-            <div class="modal-header">
-                <h3>Sipariş Onayı</h3>
-                <button class="close-icon" onclick="yonlendirmeyiIptalEt()">✖</button>
-            </div>
-            <div class="redirect-modal-body">
-                <p style="color: #fff; margin: 0; font-size: 1.05rem;">Komut kopyalandı, Kick sohbete yönlendiriliyorsunuz:</p>
-                <div class="redirect-command-box" id="modalCommandText">!komut</div>
-                <div class="redirect-timer" id="timerText">5 saniye içinde yönlendirileceksiniz...</div>
-                <button class="cancel-btn" onclick="yonlendirmeyiIptalEt()">İptal Et</button>
-            </div>
-        </div>
-    </div>
+          <section class="detail-panel" id="ranking"><div class="section-title"><h3>📊 Tahmin Sıralaması</h3><small>Örnek veriler</small></div><div class="ranking"><div class="rank-row"><div class="rank-no">🥇</div><div class="rank-user">Burak</div><div class="rank-correct">12 doğru</div><div class="rank-points">2.450</div></div><div class="rank-row"><div class="rank-no">🥈</div><div class="rank-user">Efe</div><div class="rank-correct">11 doğru</div><div class="rank-points">2.100</div></div><div class="rank-row"><div class="rank-no">🥉</div><div class="rank-user">Zeynep</div><div class="rank-correct">10 doğru</div><div class="rank-points">1.870</div></div><div class="rank-row me"><div class="rank-no">12</div><div class="rank-user">Sen</div><div class="rank-correct">7 doğru</div><div class="rank-points">1.120</div></div></div></section>
+        </main>
+      </div>
+    </section>
+  </div>
 
-    <script>
-        const grid = document.getElementById('urunGrid');
-        let aktifKategori = 'Tümü';
-        let aktifGorselListesi = [];
-        let aktifResimIndex = 0;
-        let redirectTimer = null;
-        let zoomLevel = 1;
+  <nav class="mobile-bottom"><button><b>⌂</b>Ana Sayfa</button><button id="mobileMarketBtn" class="active"><b>🛒</b>Market</button><button id="mobileTournamentBtn"><b>🏆</b>Turnuvalar</button><button><b>👤</b>Profil</button></nav>
 
-        // --- KATEGORİLERİ OTOMATİK OLUŞTURMA ---
-        function kategorileriOlustur() {
-            const filterContainer = document.getElementById('filters');
-            filterContainer.innerHTML = `<button class="filter-btn ${aktifKategori === 'Tümü' ? 'active' : ''}" onclick="filtrele('Tümü')">Tümü</button>`;
-
-            // Sadece "on" olan ürünlerin kategorilerini topla
-            const benzersizKategoriler = [...new Set(URUNLER.filter(u => u.durum === "on").map(u => u.kategori))];
-
-            benzersizKategoriler.forEach(kat => {
-                const aktifClass = aktifKategori === kat ? 'active' : '';
-                filterContainer.innerHTML += `<button class="filter-btn ${aktifClass}" onclick="filtrele('${kat}')">${kat}</button>`;
-            });
-
-            // "TÜKENDİ" Butonunu En Sona Ekle
-            const tukendiClass = aktifKategori === 'Tükendi' ? 'active' : '';
-            filterContainer.innerHTML += `<button class="filter-btn tukenenler-btn ${tukendiClass}" onclick="filtrele('Tükendi')">Tükendi</button>`;
-        }
-
-        // STOK DURUMUNU KONTROL EDEN YARDIMCI FONKSİYON
-        function stokDurumu(stokDegeri) {
-            if (stokDegeri === "Sınırsız") return 999999; 
-            return parseInt(stokDegeri) || 0;
-        }
-
-        function urunleriYukle(filtreKategori) {
-            aktifKategori = filtreKategori;
-            kategorileriOlustur();
-            grid.innerHTML = ''; 
-            
-            let gosterilecekUrunler = URUNLER.filter(urun => urun.durum === "on");
-
-            if (filtreKategori === 'Tükendi') {
-                gosterilecekUrunler = gosterilecekUrunler.filter(urun => stokDurumu(urun.stok) <= 0);
-                gosterilecekUrunler.sort((a, b) => {
-                    let tarihA = a.tukenmeZamani ? new Date(a.tukenmeZamani).getTime() : 0;
-                    let tarihB = b.tukenmeZamani ? new Date(b.tukenmeZamani).getTime() : 0;
-                    return tarihB - tarihA;
-                });
-            } else {
-                if (filtreKategori !== 'Tümü') {
-                    gosterilecekUrunler = gosterilecekUrunler.filter(urun => urun.kategori === filtreKategori);
-                }
-                gosterilecekUrunler.sort((a, b) => {
-                    let stokA = stokDurumu(a.stok) > 0 ? 1 : 0;
-                    let stokB = stokDurumu(b.stok) > 0 ? 1 : 0;
-                    
-                    if (stokA !== stokB) {
-                        return stokB - stokA; 
-                    } else if (stokA === 0 && stokB === 0) {
-                        let tarihA = a.tukenmeZamani ? new Date(a.tukenmeZamani).getTime() : 0;
-                        let tarihB = b.tukenmeZamani ? new Date(b.tukenmeZamani).getTime() : 0;
-                        return tarihB - tarihA;
-                    } else {
-                        let puanA = parseInt(a.puan.replace(/[^0-9]/g, '')) || 0;
-                        let puanB = parseInt(b.puan.replace(/[^0-9]/g, '')) || 0;
-                        return puanA - puanB;
-                    }
-                });
-            }
-            
-            gosterilecekUrunler.forEach(urun => {
-                const ilkGorsel = urun.gorseller[0];
-                const tukendiMi = stokDurumu(urun.stok) <= 0;
-
-                let thumbnailsHTML = '';
-                if (urun.gorseller.length > 1) {
-                    thumbnailsHTML = '<div class="card-thumbnails">';
-                    urun.gorseller.forEach((url, i) => {
-                        const aktifClass = i === 0 ? 'active' : '';
-                        thumbnailsHTML += `<img src="${url}" class="card-thumb ${aktifClass}" onclick="kartIciResimDegistir(event, this, ${urun.orijinalId}, ${i}, '${url}')">`;
-                    });
-                    thumbnailsHTML += '</div>';
-                }
-
-                let stokAlaniHTML = `
-                    <div class="stock-wrapper">
-                        <span class="stock-badge">Stok: ${urun.stok}</span>
-                        ${urun.stok === 'Sınırsız' ? '' : '<div class="stock-info-text">İşlem onaylandıktan sonra stok bilgisi güncellenmektedir.</div>'}
-                    </div>
-                `;
-                
-                let tukendiOverlayHTML = '';
-                if (tukendiMi) {
-                    stokAlaniHTML = `
-                        <div class="stock-wrapper">
-                            <span class="stock-badge" style="background:var(--weizend-red);">Tükendi</span>
-                            <div class="stock-info-text">İşlem onaylandıktan sonra stok bilgisi güncellenmektedir.</div>
-                        </div>
-                    `;
-                    tukendiOverlayHTML = `<div class="out-of-stock-overlay"><div class="out-of-stock-text">TÜKENDİ</div></div>`;
-                }
-
-                let teslimatKutusuHTML = '';
-                if (urun.kategori === 'Fiziksel Ürün') {
-                    const yazi = `Ürünü Kick sohbetimizden <b><span style="color:var(--weizend-red);">${urun.komut}</span></b> yazıp aldıktan sonra İnstagram <b><a href="https://instagram.com/weizendtv" target="_blank" style="color:var(--weizend-red);">@weizendtv</a></b> adresine mesaj atarak teslimat işlemlerini halledebilirsiniz.<br><br><b>🚚 Ne Zaman Kargolanır?</b><br>En geç 5 iş gününde kargoda. Tüm ürünlerde kargo ücreti bize aittir.`;
-                    teslimatKutusuHTML = `<details><summary>Teslimat ve Kargo Bilgileri</summary><div class="details-content">${yazi}</div></details>`;
-                } 
-                else if (urun.kategori === 'Valorant' || urun.kategori === 'Steam') {
-                    const yazi = `Ürünü Kick sohbetimizden <b><span style="color:var(--weizend-red);">${urun.komut}</span></b> yazıp aldıktan sonra Discord üzerinden yetkililere mesaj atarak veya İnstagram <b><a href="https://instagram.com/weizendtv" target="_blank" style="color:var(--weizend-red);">@weizendtv</a></b> adresine ulaşarak kodunuzu anında teslim alabilirsiniz.`;
-                    teslimatKutusuHTML = `<details><summary>Teslimat Bilgileri</summary><div class="details-content">${yazi}</div></details>`;
-                }
-
-                const komutClass = tukendiMi ? "command disabled" : "command";
-                const actionBtnClass = tukendiMi ? "action-btn disabled" : "action-btn";
-                const actionBtnText = tukendiMi ? "TÜKENDİ" : "İşlem Yap";
-                const actionBtnClick = tukendiMi ? "" : `onclick="islemYapBaslat('${urun.komut}')"`;
-
-                const kartClass = tukendiMi ? "card out-of-stock" : "card";
-
-                const kart = `
-                    <div class="${kartClass}">
-                        <div class="img-container" data-current-index="0" onclick="modaliAc(${urun.orijinalId}, this.dataset.currentIndex)">
-                            <span class="category-badge">${urun.kategori}</span>
-                            ${tukendiOverlayHTML}
-                            <img class="main-card-img" src="${ilkGorsel}" alt="${urun.ad}">
-                            <div class="zoom-hint">🔍 Büyüt</div>
-                        </div>
-                        
-                        ${thumbnailsHTML}
-
-                        <h3 class="product-title">${urun.ad}</h3>
-                        
-                        ${stokAlaniHTML}
-
-                        <div class="price-command">
-                            <span class="price">${urun.puan}</span>
-                            <span class="${komutClass}">${tukendiMi ? 'TÜKENDİ' : urun.komut}</span>
-                        </div>
-
-                        <button class="${actionBtnClass}" ${actionBtnClick}>${actionBtnText}</button>
-
-                        <details>
-                            <summary>Detaylar</summary>
-                            <div class="details-content">${urun.ozellikler}</div>
-                        </details>
-                        
-                        ${teslimatKutusuHTML}
-                    </div>
-                `;
-                grid.innerHTML += kart;
-            });
-        }
-
-        function islemYapBaslat(komut) {
-            navigator.clipboard.writeText(komut).catch(() => {});
-            document.getElementById('modalCommandText').innerText = komut;
-            document.getElementById('redirectModal').style.display = 'flex';
-
-            let kalanSaniye = 5;
-            document.getElementById('timerText').innerText = `${kalanSaniye} saniye içinde yönlendirileceksiniz...`;
-
-            if(redirectTimer) clearInterval(redirectTimer);
-
-            redirectTimer = setInterval(() => {
-                kalanSaniye--;
-                if (kalanSaniye > 0) {
-                    document.getElementById('timerText').innerText = `${kalanSaniye} saniye içinde yönlendirileceksiniz...`;
-                } else {
-                    clearInterval(redirectTimer);
-                    window.location.href = "https://kick.com/weizend/chat";
-                }
-            }, 1000);
-        }
-
-        function yonlendirmeyiIptalEt() {
-            if(redirectTimer) clearInterval(redirectTimer);
-            document.getElementById('redirectModal').style.display = 'none';
-        }
-
-        function kartIciResimDegistir(event, thumbElement, urunId, resimIndex, url) {
-            event.stopPropagation(); 
-            const card = thumbElement.closest('.card');
-            const mainImg = card.querySelector('.main-card-img');
-            const imgContainer = card.querySelector('.img-container');
-
-            mainImg.src = url;
-            imgContainer.dataset.currentIndex = resimIndex;
-
-            card.querySelectorAll('.card-thumb').forEach(t => t.classList.remove('active'));
-            thumbElement.classList.add('active');
-        }
-
-        function zoomSifirla() {
-            zoomLevel = 1;
-            document.getElementById('modalMainImg').style.transform = `scale(1)`;
-        }
-
-        // Fare Tekerleği ile Zoom İşlevi
-        document.getElementById('modalSlider').addEventListener('wheel', function(e) {
-            e.preventDefault();
-            if (e.deltaY < 0) {
-                zoomLevel += 0.2; // Yakınlaştır
-            } else {
-                zoomLevel -= 0.2; // Uzaklaştır
-            }
-            // Zoom sınırları (1x ile 4x arası)
-            zoomLevel = Math.min(Math.max(1, zoomLevel), 4);
-            document.getElementById('modalMainImg').style.transform = `scale(${zoomLevel})`;
-        });
-
-        function modaliAc(urunId, baslangicIndex) {
-            const urun = URUNLER.find(u => u.orijinalId === urunId);
-            if(!urun) return;
-
-            aktifGorselListesi = urun.gorseller;
-            aktifResimIndex = parseInt(baslangicIndex);
-            
-            document.getElementById('modalTitle').innerText = urun.ad;
-            
-            document.getElementById('prevBtn').style.display = aktifGorselListesi.length > 1 ? 'flex' : 'none';
-            document.getElementById('nextBtn').style.display = aktifGorselListesi.length > 1 ? 'flex' : 'none';
-
-            zoomSifirla(); // Modalı açarken zoomu sıfırla
-            galeriyiGuncelle();
-            document.getElementById('imageModal').style.display = 'flex';
-        }
-
-        function modaliKapat() {
-            zoomSifirla(); // Modalı kapatırken zoomu sıfırla
-            document.getElementById('imageModal').style.display = 'none';
-        }
-
-        function disariTiklaKapat(event) {
-            if (event.target.id === 'imageModal') {
-                modaliKapat();
-            }
-        }
-
-        function oncekiResim(event) {
-            event.stopPropagation(); 
-            aktifResimIndex--;
-            if(aktifResimIndex < 0) aktifResimIndex = aktifGorselListesi.length - 1;
-            zoomSifirla();
-            galeriyiGuncelle();
-        }
-
-        function sonrakiResim(event) {
-            event.stopPropagation(); 
-            aktifResimIndex++;
-            if(aktifResimIndex >= aktifGorselListesi.length) aktifResimIndex = 0;
-            zoomSifirla();
-            galeriyiGuncelle();
-        }
-
-        function modalResmeAtla(index) {
-            aktifResimIndex = index;
-            zoomSifirla();
-            galeriyiGuncelle();
-        }
-
-        function galeriyiGuncelle() {
-            document.getElementById('modalMainImg').src = aktifGorselListesi[aktifResimIndex];
-            
-            const thumbContainer = document.getElementById('modalThumbnails');
-            thumbContainer.innerHTML = '';
-            
-            if(aktifGorselListesi.length > 1) {
-                aktifGorselListesi.forEach((gorselUrl, i) => {
-                    const aktifClass = i === aktifResimIndex ? 'active' : '';
-                    thumbContainer.innerHTML += `<img src="${gorselUrl}" class="modal-thumb ${aktifClass}" onclick="modalResmeAtla(${i})">`;
-                });
-            }
-        }
-
-        function filtrele(kategori) {
-            urunleriYukle(kategori);
-        }
-
-        // Başlangıç
-        urunleriYukle('Tümü');
-    </script>
+  <script>
+    const marketMainTab=document.getElementById('marketMainTab'),tournamentMainTab=document.getElementById('tournamentMainTab'),marketSection=document.getElementById('marketSection'),tournamentSection=document.getElementById('tournamentSection'),mobileMarketBtn=document.getElementById('mobileMarketBtn'),mobileTournamentBtn=document.getElementById('mobileTournamentBtn');
+    function setMain(view){const market=view==='market';marketMainTab.classList.toggle('active',market);tournamentMainTab.classList.toggle('active',!market);marketSection.classList.toggle('active',market);tournamentSection.classList.toggle('active',!market);mobileMarketBtn.classList.toggle('active',market);mobileTournamentBtn.classList.toggle('active',!market);window.scrollTo({top:0,behavior:'smooth'})}
+    marketMainTab.addEventListener('click',()=>setMain('market'));tournamentMainTab.addEventListener('click',()=>setMain('tournament'));mobileMarketBtn.addEventListener('click',()=>setMain('market'));mobileTournamentBtn.addEventListener('click',()=>setMain('tournament'));
+    const detailTabs=[...document.querySelectorAll('.detail-tab')],detailPanels=[...document.querySelectorAll('.detail-panel')];
+    function openDetail(id){detailTabs.forEach(btn=>btn.classList.toggle('active',btn.dataset.tab===id));detailPanels.forEach(panel=>panel.classList.toggle('active',panel.id===id));const target=document.querySelector('.content');if(window.innerWidth<820&&target)target.scrollIntoView({behavior:'smooth',block:'start'})}
+    detailTabs.forEach(btn=>btn.addEventListener('click',()=>openDetail(btn.dataset.tab)));document.querySelectorAll('[data-open-tab]').forEach(btn=>btn.addEventListener('click',()=>openDetail(btn.dataset.openTab)));
+    document.querySelectorAll('.filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}));
+    document.querySelectorAll('.category-row button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.category-row button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}));
+    document.querySelectorAll('.tournament-card').forEach(card=>card.addEventListener('click',()=>{document.querySelectorAll('.tournament-card').forEach(x=>x.classList.remove('active'));card.classList.add('active')}));
+    document.getElementById('predictionDemoBtn').addEventListener('click',()=>document.getElementById('predictionMessage').style.display='block');
+  </script>
 </body>
 </html>
