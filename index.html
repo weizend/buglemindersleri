@@ -1690,6 +1690,125 @@ body.wz-view-tournament .wz-result-row .winner{
 }
 </style>
 
+
+<style id="wz-v9-cleanup">
+/* ===== V9 cleanup ===== */
+
+/* Market: remove the large introductory promo block entirely */
+#wzMobileMarketIntro{display:none!important}
+
+/* Tournament: one clean title at the top, before the list */
+body.wz-view-tournament #wzMobileTournamentHero{
+  display:block!important;
+  min-height:auto!important;
+  margin:0 0 12px!important;
+  padding:16px 18px!important;
+  border-radius:18px!important;
+  border:1px solid #2a2a30!important;
+  background:
+    radial-gradient(circle at 88% 30%,rgba(226,18,18,.18),transparent 30%),
+    linear-gradient(135deg,#121216,#09090b)!important;
+  box-shadow:none!important;
+}
+body.wz-view-tournament #wzMobileTournamentHero:after{display:none!important}
+body.wz-view-tournament #wzMobileTournamentHero .wz-mobile-kicker{
+  font-size:.64rem!important;
+  color:#ff4a4a!important;
+}
+body.wz-view-tournament #wzMobileTournamentHero h2{
+  margin:4px 0!important;
+  font-size:1.45rem!important;
+}
+body.wz-view-tournament #wzMobileTournamentHero p{
+  max-width:760px!important;
+  margin:0!important;
+  color:#92929d!important;
+  font-size:.78rem!important;
+  line-height:1.45!important;
+}
+
+/* Old tournament headings should never appear. */
+body.wz-view-tournament .tv2-section-heading{display:none!important}
+
+/* Desktop uses the header navigation. Mobile uses the fixed bottom navigation. */
+@media(max-width:768px){
+  .wz-desktop-nav{display:none!important}
+  .wz-mobile-bottom-nav{
+    display:grid!important;
+    position:fixed!important;
+    left:10px!important;
+    right:10px!important;
+    bottom:calc(8px + env(safe-area-inset-bottom))!important;
+    z-index:22000!important;
+  }
+}
+@media(min-width:769px){
+  .wz-mobile-bottom-nav{display:none!important}
+  .wz-desktop-nav{display:flex!important}
+}
+
+/* Hard background-scroll lock whenever a modal is open. */
+html.wz-modal-hard-lock,
+body.wz-modal-hard-lock{
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+  touch-action:none!important;
+}
+body.wz-modal-hard-lock .modal-content,
+body.wz-modal-hard-lock .purchase-modal-content,
+body.wz-modal-hard-lock .gift-modal-content,
+body.wz-modal-hard-lock .notifications-modal-content,
+body.wz-modal-hard-lock .inbox-modal-content,
+body.wz-modal-hard-lock .wz-product-info-card{
+  touch-action:pan-y!important;
+  overscroll-behavior:contain!important;
+}
+
+/* Prediction UI */
+.wz-predict-hero{
+  border:1px solid #542021;
+  border-radius:16px;
+  padding:14px;
+  background:
+    radial-gradient(circle at 90% 15%,rgba(226,18,18,.18),transparent 30%),
+    #101318;
+  margin-bottom:12px;
+}
+.wz-predict-hero small{
+  display:block;color:#ff5656;font-size:.65rem;font-weight:1000;letter-spacing:1.3px
+}
+.wz-predict-hero h3{margin:5px 0 5px;font-size:1rem}
+.wz-predict-hero p{margin:0;color:#a9adb6;font-size:.77rem;line-height:1.5}
+.wz-predict-prize{
+  margin-top:10px;
+  display:flex;justify-content:space-between;gap:12px;align-items:center;
+  border:1px solid #292e37;background:#0c1015;border-radius:12px;padding:10px 12px
+}
+.wz-predict-prize span{color:#969ba5;font-size:.72rem}
+.wz-predict-prize strong{font-size:.82rem;text-align:right}
+.wz-pick-list{display:grid;gap:10px}
+.wz-pick-match{
+  border:1px solid #262b34;background:#0f1319;border-radius:14px;padding:10px
+}
+.wz-pick-match-head{
+  display:flex;justify-content:space-between;gap:10px;align-items:center;
+  margin-bottom:8px;color:#8f949d;font-size:.66rem
+}
+.wz-pick-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wz-pick-btn{
+  min-height:42px;border-radius:11px;border:1px solid #2b3039;background:#151920;color:#d5d8df;
+  padding:8px 10px;font-size:.73rem;font-weight:900;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.wz-pick-btn.active{border-color:#e31b1b;background:#281012;color:#fff;box-shadow:inset 0 0 0 1px rgba(227,27,27,.15)}
+.wz-predict-save{
+  width:100%;margin-top:12px;min-height:46px;border:0;border-radius:13px;
+  background:linear-gradient(180deg,#ef2c2c,#b60f0f);color:#fff;font-weight:1000;cursor:pointer
+}
+.wz-predict-note{
+  margin-top:9px;color:#777d87;font-size:.68rem;line-height:1.45
+}
+</style>
+
 </head>
 <body>
 
@@ -2126,14 +2245,6 @@ body.wz-view-tournament .wz-result-row .winner{
         </header>
 
         <div id="marketContent" style="display:block;">
-            <div class="wz-mobile-page-intro" id="wzMobileMarketIntro">
-  <div>
-    <div class="wz-mobile-kicker">WEIZEND MARKET</div>
-    <h2>Ödüller & Dijital Ürünler</h2>
-    <p>Puanlarınla ürünleri keşfet, güvenli şekilde satın al ve teslimatını takip et.</p>
-  </div>
-  <div class="wz-mobile-intro-mark">W</div>
-</div>
             <!-- ÜRÜN ARAMA -->
             <div class="market-search-wrap">
                 <div class="market-search-box">
@@ -2154,10 +2265,6 @@ body.wz-view-tournament .wz-result-row .winner{
             <div class="category-filters" id="filters"></div>
 
             <section id="tournamentMarketSection" class="tv2-market-section" style="display:none;">
-                <div id="wzEsportsHub" class="wz-esports-hub">
-                    <div class="wz-esports-loading">🏆 Turnuva merkezi hazırlanıyor...</div>
-                </div>
-
                 <div class="wz-mobile-tournament-hero" id="wzMobileTournamentHero">
   <div class="wz-mobile-kicker">WEIZEND</div>
   <h2>Turnuvalar</h2>
@@ -2176,6 +2283,9 @@ body.wz-view-tournament .wz-result-row .winner{
 
             <div class="grid" id="urunGrid"></div>
         </div>
+                <div id="wzEsportsHub" class="wz-esports-hub">
+                    <div class="wz-esports-loading">🏆 Turnuva merkezi hazırlanıyor...</div>
+                </div>
     </div>
 
     <div class="container">
@@ -9305,7 +9415,6 @@ return;
       <div class="wz-turn-cardlist">${done.length?done.map(item=>renderListCard(item,true)).join(''):'<div class="wz-turn-empty">Henüz tamamlanan turnuva yok.</div>'}</div>` : '';
 
     return `<div class="wz-turn-list-page">
-      ${renderTopTabs('tournament')}
       ${renderFilters()}
       ${activePart}
       ${completedPart}
@@ -9384,6 +9493,80 @@ return;
     </div>`;
   }
 
+
+  function predictionPrize(item,detail){
+    const t=detail?.tournament||item?.tournament||{};
+    const r=item?.rule||{};
+    return String(
+      r.predictionPrize ||
+      r.pickemPrize ||
+      t.predictionPrize ||
+      t.pickemPrize ||
+      'Admin panelinden belirlenecek'
+    );
+  }
+
+  function predictionKey(id){
+    return `weizend_pickem_${String(id||'')}`;
+  }
+
+  function readPredictions(id){
+    try{
+      const raw=localStorage.getItem(predictionKey(id));
+      const parsed=raw?JSON.parse(raw):{};
+      return parsed && typeof parsed==='object' ? parsed : {};
+    }catch(_){ return {}; }
+  }
+
+  function renderPredictions(detail,item){
+    const t=detail?.tournament||item?.tournament||{};
+    const matches=Array.isArray(detail?.matches)?detail.matches:[];
+    const life=lifecycle(item);
+    const unlocked = !['in_progress','completed'].includes(life);
+    const picks=readPredictions(t.id);
+
+    if(!matches.length){
+      return `<div class="wz-turn-box">
+        <div class="wz-predict-hero">
+          <small>WEIZEND TAHMİN</small>
+          <h3>Turnuva Tahminleri</h3>
+          <p>Fikstür oluşturulduğunda kullanıcılar eşleşmelerde kazanan seçimlerini burada yapabilecek.</p>
+          <div class="wz-predict-prize"><span>En İyi Tahmin Ödülü</span><strong>${esc(predictionPrize(item,detail))}</strong></div>
+        </div>
+        <div class="wz-turn-empty">Tahminler için önce fikstürün oluşturulması gerekiyor.</div>
+      </div>`;
+    }
+
+    return `<div class="wz-turn-box">
+      <div class="wz-predict-hero">
+        <small>WEIZEND TAHMİN</small>
+        <h3>Fikstürünü Tahmin Et</h3>
+        <p>${unlocked
+          ? 'Turnuva başlamadan önce her maç için kazanan tahminini seç. Turnuva başladığında seçimler kilitlenecek.'
+          : 'Turnuva başladığı için tahmin seçimleri kilitlendi.'}</p>
+        <div class="wz-predict-prize"><span>En İyi Tahmin Ödülü</span><strong>${esc(predictionPrize(item,detail))}</strong></div>
+      </div>
+      <div class="wz-pick-list">
+        ${matches.map(match=>{
+          const no=String(match.matchNumber||'');
+          const a=String(match.participantAName||'Bekleniyor');
+          const b=String(match.participantBName||'Bekleniyor');
+          const selected=String(picks[no]||'');
+          const disabled=!unlocked || a==='Bekleniyor' || b==='Bekleniyor';
+          return `<div class="wz-pick-match">
+            <div class="wz-pick-match-head"><span>M${esc(no||'-')}</span><span>${esc(disabled?'Seçim kapalı':'Kazananı seç')}</span></div>
+            <div class="wz-pick-options">
+              <button type="button" class="wz-pick-btn ${selected===a?'active':''}" ${disabled?'disabled':''} onclick="wzTurnPick('${esc(t.id)}','${esc(no)}','${esc(a)}')">${esc(a)}</button>
+              <button type="button" class="wz-pick-btn ${selected===b?'active':''}" ${disabled?'disabled':''} onclick="wzTurnPick('${esc(t.id)}','${esc(no)}','${esc(b)}')">${esc(b)}</button>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      ${unlocked?`<button type="button" class="wz-predict-save" onclick="wzTurnSavePredictions('${esc(t.id)}')">TAHMİNLERİMİ KAYDET</button>`:''}
+      <div class="wz-predict-note">Bu V9 arayüzünde seçimler test amacıyla cihazda saklanır. Gerçek kullanıcılar arası tahmin sıralaması ve admin ödül tanımlaması için Worker/Admin bağlantısını ayrıca ekleyeceğiz.</div>
+    </div>`;
+  }
+
   function renderDetailPage(){
     const item=getItem(state.selectedId);
     if(!item) return `<div class="wz-turn-empty">Turnuva bulunamadı.</div>`;
@@ -9391,7 +9574,7 @@ return;
     const detail=state.details.get(id) || null;
     const status=statusClass(item);
     const loading = !detail;
-    const tabButtons=[['overview','Genel Bakış'],['rules','Kurallar'],['prizes','Ödüller'],['bracket','Fikstür']];
+    const tabButtons=[['overview','Genel Bakış'],['rules','Kurallar'],['prizes','Ödüller'],['bracket','Fikstür'],['predictions','Tahminler']];
     let panel = `<div class="wz-turn-loading">Turnuva detayları yükleniyor...</div>`;
     if(detail?.__error) panel = `<div class="wz-turn-empty">${esc(detail.__error)}</div>`;
     else if(detail){
@@ -9399,6 +9582,7 @@ return;
       if(state.tab==='rules') panel = renderRules(item);
       if(state.tab==='prizes') panel = renderPrizes(detail,item);
       if(state.tab==='bracket') panel = renderBracket(detail,item);
+      if(state.tab==='predictions') panel = renderPredictions(detail,item);
     }
     return `<div class="wz-turn-detail-page">
       <div class="wz-turn-detail-top"><button type="button" class="wz-turn-back" onclick="wzTurnBack()">←</button><div class="wz-turn-brand">WEIZEND</div></div>
@@ -9446,9 +9630,26 @@ return;
   window.wzTurnSetFilter=function(filter){ state.filter=filter; render(); };
   window.wzTurnOpen=function(id){ state.selectedId=String(id||''); state.screen='detail'; state.tab='overview'; state.bracketMode='tree'; render(); };
   window.wzTurnBack=function(){ state.screen='list'; render(); };
-  window.wzTurnSetTab=function(tab){ state.tab=['overview','rules','prizes','bracket'].includes(tab)?tab:'overview'; render(); };
+  window.wzTurnSetTab=function(tab){ state.tab=['overview','rules','prizes','bracket','predictions'].includes(tab)?tab:'overview'; render(); };
   window.wzTurnSetBracket=function(mode){ state.bracketMode=(mode==='list'?'list':'tree'); render(); };
   window.wzTurnToggleRule=function(index){ if(state.openRules.has(index)) state.openRules.delete(index); else state.openRules.add(index); render(); };
+
+  window.wzTurnPick=function(tournamentId,matchNumber,name){
+    const picks=readPredictions(tournamentId);
+    picks[String(matchNumber)]=String(name||'');
+    try{ localStorage.setItem(predictionKey(tournamentId),JSON.stringify(picks)); }catch(_){}
+    render();
+  };
+
+  window.wzTurnSavePredictions=function(tournamentId){
+    try{
+      const count=Object.keys(readPredictions(tournamentId)).length;
+      if(typeof showStatusToast==='function'){
+        showStatusToast(`✅ ${count} tahmin bu cihazda kaydedildi.`,2500);
+      }
+    }catch(_){}
+  };
+
   window.wzTournamentRegistration=function(id){
     try{
       if(typeof marketAuthenticated!=='undefined' && marketAuthenticated && typeof tv2Open==='function'){ tv2Open(id); return; }
@@ -9481,6 +9682,67 @@ return;
 })();
 </script>
 
+
+
+<script id="wz-v9-modal-lock">
+(function(){
+  let savedY=0;
+  let locked=false;
+
+  function isVisible(el){
+    if(!el) return false;
+    const s=getComputedStyle(el);
+    return s.display!=='none' && s.visibility!=='hidden' && Number(s.opacity||1)!==0;
+  }
+
+  function anyOpen(){
+    const selectors=[
+      '.modal-overlay',
+      '.verify-wait-overlay',
+      '.wz-product-info-overlay'
+    ];
+    return selectors.some(sel=>[...document.querySelectorAll(sel)].some(isVisible));
+  }
+
+  function lock(){
+    if(locked) return;
+    locked=true;
+    savedY=window.scrollY||document.documentElement.scrollTop||0;
+    document.documentElement.classList.add('wz-modal-hard-lock');
+    document.body.classList.add('wz-modal-hard-lock');
+    document.body.dataset.wzScrollY=String(savedY);
+  }
+
+  function unlock(){
+    if(!locked) return;
+    locked=false;
+    document.documentElement.classList.remove('wz-modal-hard-lock');
+    document.body.classList.remove('wz-modal-hard-lock');
+  }
+
+  function sync(){
+    requestAnimationFrame(()=>{
+      if(anyOpen()) lock();
+      else unlock();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.querySelectorAll('.modal-overlay,.verify-wait-overlay,.wz-product-info-overlay').forEach(el=>{
+      new MutationObserver(sync).observe(el,{attributes:true,attributeFilter:['class','style','aria-hidden']});
+    });
+    sync();
+  },{once:true});
+
+  document.addEventListener('touchmove',function(e){
+    if(!locked) return;
+    const scrollable=e.target.closest(
+      '.modal-content,.purchase-modal-content,.gift-modal-content,.notifications-modal-content,.inbox-modal-content,.inbox-body,.wz-product-info-card,.wz-product-info-body,#tv2ModalBody'
+    );
+    if(!scrollable) e.preventDefault();
+  },{passive:false});
+})();
+</script>
 
 </body>
 </html>
