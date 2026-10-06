@@ -1,6 +1,37 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+
+<script id="wz-v15-boot">
+(function(){
+  document.documentElement.classList.add('wz-boot');
+  try{
+    let view=sessionStorage.getItem('wz_current_view') || 'market';
+    if(!['market','tournament','profile'].includes(view)) view='market';
+
+    const token=localStorage.getItem('weizend_market_session_secure_v2') || '';
+    if(view==='profile' && !token){
+      view='market';
+      sessionStorage.setItem('wz_current_view','market');
+    }
+
+    window.__WZ_INITIAL_VIEW__=view;
+    document.documentElement.dataset.wzInitialView=view;
+  }catch(_){
+    window.__WZ_INITIAL_VIEW__='market';
+    document.documentElement.dataset.wzInitialView='market';
+  }
+
+  // Failsafe only: never leave the site invisible if another script errors.
+  setTimeout(()=>document.documentElement.classList.remove('wz-boot'),2500);
+})();
+</script>
+<style id="wz-v15-boot-css">
+html.wz-boot body{
+  visibility:hidden!important;
+}
+</style>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weizend Market</title>
@@ -1945,6 +1976,71 @@ body.wz-view-profile:not(.wz-profile-ready) #wzMobileProfileView{
 }
 body.wz-view-profile.wz-profile-ready #wzMobileProfileView{
   visibility:visible!important;
+}
+</style>
+
+
+<style id="wz-v15-tabs-fix">
+@media(max-width:768px){
+  .wz-turn-tabs{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    width:100%!important;
+    overflow:visible!important;
+    gap:0!important;
+    padding:0 8px 12px!important;
+  }
+  .wz-turn-tab{
+    min-width:0!important;
+    width:100%!important;
+    padding:9px 2px!important;
+    font-size:.67rem!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
+    text-align:center!important;
+  }
+}
+@media(max-width:390px){
+  .wz-turn-tab{font-size:.62rem!important}
+}
+</style>
+
+
+<style id="wz-v15-game-label">
+.wz-turn-hero-body{
+  padding-bottom:34px!important;
+}
+.wz-turn-game-label{
+  position:absolute;
+  left:18px;
+  bottom:14px;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  padding:6px 9px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:9px;
+  background:rgba(7,8,11,.72);
+  backdrop-filter:blur(8px);
+}
+.wz-turn-game-label span{
+  color:#ff4a4a;
+  font-size:.56rem;
+  font-weight:1000;
+  letter-spacing:1.1px;
+}
+.wz-turn-game-label b{
+  color:#fff;
+  font-size:.68rem;
+  font-weight:1000;
+}
+@media(max-width:768px){
+  .wz-turn-game-label{
+    left:16px;
+    bottom:12px;
+  }
 }
 </style>
 
@@ -9301,6 +9397,8 @@ return;
 (function(){
   let currentView=(()=>{
     try{
+      const early=window.__WZ_INITIAL_VIEW__;
+      if(['market','tournament','profile'].includes(early)) return early;
       const saved=sessionStorage.getItem('wz_current_view') || 'market';
       return ['market','tournament','profile'].includes(saved) ? saved : 'market';
     }catch(_){ return 'market'; }
@@ -9594,6 +9692,13 @@ return;
 
     // Restore exactly the section that was open before refresh.
     window.wzSetView(currentView);
+
+    // Tournament view renders from a zero-delay task. Queue our reveal after it.
+    setTimeout(()=>{
+      requestAnimationFrame(()=>{
+        document.documentElement.classList.remove('wz-boot');
+      });
+    },0);
 
     /* Do not show tournaments mixed into the market home. */
     setTimeout(()=>{ if(currentView==='market') document.getElementById('tournamentMarketSection')?.style.removeProperty('display'); },0);
@@ -10032,7 +10137,8 @@ return;
       <div class="wz-turn-detail-top"><button type="button" class="wz-turn-back" onclick="wzTurnBack()">←</button><div class="wz-turn-brand">WEIZEND</div></div>
       <section class="wz-turn-hero">
         <div class="wz-turn-hero-cover"><div class="wz-turn-hero-body">
-          <div class="wz-turn-hero-title"><div class="wz-turn-h1"><small>${esc(gameName(t,rule))}</small>${esc(String(t.name||'Turnuva').replace(/cup/i,'').trim() || 'CUP')}</div><span class="wz-turn-badge ${status}">${esc(statusLabel(item))}</span></div>
+          <div class="wz-turn-hero-title"><div class="wz-turn-h1">${esc(String(t.name||'Turnuva').replace(/cup/i,'').trim() || 'CUP')}</div><span class="wz-turn-badge ${status}">${esc(statusLabel(item))}</span></div>
+          <div class="wz-turn-game-label"><span>OYUN</span><b>${esc(gameName(t,rule))}</b></div>
         </div></div>
         <div class="wz-turn-info-grid">
           <div class="wz-turn-info"><b>${esc(modeText(t))}</b><span>${Number(t.teamSize||1)>1?'Takımlı':'Solo'}</span></div>
