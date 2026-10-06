@@ -1916,6 +1916,38 @@ body.wz-view-tournament .tv2-section-heading{display:none!important}
 #wzProfileTopBtn[style*="display:none"]{display:none!important}
 </style>
 
+
+<script id="wz-v14-avatar-helper">
+window.wzAvatarData = function(name){
+  const clean=String(name||'W').trim();
+  const parts=clean.split(/[\s_-]+/).filter(Boolean);
+  let initials='';
+  if(parts.length>=2){
+    initials=(parts[0][0]||'')+(parts[1][0]||'');
+  }else{
+    initials=clean.slice(0,2);
+  }
+  initials=(initials||'W').toUpperCase();
+  const svg=
+    `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">`+
+    `<rect width="128" height="128" rx="64" fill="#151519"/>`+
+    `<circle cx="64" cy="64" r="61" fill="none" stroke="#e31b1b" stroke-width="4"/>`+
+    `<text x="64" y="72" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="42" font-weight="800" fill="#ffffff">${initials.replace(/[<>&"]/g,'')}</text>`+
+    `</svg>`;
+  return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(svg);
+};
+</script>
+
+
+<style id="wz-v14-profile-stability">
+body.wz-view-profile:not(.wz-profile-ready) #wzMobileProfileView{
+  visibility:hidden!important;
+}
+body.wz-view-profile.wz-profile-ready #wzMobileProfileView{
+  visibility:visible!important;
+}
+</style>
+
 </head>
 <body>
 
@@ -1970,7 +2002,7 @@ body.wz-view-tournament .tv2-section-heading{display:none!important}
     if(button) button.style.display='grid';
 
     try{
-      const raw=localStorage.getItem('weizend_market_profile_cache_v1');
+      const raw=localStorage.getItem('weizend_market_profile_secure_v2');
       const cache=raw?JSON.parse(raw):null;
       if(!cache) return;
 
@@ -1979,7 +2011,7 @@ body.wz-view-tournament .tv2-section-heading{display:none!important}
         cache.avatarUrl ||
         cache.avatar ||
         cache.profileImage ||
-        `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=e31b1b&color=fff&bold=true&size=128`
+        (window.wzAvatarData ? window.wzAvatarData(name) : '')
       );
 
       const img=document.getElementById('wzTopProfileAvatar');
@@ -3499,7 +3531,7 @@ body.wz-view-tournament .tv2-section-heading{display:none!important}
             document.getElementById('marketContent').style.display = 'block';
 
             document.getElementById('walletUsername').innerText = username;
-            document.getElementById('walletAvatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=e31b1b&color=fff&bold=true&size=128`;
+            document.getElementById('walletAvatar').src = window.wzAvatarData ? window.wzAvatarData(username) : '';
             document.getElementById('walletPoints').innerText = (points ?? 0).toLocaleString('tr-TR') + ' Puan';
             document.getElementById('walletLevel').innerText = level !== null ? level.toLocaleString('tr-TR') : '-';
 
@@ -9320,10 +9352,13 @@ return;
     const y=Number(wzViewScroll[view] || 0);
     requestAnimationFrame(()=>{
       requestAnimationFrame(()=>{
-        const old=document.documentElement.style.scrollBehavior;
+        const oldHtml=document.documentElement.style.scrollBehavior;
+        const oldBody=document.body.style.scrollBehavior;
         document.documentElement.style.scrollBehavior='auto';
+        document.body.style.scrollBehavior='auto';
         window.scrollTo(0,y);
-        document.documentElement.style.scrollBehavior=old;
+        document.documentElement.style.scrollBehavior=oldHtml;
+        document.body.style.scrollBehavior=oldBody;
       });
     });
   }
@@ -9391,6 +9426,7 @@ return;
   }
 
   function syncProfile(){
+    document.body.classList.remove('wz-profile-ready');
     const token=getSessionToken();
     const cache=getProfileCache()||{};
     // A valid local session token means we keep the profile shell stable while
@@ -9406,26 +9442,37 @@ return;
     if(!authed){
       setText('wzTopProfileName','Profil');
       const topAv=document.getElementById('wzTopProfileAvatar');
-      if(topAv) topAv.src='https://i.hizliresim.com/fo5evkh4.png';
+      if(topAv) topAv.removeAttribute('src');
+      document.body.classList.add('wz-profile-ready');
       return;
     }
 
     const walletName=(document.getElementById('walletUsername')?.textContent||'').trim();
     const name=(cache.username || walletName || 'Kullanıcı').trim();
-    const cachedPoints=(cache.points !== undefined && cache.points !== null)
+
+    const cacheHasPoints=(cache.points !== undefined && cache.points !== null && Number.isFinite(Number(cache.points)));
+    const cacheHasLevel=(cache.level !== undefined && cache.level !== null && Number.isFinite(Number(cache.level)));
+
+    const cachedPoints=cacheHasPoints
       ? Number(cache.points).toLocaleString('tr-TR') + ' Puan'
       : '';
-    const cachedLevel=(cache.level !== undefined && cache.level !== null)
+    const cachedLevel=cacheHasLevel
       ? Number(cache.level).toLocaleString('tr-TR')
       : '';
-    const points=(document.getElementById('walletPoints')?.textContent||cachedPoints||'-').trim();
-    const level=(document.getElementById('walletLevel')?.textContent||cachedLevel||'-').trim();
-    const walletAvatar=document.getElementById('walletAvatar')?.src||'';
+
+    const walletPointsRaw=(document.getElementById('walletPoints')?.textContent||'').trim();
+    const walletLevelRaw=(document.getElementById('walletLevel')?.textContent||'').trim();
+
+    const walletPointsValid=walletPointsRaw && walletPointsRaw !== '-' && !/^0\s*Puan$/i.test(walletPointsRaw);
+    const walletLevelValid=walletLevelRaw && walletLevelRaw !== '-';
+
+    // On refresh the hidden wallet can temporarily contain '-'.
+    // Never let that replace a valid cached value.
+    const points=(walletPointsValid ? walletPointsRaw : (cachedPoints || walletPointsRaw || '-')).trim();
+    const level=(walletLevelValid ? walletLevelRaw : (cachedLevel || walletLevelRaw || '-')).trim();
+
     const cachedAvatar=String(cache.avatarUrl || cache.avatar || cache.profileImage || '');
-    const avatar=cachedAvatar
-      || (walletAvatar && !walletAvatar.includes('ui-avatars.com/api/?name=Weizend')
-          ? walletAvatar
-          : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=e31b1b&color=fff&bold=true&size=128`);
+    const avatar=cachedAvatar || (window.wzAvatarData ? window.wzAvatarData(name) : '');
     const status=String(cache.accountStatus || (typeof currentAccountStatus!=='undefined'?currentAccountStatus:'active') || 'active').toLowerCase();
     const statusText=status==='blocked'?'Kısıtlı':status==='archived'?'Arşivlenmiş':'Aktif';
 
@@ -9440,6 +9487,7 @@ return;
     const topAv=document.getElementById('wzTopProfileAvatar'); if(topAv) topAv.src=avatar;
     const state=document.getElementById('wzProfileState');
     if(state) state.textContent=status==='active'?'Doğrulanmış Kick hesabı':`Hesap durumu: ${statusText}`;
+    document.body.classList.add('wz-profile-ready');
   }
   window.wzSyncProfile=syncProfile;
 
@@ -10012,10 +10060,17 @@ return;
       const first=activeList()[0] || all[0];
       state.selectedId=String(first?.tournament?.id || '');
     }
+    const preserveY = document.body.classList.contains('wz-view-tournament')
+      ? (window.scrollY || document.documentElement.scrollTop || 0)
+      : null;
+
     host.innerHTML = `<div class="wz-turn-root">${state.screen==='detail' ? renderDetailPage() : renderListPage()}</div>`;
-    if(document.body.classList.contains('wz-view-tournament') && typeof window.wzRestoreViewScroll==='function'){
-      window.wzRestoreViewScroll('tournament');
+
+    if(preserveY !== null){
+      // Re-rendering the currently visible tournament must never move the viewport.
+      window.scrollTo(0,preserveY);
     }
+
     if(state.screen==='detail' && state.selectedId && !state.details.has(state.selectedId) && !state.loading.has(state.selectedId)){
       loadSelected();
     }
@@ -10027,7 +10082,7 @@ return;
   }
 
   window.wzTurnSetFilter=function(filter){ state.filter=filter; persistTournamentState(); render(); };
-  window.wzTurnOpen=function(id){ state.selectedId=String(id||''); state.screen='detail'; state.tab='overview'; state.bracketMode='tree'; persistTournamentState(); render(); window.scrollTo(0,0); };
+  window.wzTurnOpen=function(id){ state.selectedId=String(id||''); state.screen='detail'; state.tab='overview'; state.bracketMode='tree'; persistTournamentState(); render(); };
   window.wzTurnBack=function(){ state.screen='list'; persistTournamentState(); render(); };
   window.wzTurnSetTab=function(tab){ state.tab=['overview','rules','prizes','bracket','predictions'].includes(tab)?tab:'overview'; persistTournamentState(); render(); };
   window.wzTurnSetBracket=function(mode){ state.bracketMode=(mode==='list'?'list':'tree'); persistTournamentState(); render(); };
