@@ -2007,25 +2007,6 @@ body.wz-view-profile.wz-profile-ready #wzMobileProfileView{
 </style>
 
 
-<style id="wz-v16-profile-flash-fix">
-html[data-wz-initial-view="profile"] body .header-buttons,
-html[data-wz-initial-view="profile"] body .header-btn,
-html[data-wz-initial-view="profile"] body header .header-buttons,
-body.wz-view-profile .header-buttons,
-body.wz-view-profile .header-btn{
-  display:none!important;
-}
-
-/* While Profile is the saved initial view, keep non-profile main content hidden
-   until the correct view has fully initialized. */
-html[data-wz-initial-view="profile"] body:not(.wz-ready) #marketContent,
-html[data-wz-initial-view="profile"] body:not(.wz-ready) header,
-html[data-wz-initial-view="profile"] body:not(.wz-ready) .header-buttons{
-  display:none!important;
-}
-</style>
-
-
 <style id="wz-v17-nav-parse-fix">
 @media(max-width:768px){
   .wz-mobile-bottom-nav{
@@ -2105,6 +2086,30 @@ body.wz-view-market #urunGrid{
   display:grid!important;
 }
 body.wz-view-market #tournamentMarketSection{
+  display:none!important;
+}
+</style>
+
+
+<style id="wz-v22-view-safety">
+body.wz-view-market #marketContent{
+  display:block!important;
+}
+body.wz-view-market > .container:first-of-type header{
+  display:block!important;
+}
+body.wz-view-market #urunGrid{
+  display:grid!important;
+}
+body.wz-view-market .market-search-wrap{
+  display:block!important;
+}
+body.wz-view-market #filters{
+  display:flex!important;
+}
+
+body.wz-view-profile #marketContent,
+body.wz-view-profile > .container:first-of-type header{
   display:none!important;
 }
 </style>
@@ -9734,6 +9739,12 @@ return;
 
     if(view==='market'){
       // Rebuild only the normal Market surface.
+      // Clear stale inline visibility from Profile/legacy flows first.
+      const marketEl=document.getElementById('marketContent');
+      const headerEl=document.querySelector('body > .container:first-of-type header');
+      if(marketEl) marketEl.style.display='block';
+      if(headerEl) headerEl.style.removeProperty('display');
+
       // This never touches the legacy Turnuva category.
       wzRenderMarketNow();
       updateSearchMode('market');
@@ -9976,7 +9987,9 @@ return;
     // Tournament view renders from a zero-delay task. Queue our reveal after it.
     setTimeout(()=>{
       requestAnimationFrame(()=>{
+        document.body.classList.add('wz-ready');
         document.documentElement.classList.remove('wz-boot');
+        document.documentElement.removeAttribute('data-wz-initial-view');
       });
     },0);
 
