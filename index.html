@@ -2140,6 +2140,67 @@ try{
 }catch(_){}
 </script>
 
+
+<style id="wz-v24-modal-scroll-lock">
+html.wz-page-modal-open,
+body.wz-page-modal-open{
+  overscroll-behavior:none!important;
+}
+
+body.wz-page-modal-open{
+  touch-action:none!important;
+}
+
+/* Every overlay must sit over the fixed Market/Turnuva navigation. */
+.modal-overlay,
+.verify-wait-overlay,
+.wz-product-info-overlay{
+  z-index:50000!important;
+  overscroll-behavior:none!important;
+  touch-action:none!important;
+}
+
+/* Only these inner surfaces may scroll while a window is open. */
+.modal-content,
+.modal-body,
+.redirect-modal-body,
+.purchase-body,
+.gift-modal-content,
+.notifications-modal-content,
+.inbox-modal-content,
+.inbox-body,
+.inbox-list,
+.inbox-conversation,
+#tv2ModalBody,
+.wz-product-info-card,
+.wz-product-info-body{
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+}
+
+/* Image viewer: pinch/pan remains enabled only inside the image area. */
+#imageModal .main-slider,
+#imageModal #modalMainImg{
+  touch-action:none!important;
+}
+
+/* Prevent scroll chaining from an inner modal to the frozen document. */
+.modal-content,
+.purchase-modal-content,
+.gift-modal-content,
+.inbox-modal-content,
+.wz-product-info-card{
+  max-height:88dvh!important;
+}
+
+@media(max-width:768px){
+  body.wz-page-modal-open .wz-mobile-bottom-nav{
+    pointer-events:none!important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -3207,42 +3268,80 @@ try{
             'redirectModal',
             'purchaseModal',
             'giftRedeemModal',
+            'actionResultModal',
             'inboxModal',
             'tv2Modal',
-            'verificationWaitModal'
+            'verificationWaitModal',
+            'wzProductInfoModal'
         ];
+
         let marketScrollLocked = false;
         let marketLockedScrollY = 0;
         let marketModalObserver = null;
 
         function isMarketModalVisible(element) {
             if (!element) return false;
+
+            // Custom product-info modal uses the .open class.
+            if (element.id === 'wzProductInfoModal') {
+                return element.classList.contains('open');
+            }
+
             const style = window.getComputedStyle(element);
-            return style.display !== 'none' && style.visibility !== 'hidden';
+            return style.display !== 'none'
+                && style.visibility !== 'hidden'
+                && Number(style.opacity || 1) !== 0;
         }
 
         function lockMarketPageScroll() {
             if (marketScrollLocked) return;
-            marketLockedScrollY = window.scrollY || window.pageYOffset || 0;
+
+            marketLockedScrollY = Math.max(
+                0,
+                window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0
+            );
             marketScrollLocked = true;
 
-            // Keep the document exactly where it is.
-            // Only disable background scrolling while the modal is open.
+            // Classic fixed-body lock:
+            // The background keeps the exact same visual position and cannot move.
+            document.documentElement.classList.add('wz-page-modal-open');
+            document.body.classList.add('wz-page-modal-open');
+
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${marketLockedScrollY}px`;
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.width = '100%';
+
             document.documentElement.style.overflow = 'hidden';
-            document.documentElement.style.overscrollBehavior = 'none';
             document.body.style.overflow = 'hidden';
-            document.body.style.overscrollBehavior = 'none';
         }
 
         function unlockMarketPageScroll() {
             if (!marketScrollLocked) return;
+
+            const restoreY = marketLockedScrollY;
             marketScrollLocked = false;
 
+            document.documentElement.classList.remove('wz-page-modal-open');
+            document.body.classList.remove('wz-page-modal-open');
+
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.left = '';
+            document.body.style.right = '';
+            document.body.style.width = '';
             document.documentElement.style.overflow = '';
-            document.documentElement.style.overscrollBehavior = '';
             document.body.style.overflow = '';
-            document.body.style.overscrollBehavior = '';
-            // No scrollTo here: the page never moved.
+
+            // Restore synchronously so there is no "top -> old position" animation.
+            const oldHtml = document.documentElement.style.scrollBehavior;
+            const oldBody = document.body.style.scrollBehavior;
+            document.documentElement.style.scrollBehavior = 'auto';
+            document.body.style.scrollBehavior = 'auto';
+            window.scrollTo(0, restoreY);
+            document.documentElement.style.scrollBehavior = oldHtml;
+            document.body.style.scrollBehavior = oldBody;
         }
 
         function syncMarketModalScrollLock() {
@@ -3258,15 +3357,17 @@ try{
             if (marketModalObserver) return;
 
             marketModalObserver = new MutationObserver(() => {
-                requestAnimationFrame(syncMarketModalScrollLock);
+                // Run in the same task; don't leave one paint where the background is free.
+                syncMarketModalScrollLock();
             });
 
             for (const id of MARKET_MODAL_IDS) {
                 const element = document.getElementById(id);
                 if (!element) continue;
+
                 marketModalObserver.observe(element, {
                     attributes:true,
-                    attributeFilter:['style','class']
+                    attributeFilter:['style','class','aria-hidden']
                 });
             }
 
@@ -9924,6 +10025,7 @@ return;
     overlay.classList.remove('open');
     overlay.setAttribute('aria-hidden','true');
     document.body.classList.remove('wz-modal-lock');
+    try{ syncMarketModalScrollLock(); }catch(_){}
   };
   function openProductInfo(title,html){
     wzProductInfoScrollY=window.scrollY||document.documentElement.scrollTop||0;
@@ -9936,6 +10038,7 @@ return;
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden','false');
     document.body.classList.add('wz-modal-lock');
+    try{ syncMarketModalScrollLock(); }catch(_){}
   }
 
   document.addEventListener('click',function(event){
@@ -10641,6 +10744,78 @@ return;
       }catch(_){}
     },0);
   });
+})();
+</script>
+
+
+<script id="wz-v24-modal-touch-guard">
+(function(){
+  function visible(el){
+    if(!el) return false;
+    if(el.id==='wzProductInfoModal') return el.classList.contains('open');
+    const s=getComputedStyle(el);
+    return s.display!=='none' && s.visibility!=='hidden' && Number(s.opacity||1)!==0;
+  }
+
+  function activeOverlay(){
+    const selectors=[
+      '#wzProductInfoModal',
+      '#imageModal',
+      '#redirectModal',
+      '#purchaseModal',
+      '#giftRedeemModal',
+      '#actionResultModal',
+      '#inboxModal',
+      '#tv2Modal',
+      '#verificationWaitModal'
+    ];
+
+    for(const selector of selectors){
+      const el=document.querySelector(selector);
+      if(visible(el)) return el;
+    }
+    return null;
+  }
+
+  function allowedScroller(target,overlay){
+    if(!target || !overlay || !overlay.contains(target)) return null;
+
+    return target.closest(
+      '.modal-body,'+
+      '.redirect-modal-body,'+
+      '.purchase-body,'+
+      '.gift-modal-content,'+
+      '.notifications-modal-content,'+
+      '.inbox-body,'+
+      '.inbox-list,'+
+      '.inbox-conversation,'+
+      '#tv2ModalBody,'+
+      '.wz-product-info-body,'+
+      '#imageModal .main-slider'
+    );
+  }
+
+  document.addEventListener('touchmove',function(event){
+    const overlay=activeOverlay();
+    if(!overlay) return;
+
+    const scroller=allowedScroller(event.target,overlay);
+
+    // Touch outside the active window: background is never allowed to move.
+    if(!scroller){
+      event.preventDefault();
+      return;
+    }
+
+    // Image modal owns its own pinch/drag logic.
+    if(scroller.matches('#imageModal .main-slider')) return;
+
+    // Stop iOS/Android scroll chaining at the top/bottom of modal content.
+    const canScroll=scroller.scrollHeight > scroller.clientHeight + 1;
+    if(!canScroll){
+      event.preventDefault();
+    }
+  },{passive:false,capture:true});
 })();
 </script>
 
