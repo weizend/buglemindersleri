@@ -2114,6 +2114,32 @@ body.wz-view-profile > .container:first-of-type header{
 }
 </style>
 
+
+<style id="wz-v23-scroll-stability">
+#marketContent,
+#wzEsportsHub,
+#wzMobileProfileView,
+#urunGrid,
+.wz-turn-root{
+  overflow-anchor:none!important;
+}
+
+/* Switching views must never animate document scroll. */
+html,
+body{
+  scroll-behavior:auto!important;
+}
+</style>
+
+
+<script id="wz-v23-history-scroll">
+try{
+  if('scrollRestoration' in history){
+    history.scrollRestoration='manual';
+  }
+}catch(_){}
+</script>
+
 </head>
 <body>
 
@@ -9516,7 +9542,7 @@ return;
     document.getElementById('wzNavTournament')?.classList.toggle('active',view==='tournament');
   }
 
-  const WZ_SCROLL_KEY_PREFIX='wz_v21_scroll_';
+  const WZ_SCROLL_KEY_PREFIX='wz_v23_scroll_';
 
   const wzViewScroll = {
     market: Number(sessionStorage.getItem(WZ_SCROLL_KEY_PREFIX+'market') || 0),
@@ -9573,7 +9599,7 @@ return;
       sessionStorage.setItem(WZ_SCROLL_KEY_PREFIX+view,String(y));
     }catch(_){}
 
-    requestAnimationFrame(()=>{
+    queueMicrotask(()=>{
       wzRestoringScroll=false;
     });
   }
@@ -9768,11 +9794,10 @@ return;
     }
 
     if(view==='market'){
-      requestAnimationFrame(()=>{
-        requestAnimationFrame(()=>{
-          wzRestoreViewScroll('market');
-        });
-      });
+      // The Market DOM renderer above is synchronous.
+      // Restore before this click handler returns, so the browser never paints
+      // frame 0 at the top of the Market page.
+      wzRestoreViewScroll('market');
     }else if(view!=='tournament'){
       wzRestoreViewScroll(view);
     }
@@ -10505,25 +10530,27 @@ return;
       baseSetView(view);
 
       if(view==='tournament'){
-        setTimeout(()=>{
-          render();
+        // Synchronous render + synchronous restore:
+        // no visible "top of page -> saved position" jump.
+        render();
 
-          if(enteringTournament && typeof window.wzRestoreViewScroll==='function'){
-            window.wzRestoreViewScroll('tournament');
+        if(enteringTournament && typeof window.wzRestoreViewScroll==='function'){
+          window.wzRestoreViewScroll('tournament');
+        }
+
+        try{
+          if(typeof tv2LoadCatalog==='function' && catalog().length===0){
+            const keepY=window.scrollY || document.documentElement.scrollTop || 0;
+
+            tv2LoadCatalog(false)
+              .then(()=>{
+                const stableY=window.scrollY || document.documentElement.scrollTop || keepY;
+                render();
+                window.scrollTo(0,stableY);
+              })
+              .catch(()=>{});
           }
-
-          try{
-            if(typeof tv2LoadCatalog==='function' && catalog().length===0){
-              tv2LoadCatalog(false)
-                .then(()=>{
-                  const keepY=window.scrollY || document.documentElement.scrollTop || 0;
-                  render();
-                  window.scrollTo(0,keepY);
-                })
-                .catch(()=>{});
-            }
-          }catch(_){}
-        },0);
+        }catch(_){}
       }
     };
     window.wzSetMobileView=window.wzSetView;
